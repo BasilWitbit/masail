@@ -82,39 +82,43 @@ function QADetailPage() {
         ) : !qa ? (
           <NotFound />
         ) : (
-          <div className="mt-8 space-y-8">
-            {/* Question card */}
-            <article className="rounded-3xl border border-border bg-card p-8 shadow-sm md:p-10">
-              <div className="flex flex-wrap items-center gap-3">
-                {qa.categories?.name ? (
-                  <span
-                    className="inline-flex items-center rounded-md px-3 py-1 text-xs font-semibold"
-                    style={{
-                      background: "color-mix(in oklab, var(--secondary) 22%, transparent)",
-                      color: "var(--primary)",
-                    }}
-                  >
-                    {qa.categories.name}
+          const categoryName = qa.categories?.[0]?.name ?? null;
+          const mosqueName = qa.mosques?.[0]?.name ?? null;
+
+          return (
+            <div className="mt-8 space-y-8">
+              {/* Question card */}
+              <article className="rounded-3xl border border-border bg-card p-8 shadow-sm md:p-10">
+                <div className="flex flex-wrap items-center gap-3">
+                  {categoryName ? (
+                    <span
+                      className="inline-flex items-center rounded-md px-3 py-1 text-xs font-semibold"
+                      style={{
+                        background: "color-mix(in oklab, var(--secondary) 22%, transparent)",
+                        color: "var(--primary)",
+                      }}
+                    >
+                      {categoryName}
+                    </span>
+                  ) : null}
+                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Calendar className="h-3.5 w-3.5" />
+                    {formatDate(qa.created_at)}
                   </span>
+                </div>
+
+                <h1 className="mt-6 font-heading text-3xl font-bold leading-tight text-primary md:text-4xl">
+                  {qa.generic_question}
+                </h1>
+
+                {mosqueName ? (
+                  <p className="mt-4 text-sm text-muted-foreground">
+                    Answered via{" "}
+                    <span className="font-medium text-foreground">
+                      {mosqueName}
+                    </span>
+                  </p>
                 ) : null}
-                <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Calendar className="h-3.5 w-3.5" />
-                  {formatDate(qa.created_at)}
-                </span>
-              </div>
-
-              <h1 className="mt-6 font-heading text-3xl font-bold leading-tight text-primary md:text-4xl">
-                {qa.generic_question}
-              </h1>
-
-              {qa.mosques?.name ? (
-                <p className="mt-4 text-sm text-muted-foreground">
-                  Answered via{" "}
-                  <span className="font-medium text-foreground">
-                    {qa.mosques.name}
-                  </span>
-                </p>
-              ) : null}
 
               <div className="mt-8 border-t border-border pt-8">
                 <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-primary">

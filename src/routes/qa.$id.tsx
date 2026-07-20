@@ -30,8 +30,8 @@ type QADetail = {
   category_id: string | null;
   mosque_id: string | null;
   created_at: string;
-  categories: { name: string } | null;
-  mosques: { name: string } | null;
+  categories: { name: string }[] | null;
+  mosques: { name: string }[] | null;
 };
 
 function QADetailPage() {

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as QaRouteImport } from './routes/qa'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as QaIndexRouteImport } from './routes/qa.index'
 import { Route as QaIdRouteImport } from './routes/qa.$id'
 
 const QaRoute = QaRouteImport.update({
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QaIndexRoute = QaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => QaRoute,
+} as any)
 const QaIdRoute = QaIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -33,24 +39,26 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/qa': typeof QaRouteWithChildren
   '/qa/$id': typeof QaIdRoute
+  '/qa/': typeof QaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/qa': typeof QaRouteWithChildren
   '/qa/$id': typeof QaIdRoute
+  '/qa': typeof QaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/qa': typeof QaRouteWithChildren
   '/qa/$id': typeof QaIdRoute
+  '/qa/': typeof QaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/qa' | '/qa/$id'
+  fullPaths: '/' | '/qa' | '/qa/$id' | '/qa/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/qa' | '/qa/$id'
-  id: '__root__' | '/' | '/qa' | '/qa/$id'
+  to: '/' | '/qa/$id' | '/qa'
+  id: '__root__' | '/' | '/qa' | '/qa/$id' | '/qa/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -74,6 +82,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/qa/': {
+      id: '/qa/'
+      path: '/'
+      fullPath: '/qa/'
+      preLoaderRoute: typeof QaIndexRouteImport
+      parentRoute: typeof QaRoute
+    }
     '/qa/$id': {
       id: '/qa/$id'
       path: '/$id'
@@ -86,10 +101,12 @@ declare module '@tanstack/react-router' {
 
 interface QaRouteChildren {
   QaIdRoute: typeof QaIdRoute
+  QaIndexRoute: typeof QaIndexRoute
 }
 
 const QaRouteChildren: QaRouteChildren = {
   QaIdRoute: QaIdRoute,
+  QaIndexRoute: QaIndexRoute,
 }
 
 const QaRouteWithChildren = QaRoute._addFileChildren(QaRouteChildren)

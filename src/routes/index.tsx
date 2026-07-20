@@ -1,45 +1,21 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Search, FileText, BookOpen, CheckCircle2, Facebook, Instagram, Youtube } from "lucide-react";
 import { usePlatformTheme } from "@/lib/use-platform-theme";
+import { SiteHeader } from "@/components/site-header";
 
 export const Route = createFileRoute("/")({
   component: Home,
 });
 
 function Home() {
-  const settings = usePlatformTheme();
+  usePlatformTheme();
   const [query, setQuery] = useState("");
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Header */}
-      <header className="bg-primary text-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link to="/" className="flex items-center gap-3">
-            {settings?.logo_url ? (
-              <img src={settings.logo_url} alt="Masail" className="h-10 w-auto" />
-            ) : (
-              <span className="font-heading text-2xl font-bold tracking-tight">MASAIL</span>
-            )}
-          </Link>
-          <nav className="hidden items-center gap-10 md:flex">
-            <NavItem label="Home" active />
-            <NavItem label="Public Q&A" />
-          </nav>
-          <div className="flex items-center gap-3">
-            <button className="hidden text-sm font-medium text-white/90 hover:text-white md:inline">
-              Sign In
-            </button>
-            <button
-              className="rounded-md px-5 py-2.5 text-sm font-semibold shadow-sm transition hover:brightness-105"
-              style={{ background: "var(--secondary)", color: "var(--secondary-foreground)" }}
-            >
-              Ask a Question
-            </button>
-          </div>
-        </div>
-      </header>
+      <SiteHeader active="home" />
+
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-surface">

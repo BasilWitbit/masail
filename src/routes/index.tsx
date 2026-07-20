@@ -160,24 +160,8 @@ function Home() {
   );
 }
 
-function NavItem({ label, active }: { label: string; active?: boolean }) {
-  return (
-    <a
-      href="#"
-      className={`relative text-sm font-medium transition ${
-        active ? "text-white" : "text-white/80 hover:text-white"
-      }`}
-    >
-      {label}
-      {active && (
-        <span
-          className="absolute -bottom-1.5 left-0 right-0 h-0.5 rounded-full"
-          style={{ background: "var(--secondary)" }}
-        />
-      )}
-    </a>
-  );
-}
+
+
 
 function Step({
   n,

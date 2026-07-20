@@ -121,7 +121,7 @@ function QADetailPage() {
                   <BookOpen className="h-4 w-4" />
                   Answer
                 </div>
-                <div className="prose prose-neutral max-w-none text-lg leading-relaxed text-foreground">
+                <div className="text-lg leading-relaxed text-foreground">
                   <p className="whitespace-pre-wrap">{qa.generic_answer}</p>
                 </div>
               </div>

@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as QaRouteImport } from './routes/qa'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as QaIndexRouteImport } from './routes/qa.index'
+import { Route as QaIdRouteImport } from './routes/qa.$id'
 
 const QaRoute = QaRouteImport.update({
   id: '/qa',
@@ -22,31 +24,46 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QaIndexRoute = QaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => QaRoute,
+} as any)
+const QaIdRoute = QaIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => QaRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/qa': typeof QaRoute
+  '/qa': typeof QaRouteWithChildren
+  '/qa/$id': typeof QaIdRoute
+  '/qa/': typeof QaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/qa': typeof QaRoute
+  '/qa/$id': typeof QaIdRoute
+  '/qa': typeof QaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/qa': typeof QaRoute
+  '/qa': typeof QaRouteWithChildren
+  '/qa/$id': typeof QaIdRoute
+  '/qa/': typeof QaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/qa'
+  fullPaths: '/' | '/qa' | '/qa/$id' | '/qa/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/qa'
-  id: '__root__' | '/' | '/qa'
+  to: '/' | '/qa/$id' | '/qa'
+  id: '__root__' | '/' | '/qa' | '/qa/$id' | '/qa/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  QaRoute: typeof QaRoute
+  QaRoute: typeof QaRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -65,13 +82,49 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/qa/': {
+      id: '/qa/'
+      path: '/'
+      fullPath: '/qa/'
+      preLoaderRoute: typeof QaIndexRouteImport
+      parentRoute: typeof QaRoute
+    }
+    '/qa/$id': {
+      id: '/qa/$id'
+      path: '/$id'
+      fullPath: '/qa/$id'
+      preLoaderRoute: typeof QaIdRouteImport
+      parentRoute: typeof QaRoute
+    }
   }
 }
 
+interface QaRouteChildren {
+  QaIdRoute: typeof QaIdRoute
+  QaIndexRoute: typeof QaIndexRoute
+}
+
+const QaRouteChildren: QaRouteChildren = {
+  QaIdRoute: QaIdRoute,
+  QaIndexRoute: QaIndexRoute,
+}
+
+const QaRouteWithChildren = QaRoute._addFileChildren(QaRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  QaRoute: QaRoute,
+  QaRoute: QaRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

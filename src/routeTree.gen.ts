@@ -9,14 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as QaRouteImport } from './routes/qa'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as QaIndexRouteImport } from './routes/qa.index'
 import { Route as QaIdRouteImport } from './routes/qa.$id'
 
+const VerifyOtpRoute = VerifyOtpRouteImport.update({
+  id: '/verify-otp',
+  path: '/verify-otp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QaRoute = QaRouteImport.update({
   id: '/qa',
   path: '/qa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,42 +55,90 @@ const QaIdRoute = QaIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/qa': typeof QaRouteWithChildren
+  '/signup': typeof SignupRoute
+  '/verify-otp': typeof VerifyOtpRoute
   '/qa/$id': typeof QaIdRoute
   '/qa/': typeof QaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/verify-otp': typeof VerifyOtpRoute
   '/qa/$id': typeof QaIdRoute
   '/qa': typeof QaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/qa': typeof QaRouteWithChildren
+  '/signup': typeof SignupRoute
+  '/verify-otp': typeof VerifyOtpRoute
   '/qa/$id': typeof QaIdRoute
   '/qa/': typeof QaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/qa' | '/qa/$id' | '/qa/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/qa'
+    | '/signup'
+    | '/verify-otp'
+    | '/qa/$id'
+    | '/qa/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/qa/$id' | '/qa'
-  id: '__root__' | '/' | '/qa' | '/qa/$id' | '/qa/'
+  to: '/' | '/login' | '/signup' | '/verify-otp' | '/qa/$id' | '/qa'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/qa'
+    | '/signup'
+    | '/verify-otp'
+    | '/qa/$id'
+    | '/qa/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LoginRoute: typeof LoginRoute
   QaRoute: typeof QaRouteWithChildren
+  SignupRoute: typeof SignupRoute
+  VerifyOtpRoute: typeof VerifyOtpRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify-otp': {
+      id: '/verify-otp'
+      path: '/verify-otp'
+      fullPath: '/verify-otp'
+      preLoaderRoute: typeof VerifyOtpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/qa': {
       id: '/qa'
       path: '/qa'
       fullPath: '/qa'
       preLoaderRoute: typeof QaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -113,18 +179,11 @@ const QaRouteWithChildren = QaRoute._addFileChildren(QaRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LoginRoute: LoginRoute,
   QaRoute: QaRouteWithChildren,
+  SignupRoute: SignupRoute,
+  VerifyOtpRoute: VerifyOtpRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

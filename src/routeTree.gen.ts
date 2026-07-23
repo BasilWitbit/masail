@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as QaRouteImport } from './routes/qa'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as QaIndexRouteImport } from './routes/qa.index'
 import { Route as QaIdRouteImport } from './routes/qa.$id'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QaRoute = QaRouteImport.update({
   id: '/qa',
   path: '/qa',
@@ -38,11 +44,13 @@ const QaIdRoute = QaIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/qa': typeof QaRouteWithChildren
+  '/signup': typeof SignupRoute
   '/qa/$id': typeof QaIdRoute
   '/qa/': typeof QaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/signup': typeof SignupRoute
   '/qa/$id': typeof QaIdRoute
   '/qa': typeof QaIndexRoute
 }
@@ -50,24 +58,33 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/qa': typeof QaRouteWithChildren
+  '/signup': typeof SignupRoute
   '/qa/$id': typeof QaIdRoute
   '/qa/': typeof QaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/qa' | '/qa/$id' | '/qa/'
+  fullPaths: '/' | '/qa' | '/signup' | '/qa/$id' | '/qa/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/qa/$id' | '/qa'
-  id: '__root__' | '/' | '/qa' | '/qa/$id' | '/qa/'
+  to: '/' | '/signup' | '/qa/$id' | '/qa'
+  id: '__root__' | '/' | '/qa' | '/signup' | '/qa/$id' | '/qa/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   QaRoute: typeof QaRouteWithChildren
+  SignupRoute: typeof SignupRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/qa': {
       id: '/qa'
       path: '/qa'
@@ -114,17 +131,8 @@ const QaRouteWithChildren = QaRoute._addFileChildren(QaRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   QaRoute: QaRouteWithChildren,
+  SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

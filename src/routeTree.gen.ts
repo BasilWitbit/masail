@@ -13,9 +13,16 @@ import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as QaRouteImport } from './routes/qa'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as QaIndexRouteImport } from './routes/qa.index'
 import { Route as QaIdRouteImport } from './routes/qa.$id'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
+import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
+import { Route as AuthenticatedDashboardQuestionsRouteImport } from './routes/_authenticated/dashboard.questions'
+import { Route as AuthenticatedDashboardLibraryRouteImport } from './routes/_authenticated/dashboard.library'
+import { Route as AuthenticatedDashboardAskRouteImport } from './routes/_authenticated/dashboard.ask'
 
 const VerifyOtpRoute = VerifyOtpRouteImport.update({
   id: '/verify-otp',
@@ -37,6 +44,10 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -52,6 +63,41 @@ const QaIdRoute = QaIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => QaRoute,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardIndexRoute =
+  AuthenticatedDashboardIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardSettingsRoute =
+  AuthenticatedDashboardSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardQuestionsRoute =
+  AuthenticatedDashboardQuestionsRouteImport.update({
+    id: '/questions',
+    path: '/questions',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardLibraryRoute =
+  AuthenticatedDashboardLibraryRouteImport.update({
+    id: '/library',
+    path: '/library',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardAskRoute =
+  AuthenticatedDashboardAskRouteImport.update({
+    id: '/ask',
+    path: '/ask',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -59,8 +105,14 @@ export interface FileRoutesByFullPath {
   '/qa': typeof QaRouteWithChildren
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
+  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/qa/$id': typeof QaIdRoute
   '/qa/': typeof QaIndexRoute
+  '/dashboard/ask': typeof AuthenticatedDashboardAskRoute
+  '/dashboard/library': typeof AuthenticatedDashboardLibraryRoute
+  '/dashboard/questions': typeof AuthenticatedDashboardQuestionsRoute
+  '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -69,16 +121,28 @@ export interface FileRoutesByTo {
   '/verify-otp': typeof VerifyOtpRoute
   '/qa/$id': typeof QaIdRoute
   '/qa': typeof QaIndexRoute
+  '/dashboard/ask': typeof AuthenticatedDashboardAskRoute
+  '/dashboard/library': typeof AuthenticatedDashboardLibraryRoute
+  '/dashboard/questions': typeof AuthenticatedDashboardQuestionsRoute
+  '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/qa': typeof QaRouteWithChildren
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/qa/$id': typeof QaIdRoute
   '/qa/': typeof QaIndexRoute
+  '/_authenticated/dashboard/ask': typeof AuthenticatedDashboardAskRoute
+  '/_authenticated/dashboard/library': typeof AuthenticatedDashboardLibraryRoute
+  '/_authenticated/dashboard/questions': typeof AuthenticatedDashboardQuestionsRoute
+  '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -88,23 +152,48 @@ export interface FileRouteTypes {
     | '/qa'
     | '/signup'
     | '/verify-otp'
+    | '/dashboard'
     | '/qa/$id'
     | '/qa/'
+    | '/dashboard/ask'
+    | '/dashboard/library'
+    | '/dashboard/questions'
+    | '/dashboard/settings'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup' | '/verify-otp' | '/qa/$id' | '/qa'
+  to:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/verify-otp'
+    | '/qa/$id'
+    | '/qa'
+    | '/dashboard/ask'
+    | '/dashboard/library'
+    | '/dashboard/questions'
+    | '/dashboard/settings'
+    | '/dashboard'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/login'
     | '/qa'
     | '/signup'
     | '/verify-otp'
+    | '/_authenticated/dashboard'
     | '/qa/$id'
     | '/qa/'
+    | '/_authenticated/dashboard/ask'
+    | '/_authenticated/dashboard/library'
+    | '/_authenticated/dashboard/questions'
+    | '/_authenticated/dashboard/settings'
+    | '/_authenticated/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
   QaRoute: typeof QaRouteWithChildren
   SignupRoute: typeof SignupRoute
@@ -141,6 +230,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -162,8 +258,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QaIdRouteImport
       parentRoute: typeof QaRoute
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/settings': {
+      id: '/_authenticated/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/questions': {
+      id: '/_authenticated/dashboard/questions'
+      path: '/questions'
+      fullPath: '/dashboard/questions'
+      preLoaderRoute: typeof AuthenticatedDashboardQuestionsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/library': {
+      id: '/_authenticated/dashboard/library'
+      path: '/library'
+      fullPath: '/dashboard/library'
+      preLoaderRoute: typeof AuthenticatedDashboardLibraryRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/ask': {
+      id: '/_authenticated/dashboard/ask'
+      path: '/ask'
+      fullPath: '/dashboard/ask'
+      preLoaderRoute: typeof AuthenticatedDashboardAskRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
   }
 }
+
+interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardAskRoute: typeof AuthenticatedDashboardAskRoute
+  AuthenticatedDashboardLibraryRoute: typeof AuthenticatedDashboardLibraryRoute
+  AuthenticatedDashboardQuestionsRoute: typeof AuthenticatedDashboardQuestionsRoute
+  AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+}
+
+const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
+  {
+    AuthenticatedDashboardAskRoute: AuthenticatedDashboardAskRoute,
+    AuthenticatedDashboardLibraryRoute: AuthenticatedDashboardLibraryRoute,
+    AuthenticatedDashboardQuestionsRoute: AuthenticatedDashboardQuestionsRoute,
+    AuthenticatedDashboardSettingsRoute: AuthenticatedDashboardSettingsRoute,
+    AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+  }
+
+const AuthenticatedDashboardRouteWithChildren =
+  AuthenticatedDashboardRoute._addFileChildren(
+    AuthenticatedDashboardRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface QaRouteChildren {
   QaIdRoute: typeof QaIdRoute
@@ -179,6 +350,7 @@ const QaRouteWithChildren = QaRoute._addFileChildren(QaRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   QaRoute: QaRouteWithChildren,
   SignupRoute: SignupRoute,

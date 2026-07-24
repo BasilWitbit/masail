@@ -73,12 +73,16 @@ function DashboardShell() {
         } border-b border-border bg-card md:sticky md:top-0 md:block md:h-screen md:w-64 md:shrink-0 md:border-b-0 md:border-r`}
       >
         <div className="flex h-full flex-col">
-          <div className="hidden items-center gap-2 border-b border-border px-6 py-5 md:flex">
-            <Link to="/dashboard" className="flex items-center gap-2">
+          <div className="hidden items-center gap-2 border-b border-white/20 bg-primary px-6 py-5 md:flex">
+            <Link to="/dashboard" className="flex items-center gap-2 text-white">
               {settings?.logo_url ? (
-                <img src={settings.logo_url} alt="Masail" className="h-9 w-auto" />
+                <img
+                  src={settings.logo_url}
+                  alt="Masail"
+                  className="h-9 w-auto rounded-md bg-white p-1"
+                />
               ) : (
-                <span className="font-heading text-2xl font-bold tracking-tight text-primary">
+                <span className="font-heading text-2xl font-bold tracking-tight">
                   MASAIL
                 </span>
               )}
@@ -109,7 +113,7 @@ function DashboardShell() {
           <div className="border-t border-border p-4">
             <button
               onClick={handleLogout}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-transparent px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:border-primary/40 hover:text-primary"
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
             >
               <LogOut className="h-4 w-4" />
               Log Out

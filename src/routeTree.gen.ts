@@ -23,6 +23,7 @@ import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_au
 import { Route as AuthenticatedDashboardQuestionsRouteImport } from './routes/_authenticated/dashboard.questions'
 import { Route as AuthenticatedDashboardLibraryRouteImport } from './routes/_authenticated/dashboard.library'
 import { Route as AuthenticatedDashboardAskRouteImport } from './routes/_authenticated/dashboard.ask'
+import { Route as AuthenticatedDashboardQuestionsIdRouteImport } from './routes/_authenticated/dashboard.questions.$id'
 
 const VerifyOtpRoute = VerifyOtpRouteImport.update({
   id: '/verify-otp',
@@ -98,6 +99,12 @@ const AuthenticatedDashboardAskRoute =
     path: '/ask',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardQuestionsIdRoute =
+  AuthenticatedDashboardQuestionsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedDashboardQuestionsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -110,9 +117,10 @@ export interface FileRoutesByFullPath {
   '/qa/': typeof QaIndexRoute
   '/dashboard/ask': typeof AuthenticatedDashboardAskRoute
   '/dashboard/library': typeof AuthenticatedDashboardLibraryRoute
-  '/dashboard/questions': typeof AuthenticatedDashboardQuestionsRoute
+  '/dashboard/questions': typeof AuthenticatedDashboardQuestionsRouteWithChildren
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -123,9 +131,10 @@ export interface FileRoutesByTo {
   '/qa': typeof QaIndexRoute
   '/dashboard/ask': typeof AuthenticatedDashboardAskRoute
   '/dashboard/library': typeof AuthenticatedDashboardLibraryRoute
-  '/dashboard/questions': typeof AuthenticatedDashboardQuestionsRoute
+  '/dashboard/questions': typeof AuthenticatedDashboardQuestionsRouteWithChildren
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -140,9 +149,10 @@ export interface FileRoutesById {
   '/qa/': typeof QaIndexRoute
   '/_authenticated/dashboard/ask': typeof AuthenticatedDashboardAskRoute
   '/_authenticated/dashboard/library': typeof AuthenticatedDashboardLibraryRoute
-  '/_authenticated/dashboard/questions': typeof AuthenticatedDashboardQuestionsRoute
+  '/_authenticated/dashboard/questions': typeof AuthenticatedDashboardQuestionsRouteWithChildren
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/_authenticated/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/dashboard/questions'
     | '/dashboard/settings'
     | '/dashboard/'
+    | '/dashboard/questions/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/dashboard/questions'
     | '/dashboard/settings'
     | '/dashboard'
+    | '/dashboard/questions/$id'
   id:
     | '__root__'
     | '/'
@@ -189,6 +201,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/questions'
     | '/_authenticated/dashboard/settings'
     | '/_authenticated/dashboard/'
+    | '/_authenticated/dashboard/questions/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -300,13 +313,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardAskRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/questions/$id': {
+      id: '/_authenticated/dashboard/questions/$id'
+      path: '/$id'
+      fullPath: '/dashboard/questions/$id'
+      preLoaderRoute: typeof AuthenticatedDashboardQuestionsIdRouteImport
+      parentRoute: typeof AuthenticatedDashboardQuestionsRoute
+    }
   }
 }
+
+interface AuthenticatedDashboardQuestionsRouteChildren {
+  AuthenticatedDashboardQuestionsIdRoute: typeof AuthenticatedDashboardQuestionsIdRoute
+}
+
+const AuthenticatedDashboardQuestionsRouteChildren: AuthenticatedDashboardQuestionsRouteChildren =
+  {
+    AuthenticatedDashboardQuestionsIdRoute:
+      AuthenticatedDashboardQuestionsIdRoute,
+  }
+
+const AuthenticatedDashboardQuestionsRouteWithChildren =
+  AuthenticatedDashboardQuestionsRoute._addFileChildren(
+    AuthenticatedDashboardQuestionsRouteChildren,
+  )
 
 interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardAskRoute: typeof AuthenticatedDashboardAskRoute
   AuthenticatedDashboardLibraryRoute: typeof AuthenticatedDashboardLibraryRoute
-  AuthenticatedDashboardQuestionsRoute: typeof AuthenticatedDashboardQuestionsRoute
+  AuthenticatedDashboardQuestionsRoute: typeof AuthenticatedDashboardQuestionsRouteWithChildren
   AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
 }
@@ -315,7 +350,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
     AuthenticatedDashboardAskRoute: AuthenticatedDashboardAskRoute,
     AuthenticatedDashboardLibraryRoute: AuthenticatedDashboardLibraryRoute,
-    AuthenticatedDashboardQuestionsRoute: AuthenticatedDashboardQuestionsRoute,
+    AuthenticatedDashboardQuestionsRoute:
+      AuthenticatedDashboardQuestionsRouteWithChildren,
     AuthenticatedDashboardSettingsRoute: AuthenticatedDashboardSettingsRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   }

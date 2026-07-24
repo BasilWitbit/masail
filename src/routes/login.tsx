@@ -63,7 +63,7 @@ function LoginPage() {
     }
 
     if (data?.user) {
-      navigate({ to: "/" });
+      navigate({ to: "/dashboard" });
     } else {
       setError("Something went wrong. Please try again.");
     }

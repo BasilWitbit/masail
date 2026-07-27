@@ -1,4 +1,16 @@
-import { HelpCircle, MessageSquarePlus, BookOpen, Settings, type LucideIcon } from "lucide-react";
+import {
+  HelpCircle,
+  MessageSquarePlus,
+  BookOpen,
+  Settings,
+  LayoutDashboard,
+  Building2,
+  Tags,
+  UserPlus,
+  Flag,
+  Globe,
+  type LucideIcon,
+} from "lucide-react";
 
 export type UserRole = "user" | "shaykh" | "mosque_admin" | "super_admin";
 
@@ -15,12 +27,21 @@ const userNav: DashboardNavItem[] = [
   { to: "/dashboard/settings", label: "Account Settings", icon: Settings },
 ];
 
-// Placeholder role-specific nav sets — extend without touching the shell.
+const superAdminNav: DashboardNavItem[] = [
+  { to: "/dashboard/admin", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/dashboard/mosques", label: "Manage Mosques", icon: Building2 },
+  { to: "/dashboard/categories", label: "Manage Categories", icon: Tags },
+  { to: "/dashboard/create-admin", label: "Create Mosque Admin", icon: UserPlus },
+  { to: "/dashboard/reports", label: "Reports", icon: Flag },
+  { to: "/dashboard/public-content", label: "Public Content", icon: Globe },
+];
+
 export function getNavForRole(role: UserRole | null | undefined): DashboardNavItem[] {
   switch (role) {
+    case "super_admin":
+      return superAdminNav;
     case "shaykh":
     case "mosque_admin":
-    case "super_admin":
     case "user":
     default:
       return userNav;

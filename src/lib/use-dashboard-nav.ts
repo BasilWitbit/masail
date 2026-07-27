@@ -9,6 +9,7 @@ import {
   UserPlus,
   Flag,
   Globe,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Bell, HelpCircle, LogOut, Menu, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Bell, HelpCircle, LogOut, Menu, MoreVertical, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlatformTheme } from "@/lib/use-platform-theme";
 import { getNavForRole, type UserRole } from "@/lib/use-dashboard-nav";

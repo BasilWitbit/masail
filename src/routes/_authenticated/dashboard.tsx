@@ -31,7 +31,7 @@ function DashboardShell() {
       if (!userData.user) return;
       const { data } = await supabase
         .from("profiles")
-        .select("role, full_name, avatar_url")
+        .select("role, full_name")
         .eq("id", userData.user.id)
         .maybeSingle();
       if (!active) return;
@@ -39,7 +39,7 @@ function DashboardShell() {
       setProfile({
         full_name: (data?.full_name as string | null) ?? null,
         email: userData.user.email ?? null,
-        avatar_url: (data?.avatar_url as string | null) ?? null,
+        avatar_url: null,
       });
     })();
     return () => {

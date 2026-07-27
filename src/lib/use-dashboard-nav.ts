@@ -9,6 +9,7 @@ import {
   UserPlus,
   Flag,
   Globe,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 
@@ -36,12 +37,19 @@ const superAdminNav: DashboardNavItem[] = [
   { to: "/dashboard/public-content", label: "Public Content", icon: Globe },
 ];
 
+const mosqueAdminNav: DashboardNavItem[] = [
+  { to: "/dashboard/mosque-admin", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/dashboard/create-shaykh", label: "Create Shaykh", icon: UserPlus },
+  { to: "/dashboard/manage-shaykhs", label: "Manage Shaykhs", icon: Users },
+];
+
 export function getNavForRole(role: UserRole | null | undefined): DashboardNavItem[] {
   switch (role) {
     case "super_admin":
       return superAdminNav;
-    case "shaykh":
     case "mosque_admin":
+      return mosqueAdminNav;
+    case "shaykh":
     case "user":
     default:
       return userNav;

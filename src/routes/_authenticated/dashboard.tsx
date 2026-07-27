@@ -64,6 +64,28 @@ function DashboardShell() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [menuOpen]);
 
+  // Lock the root html/body so only the dashboard's main content area scrolls.
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtmlOverflow = html.style.overflow;
+    const prevHtmlHeight = html.style.height;
+    const prevBodyOverflow = body.style.overflow;
+    const prevBodyHeight = body.style.height;
+
+    html.style.overflow = "hidden";
+    html.style.height = "100%";
+    body.style.overflow = "hidden";
+    body.style.height = "100%";
+
+    return () => {
+      html.style.overflow = prevHtmlOverflow;
+      html.style.height = prevHtmlHeight;
+      body.style.overflow = prevBodyOverflow;
+      body.style.height = prevBodyHeight;
+    };
+  }, []);
+
   const nav = getNavForRole(role);
 
   async function handleLogout() {
@@ -195,7 +217,7 @@ function DashboardShell() {
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 min-w-0 overflow-y-auto">
+        <main className="h-full flex-1 min-w-0 overflow-y-auto">
           <div className="mx-auto max-w-6xl px-6 py-10 md:py-12">
             <Outlet />
           </div>

@@ -121,7 +121,7 @@ function DashboardShell() {
         </button>
         <Link to="/dashboard" className="flex items-center gap-2">
           {settings?.logo_url ? (
-            <img src={settings.logo_url} alt="Masail" className="h-8 w-auto" />
+            <img src={settings.logo_url} alt="Masail" className="h-10 w-auto" />
           ) : (
             <span className="font-heading text-xl font-bold tracking-tight md:text-2xl">
               Masail Portal

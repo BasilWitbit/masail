@@ -23,6 +23,7 @@ function DashboardShell() {
   const [role, setRole] = useState<UserRole | null>(null);
   const [profile, setProfile] = useState<ProfileInfo>({ full_name: null, email: null, avatar_url: null });
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 

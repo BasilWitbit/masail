@@ -217,7 +217,7 @@ function DashboardShell() {
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 min-w-0 overflow-y-auto">
+        <main className="h-full flex-1 min-w-0 overflow-y-auto">
           <div className="mx-auto max-w-6xl px-6 py-10 md:py-12">
             <Outlet />
           </div>

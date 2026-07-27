@@ -20,9 +20,15 @@ import { Route as QaIdRouteImport } from './routes/qa.$id'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
+import { Route as AuthenticatedDashboardReportsRouteImport } from './routes/_authenticated/dashboard.reports'
 import { Route as AuthenticatedDashboardQuestionsRouteImport } from './routes/_authenticated/dashboard.questions'
+import { Route as AuthenticatedDashboardPublicContentRouteImport } from './routes/_authenticated/dashboard.public-content'
+import { Route as AuthenticatedDashboardMosquesRouteImport } from './routes/_authenticated/dashboard.mosques'
 import { Route as AuthenticatedDashboardLibraryRouteImport } from './routes/_authenticated/dashboard.library'
+import { Route as AuthenticatedDashboardCreateAdminRouteImport } from './routes/_authenticated/dashboard.create-admin'
+import { Route as AuthenticatedDashboardCategoriesRouteImport } from './routes/_authenticated/dashboard.categories'
 import { Route as AuthenticatedDashboardAskRouteImport } from './routes/_authenticated/dashboard.ask'
+import { Route as AuthenticatedDashboardAdminRouteImport } from './routes/_authenticated/dashboard.admin'
 import { Route as AuthenticatedDashboardQuestionsIdRouteImport } from './routes/_authenticated/dashboard.questions.$id'
 
 const VerifyOtpRoute = VerifyOtpRouteImport.update({
@@ -81,10 +87,28 @@ const AuthenticatedDashboardSettingsRoute =
     path: '/settings',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardReportsRoute =
+  AuthenticatedDashboardReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardQuestionsRoute =
   AuthenticatedDashboardQuestionsRouteImport.update({
     id: '/questions',
     path: '/questions',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPublicContentRoute =
+  AuthenticatedDashboardPublicContentRouteImport.update({
+    id: '/public-content',
+    path: '/public-content',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardMosquesRoute =
+  AuthenticatedDashboardMosquesRouteImport.update({
+    id: '/mosques',
+    path: '/mosques',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardLibraryRoute =
@@ -93,10 +117,28 @@ const AuthenticatedDashboardLibraryRoute =
     path: '/library',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardCreateAdminRoute =
+  AuthenticatedDashboardCreateAdminRouteImport.update({
+    id: '/create-admin',
+    path: '/create-admin',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardCategoriesRoute =
+  AuthenticatedDashboardCategoriesRouteImport.update({
+    id: '/categories',
+    path: '/categories',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardAskRoute =
   AuthenticatedDashboardAskRouteImport.update({
     id: '/ask',
     path: '/ask',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardAdminRoute =
+  AuthenticatedDashboardAdminRouteImport.update({
+    id: '/admin',
+    path: '/admin',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardQuestionsIdRoute =
@@ -115,9 +157,15 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/qa/$id': typeof QaIdRoute
   '/qa/': typeof QaIndexRoute
+  '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/ask': typeof AuthenticatedDashboardAskRoute
+  '/dashboard/categories': typeof AuthenticatedDashboardCategoriesRoute
+  '/dashboard/create-admin': typeof AuthenticatedDashboardCreateAdminRoute
   '/dashboard/library': typeof AuthenticatedDashboardLibraryRoute
+  '/dashboard/mosques': typeof AuthenticatedDashboardMosquesRoute
+  '/dashboard/public-content': typeof AuthenticatedDashboardPublicContentRoute
   '/dashboard/questions': typeof AuthenticatedDashboardQuestionsRouteWithChildren
+  '/dashboard/reports': typeof AuthenticatedDashboardReportsRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
@@ -129,9 +177,15 @@ export interface FileRoutesByTo {
   '/verify-otp': typeof VerifyOtpRoute
   '/qa/$id': typeof QaIdRoute
   '/qa': typeof QaIndexRoute
+  '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/ask': typeof AuthenticatedDashboardAskRoute
+  '/dashboard/categories': typeof AuthenticatedDashboardCategoriesRoute
+  '/dashboard/create-admin': typeof AuthenticatedDashboardCreateAdminRoute
   '/dashboard/library': typeof AuthenticatedDashboardLibraryRoute
+  '/dashboard/mosques': typeof AuthenticatedDashboardMosquesRoute
+  '/dashboard/public-content': typeof AuthenticatedDashboardPublicContentRoute
   '/dashboard/questions': typeof AuthenticatedDashboardQuestionsRouteWithChildren
+  '/dashboard/reports': typeof AuthenticatedDashboardReportsRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
@@ -147,9 +201,15 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/qa/$id': typeof QaIdRoute
   '/qa/': typeof QaIndexRoute
+  '/_authenticated/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/_authenticated/dashboard/ask': typeof AuthenticatedDashboardAskRoute
+  '/_authenticated/dashboard/categories': typeof AuthenticatedDashboardCategoriesRoute
+  '/_authenticated/dashboard/create-admin': typeof AuthenticatedDashboardCreateAdminRoute
   '/_authenticated/dashboard/library': typeof AuthenticatedDashboardLibraryRoute
+  '/_authenticated/dashboard/mosques': typeof AuthenticatedDashboardMosquesRoute
+  '/_authenticated/dashboard/public-content': typeof AuthenticatedDashboardPublicContentRoute
   '/_authenticated/dashboard/questions': typeof AuthenticatedDashboardQuestionsRouteWithChildren
+  '/_authenticated/dashboard/reports': typeof AuthenticatedDashboardReportsRoute
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
@@ -165,9 +225,15 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/qa/$id'
     | '/qa/'
+    | '/dashboard/admin'
     | '/dashboard/ask'
+    | '/dashboard/categories'
+    | '/dashboard/create-admin'
     | '/dashboard/library'
+    | '/dashboard/mosques'
+    | '/dashboard/public-content'
     | '/dashboard/questions'
+    | '/dashboard/reports'
     | '/dashboard/settings'
     | '/dashboard/'
     | '/dashboard/questions/$id'
@@ -179,9 +245,15 @@ export interface FileRouteTypes {
     | '/verify-otp'
     | '/qa/$id'
     | '/qa'
+    | '/dashboard/admin'
     | '/dashboard/ask'
+    | '/dashboard/categories'
+    | '/dashboard/create-admin'
     | '/dashboard/library'
+    | '/dashboard/mosques'
+    | '/dashboard/public-content'
     | '/dashboard/questions'
+    | '/dashboard/reports'
     | '/dashboard/settings'
     | '/dashboard'
     | '/dashboard/questions/$id'
@@ -196,9 +268,15 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/qa/$id'
     | '/qa/'
+    | '/_authenticated/dashboard/admin'
     | '/_authenticated/dashboard/ask'
+    | '/_authenticated/dashboard/categories'
+    | '/_authenticated/dashboard/create-admin'
     | '/_authenticated/dashboard/library'
+    | '/_authenticated/dashboard/mosques'
+    | '/_authenticated/dashboard/public-content'
     | '/_authenticated/dashboard/questions'
+    | '/_authenticated/dashboard/reports'
     | '/_authenticated/dashboard/settings'
     | '/_authenticated/dashboard/'
     | '/_authenticated/dashboard/questions/$id'
@@ -292,11 +370,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardSettingsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/reports': {
+      id: '/_authenticated/dashboard/reports'
+      path: '/reports'
+      fullPath: '/dashboard/reports'
+      preLoaderRoute: typeof AuthenticatedDashboardReportsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/questions': {
       id: '/_authenticated/dashboard/questions'
       path: '/questions'
       fullPath: '/dashboard/questions'
       preLoaderRoute: typeof AuthenticatedDashboardQuestionsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/public-content': {
+      id: '/_authenticated/dashboard/public-content'
+      path: '/public-content'
+      fullPath: '/dashboard/public-content'
+      preLoaderRoute: typeof AuthenticatedDashboardPublicContentRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/mosques': {
+      id: '/_authenticated/dashboard/mosques'
+      path: '/mosques'
+      fullPath: '/dashboard/mosques'
+      preLoaderRoute: typeof AuthenticatedDashboardMosquesRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/library': {
@@ -306,11 +405,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardLibraryRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/create-admin': {
+      id: '/_authenticated/dashboard/create-admin'
+      path: '/create-admin'
+      fullPath: '/dashboard/create-admin'
+      preLoaderRoute: typeof AuthenticatedDashboardCreateAdminRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/categories': {
+      id: '/_authenticated/dashboard/categories'
+      path: '/categories'
+      fullPath: '/dashboard/categories'
+      preLoaderRoute: typeof AuthenticatedDashboardCategoriesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/ask': {
       id: '/_authenticated/dashboard/ask'
       path: '/ask'
       fullPath: '/dashboard/ask'
       preLoaderRoute: typeof AuthenticatedDashboardAskRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/admin': {
+      id: '/_authenticated/dashboard/admin'
+      path: '/admin'
+      fullPath: '/dashboard/admin'
+      preLoaderRoute: typeof AuthenticatedDashboardAdminRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/questions/$id': {
@@ -339,19 +459,34 @@ const AuthenticatedDashboardQuestionsRouteWithChildren =
   )
 
 interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardAdminRoute: typeof AuthenticatedDashboardAdminRoute
   AuthenticatedDashboardAskRoute: typeof AuthenticatedDashboardAskRoute
+  AuthenticatedDashboardCategoriesRoute: typeof AuthenticatedDashboardCategoriesRoute
+  AuthenticatedDashboardCreateAdminRoute: typeof AuthenticatedDashboardCreateAdminRoute
   AuthenticatedDashboardLibraryRoute: typeof AuthenticatedDashboardLibraryRoute
+  AuthenticatedDashboardMosquesRoute: typeof AuthenticatedDashboardMosquesRoute
+  AuthenticatedDashboardPublicContentRoute: typeof AuthenticatedDashboardPublicContentRoute
   AuthenticatedDashboardQuestionsRoute: typeof AuthenticatedDashboardQuestionsRouteWithChildren
+  AuthenticatedDashboardReportsRoute: typeof AuthenticatedDashboardReportsRoute
   AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
 }
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
+    AuthenticatedDashboardAdminRoute: AuthenticatedDashboardAdminRoute,
     AuthenticatedDashboardAskRoute: AuthenticatedDashboardAskRoute,
+    AuthenticatedDashboardCategoriesRoute:
+      AuthenticatedDashboardCategoriesRoute,
+    AuthenticatedDashboardCreateAdminRoute:
+      AuthenticatedDashboardCreateAdminRoute,
     AuthenticatedDashboardLibraryRoute: AuthenticatedDashboardLibraryRoute,
+    AuthenticatedDashboardMosquesRoute: AuthenticatedDashboardMosquesRoute,
+    AuthenticatedDashboardPublicContentRoute:
+      AuthenticatedDashboardPublicContentRoute,
     AuthenticatedDashboardQuestionsRoute:
       AuthenticatedDashboardQuestionsRouteWithChildren,
+    AuthenticatedDashboardReportsRoute: AuthenticatedDashboardReportsRoute,
     AuthenticatedDashboardSettingsRoute: AuthenticatedDashboardSettingsRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   }

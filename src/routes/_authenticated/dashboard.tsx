@@ -79,9 +79,9 @@ function DashboardShell() {
     .toUpperCase();
 
   return (
-    <div className="min-h-screen bg-surface text-foreground flex flex-col">
+    <div className="h-screen overflow-hidden bg-surface text-foreground flex flex-col">
       {/* Top bar */}
-      <header className="sticky top-0 z-20 flex h-16 items-center gap-4 bg-primary px-4 text-white shadow-sm md:px-6">
+      <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-4 bg-primary px-4 text-white shadow-sm md:px-6">
         <button
           aria-label="Toggle navigation"
           onClick={() => setMobileOpen((v) => !v)}
@@ -117,12 +117,12 @@ function DashboardShell() {
         </div>
       </header>
 
-      <div className="flex flex-1 min-h-0">
+      <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Sidebar */}
         <aside
           className={`${
             mobileOpen ? "block" : "hidden"
-          } absolute inset-x-0 top-16 z-10 border-b border-border bg-card md:static md:z-0 md:block md:w-72 md:shrink-0 md:border-b-0 md:border-r md:border-border md:bg-surface`}
+          } fixed inset-x-0 top-16 z-10 h-[calc(100vh-4rem)] overflow-y-auto border-b border-border bg-card md:static md:z-0 md:block md:h-full md:w-72 md:shrink-0 md:border-b-0 md:border-r md:border-border md:bg-surface`}
         >
           <div className="flex h-full flex-col justify-between p-4 md:p-6">
             <nav className="space-y-1.5">
@@ -146,8 +146,8 @@ function DashboardShell() {
               })}
             </nav>
 
-            <div className="mt-6 space-y-4 border-t border-border pt-4">
-              <div className="flex items-center gap-3">
+            <div className="mt-6 border-t border-border pt-4">
+              <div ref={menuRef} className="relative flex items-center gap-3">
                 {profile.avatar_url ? (
                   <img
                     src={profile.avatar_url}
@@ -155,7 +155,7 @@ function DashboardShell() {
                     className="h-10 w-10 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="grid h-10 w-10 place-items-center rounded-full bg-primary/10 font-heading text-sm font-bold text-primary">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary/10 font-heading text-sm font-bold text-primary">
                     {initials}
                   </div>
                 )}
@@ -167,20 +167,35 @@ function DashboardShell() {
                     {profile.email ?? ""}
                   </div>
                 </div>
+                <button
+                  aria-label="Open menu"
+                  aria-expanded={menuOpen}
+                  onClick={() => setMenuOpen((v) => !v)}
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                >
+                  <MoreVertical className="h-5 w-5" />
+                </button>
+                {menuOpen && (
+                  <div className="absolute bottom-full right-0 mb-2 w-48 rounded-lg border border-border bg-card p-1 shadow-lg">
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false);
+                        handleLogout();
+                      }}
+                      className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Log Out
+                    </button>
+                  </div>
+                )}
               </div>
-              <button
-                onClick={handleLogout}
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-200 bg-transparent px-3 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50"
-              >
-                <LogOut className="h-4 w-4" />
-                Log Out
-              </button>
             </div>
           </div>
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 overflow-y-auto">
           <div className="mx-auto max-w-6xl px-6 py-10 md:py-12">
             <Outlet />
           </div>

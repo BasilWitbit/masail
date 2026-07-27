@@ -23,6 +23,8 @@ function DashboardShell() {
   const [role, setRole] = useState<UserRole | null>(null);
   const [profile, setProfile] = useState<ProfileInfo>({ full_name: null, email: null, avatar_url: null });
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let active = true;
@@ -50,6 +52,17 @@ function DashboardShell() {
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    function handleClick(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [menuOpen]);
 
   const nav = getNavForRole(role);
 

@@ -112,9 +112,13 @@ function DashboardShell() {
         >
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
-        <div className="hidden h-10 w-10 place-items-center rounded-lg bg-white/10 md:grid">
+        <button
+          aria-label="Toggle sidebar"
+          onClick={() => setCollapsed((v) => !v)}
+          className="hidden h-10 w-10 place-items-center rounded-lg bg-white/10 transition hover:bg-white/20 md:grid"
+        >
           <Menu className="h-5 w-5" />
-        </div>
+        </button>
         <Link to="/dashboard" className="flex items-center gap-2">
           {settings?.logo_url ? (
             <img src={settings.logo_url} alt="Masail" className="h-8 w-auto rounded-md bg-white p-1" />

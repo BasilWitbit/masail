@@ -16,6 +16,9 @@ export const Route = createFileRoute("/_authenticated/dashboard/")({
       if (data?.role === "mosque_admin") {
         throw redirect({ to: "/dashboard/mosque-admin" });
       }
+      if (data?.role === "shaykh") {
+        throw redirect({ to: "/dashboard/pool" });
+      }
     }
     throw redirect({ to: "/dashboard/questions" });
   },

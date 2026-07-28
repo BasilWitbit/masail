@@ -256,6 +256,9 @@ function DashboardShell() {
         {/* Main content */}
         <main className="h-full flex-1 min-w-0 overflow-y-auto transition-[width] duration-200 ease-out">
           <div className="mx-auto max-w-6xl px-6 py-10 md:py-12">
+            {profile.must_change_password && profile.user_id && profile.email && (
+              <PasswordChangeBanner userId={profile.user_id} email={profile.email} />
+            )}
             <Outlet />
           </div>
         </main>

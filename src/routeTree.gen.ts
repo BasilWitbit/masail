@@ -24,6 +24,8 @@ import { Route as AuthenticatedDashboardReportsRouteImport } from './routes/_aut
 import { Route as AuthenticatedDashboardQuestionsRouteImport } from './routes/_authenticated/dashboard.questions'
 import { Route as AuthenticatedDashboardPublicContentRouteImport } from './routes/_authenticated/dashboard.public-content'
 import { Route as AuthenticatedDashboardPoolRouteImport } from './routes/_authenticated/dashboard.pool'
+import { Route as AuthenticatedDashboardPeerReviewRouteImport } from './routes/_authenticated/dashboard.peer-review'
+import { Route as AuthenticatedDashboardMyAnswersRouteImport } from './routes/_authenticated/dashboard.my-answers'
 import { Route as AuthenticatedDashboardMosquesRouteImport } from './routes/_authenticated/dashboard.mosques'
 import { Route as AuthenticatedDashboardMosqueAdminRouteImport } from './routes/_authenticated/dashboard.mosque-admin'
 import { Route as AuthenticatedDashboardManageShaykhsRouteImport } from './routes/_authenticated/dashboard.manage-shaykhs'
@@ -115,6 +117,18 @@ const AuthenticatedDashboardPoolRoute =
     path: '/pool',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardPeerReviewRoute =
+  AuthenticatedDashboardPeerReviewRouteImport.update({
+    id: '/peer-review',
+    path: '/peer-review',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardMyAnswersRoute =
+  AuthenticatedDashboardMyAnswersRouteImport.update({
+    id: '/my-answers',
+    path: '/my-answers',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardMosquesRoute =
   AuthenticatedDashboardMosquesRouteImport.update({
     id: '/mosques',
@@ -194,6 +208,8 @@ export interface FileRoutesByFullPath {
   '/dashboard/manage-shaykhs': typeof AuthenticatedDashboardManageShaykhsRoute
   '/dashboard/mosque-admin': typeof AuthenticatedDashboardMosqueAdminRoute
   '/dashboard/mosques': typeof AuthenticatedDashboardMosquesRoute
+  '/dashboard/my-answers': typeof AuthenticatedDashboardMyAnswersRoute
+  '/dashboard/peer-review': typeof AuthenticatedDashboardPeerReviewRoute
   '/dashboard/pool': typeof AuthenticatedDashboardPoolRoute
   '/dashboard/public-content': typeof AuthenticatedDashboardPublicContentRoute
   '/dashboard/questions': typeof AuthenticatedDashboardQuestionsRouteWithChildren
@@ -218,6 +234,8 @@ export interface FileRoutesByTo {
   '/dashboard/manage-shaykhs': typeof AuthenticatedDashboardManageShaykhsRoute
   '/dashboard/mosque-admin': typeof AuthenticatedDashboardMosqueAdminRoute
   '/dashboard/mosques': typeof AuthenticatedDashboardMosquesRoute
+  '/dashboard/my-answers': typeof AuthenticatedDashboardMyAnswersRoute
+  '/dashboard/peer-review': typeof AuthenticatedDashboardPeerReviewRoute
   '/dashboard/pool': typeof AuthenticatedDashboardPoolRoute
   '/dashboard/public-content': typeof AuthenticatedDashboardPublicContentRoute
   '/dashboard/questions': typeof AuthenticatedDashboardQuestionsRouteWithChildren
@@ -246,6 +264,8 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/manage-shaykhs': typeof AuthenticatedDashboardManageShaykhsRoute
   '/_authenticated/dashboard/mosque-admin': typeof AuthenticatedDashboardMosqueAdminRoute
   '/_authenticated/dashboard/mosques': typeof AuthenticatedDashboardMosquesRoute
+  '/_authenticated/dashboard/my-answers': typeof AuthenticatedDashboardMyAnswersRoute
+  '/_authenticated/dashboard/peer-review': typeof AuthenticatedDashboardPeerReviewRoute
   '/_authenticated/dashboard/pool': typeof AuthenticatedDashboardPoolRoute
   '/_authenticated/dashboard/public-content': typeof AuthenticatedDashboardPublicContentRoute
   '/_authenticated/dashboard/questions': typeof AuthenticatedDashboardQuestionsRouteWithChildren
@@ -274,6 +294,8 @@ export interface FileRouteTypes {
     | '/dashboard/manage-shaykhs'
     | '/dashboard/mosque-admin'
     | '/dashboard/mosques'
+    | '/dashboard/my-answers'
+    | '/dashboard/peer-review'
     | '/dashboard/pool'
     | '/dashboard/public-content'
     | '/dashboard/questions'
@@ -298,6 +320,8 @@ export interface FileRouteTypes {
     | '/dashboard/manage-shaykhs'
     | '/dashboard/mosque-admin'
     | '/dashboard/mosques'
+    | '/dashboard/my-answers'
+    | '/dashboard/peer-review'
     | '/dashboard/pool'
     | '/dashboard/public-content'
     | '/dashboard/questions'
@@ -325,6 +349,8 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/manage-shaykhs'
     | '/_authenticated/dashboard/mosque-admin'
     | '/_authenticated/dashboard/mosques'
+    | '/_authenticated/dashboard/my-answers'
+    | '/_authenticated/dashboard/peer-review'
     | '/_authenticated/dashboard/pool'
     | '/_authenticated/dashboard/public-content'
     | '/_authenticated/dashboard/questions'
@@ -450,6 +476,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardPoolRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/peer-review': {
+      id: '/_authenticated/dashboard/peer-review'
+      path: '/peer-review'
+      fullPath: '/dashboard/peer-review'
+      preLoaderRoute: typeof AuthenticatedDashboardPeerReviewRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/my-answers': {
+      id: '/_authenticated/dashboard/my-answers'
+      path: '/my-answers'
+      fullPath: '/dashboard/my-answers'
+      preLoaderRoute: typeof AuthenticatedDashboardMyAnswersRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/mosques': {
       id: '/_authenticated/dashboard/mosques'
       path: '/mosques'
@@ -548,6 +588,8 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardManageShaykhsRoute: typeof AuthenticatedDashboardManageShaykhsRoute
   AuthenticatedDashboardMosqueAdminRoute: typeof AuthenticatedDashboardMosqueAdminRoute
   AuthenticatedDashboardMosquesRoute: typeof AuthenticatedDashboardMosquesRoute
+  AuthenticatedDashboardMyAnswersRoute: typeof AuthenticatedDashboardMyAnswersRoute
+  AuthenticatedDashboardPeerReviewRoute: typeof AuthenticatedDashboardPeerReviewRoute
   AuthenticatedDashboardPoolRoute: typeof AuthenticatedDashboardPoolRoute
   AuthenticatedDashboardPublicContentRoute: typeof AuthenticatedDashboardPublicContentRoute
   AuthenticatedDashboardQuestionsRoute: typeof AuthenticatedDashboardQuestionsRouteWithChildren
@@ -572,6 +614,9 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardMosqueAdminRoute:
       AuthenticatedDashboardMosqueAdminRoute,
     AuthenticatedDashboardMosquesRoute: AuthenticatedDashboardMosquesRoute,
+    AuthenticatedDashboardMyAnswersRoute: AuthenticatedDashboardMyAnswersRoute,
+    AuthenticatedDashboardPeerReviewRoute:
+      AuthenticatedDashboardPeerReviewRoute,
     AuthenticatedDashboardPoolRoute: AuthenticatedDashboardPoolRoute,
     AuthenticatedDashboardPublicContentRoute:
       AuthenticatedDashboardPublicContentRoute,

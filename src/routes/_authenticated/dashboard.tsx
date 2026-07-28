@@ -4,6 +4,7 @@ import { Bell, HelpCircle, LogOut, Menu, MoreVertical, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlatformTheme } from "@/lib/use-platform-theme";
 import { getNavForRole, type UserRole } from "@/lib/use-dashboard-nav";
+import { PasswordChangeBanner } from "@/components/password-change-banner";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardShell,

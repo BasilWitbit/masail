@@ -46,6 +46,12 @@ const mosqueAdminNav: DashboardNavItem[] = [
   { to: "/dashboard/manage-shaykhs", label: "Manage Shaykhs", icon: Users },
 ];
 
+const shaykhNav: DashboardNavItem[] = [
+  { to: "/dashboard/pool", label: "Question Pool", icon: Inbox },
+  { to: "/dashboard/my-answers", label: "My Answers", icon: FileText },
+  { to: "/dashboard/peer-review", label: "Peer Review", icon: ClipboardCheck },
+];
+
 export function getNavForRole(role: UserRole | null | undefined): DashboardNavItem[] {
   switch (role) {
     case "super_admin":
@@ -53,6 +59,7 @@ export function getNavForRole(role: UserRole | null | undefined): DashboardNavIt
     case "mosque_admin":
       return mosqueAdminNav;
     case "shaykh":
+      return shaykhNav;
     case "user":
     default:
       return userNav;

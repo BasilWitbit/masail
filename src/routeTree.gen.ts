@@ -23,6 +23,7 @@ import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_au
 import { Route as AuthenticatedDashboardReportsRouteImport } from './routes/_authenticated/dashboard.reports'
 import { Route as AuthenticatedDashboardQuestionsRouteImport } from './routes/_authenticated/dashboard.questions'
 import { Route as AuthenticatedDashboardPublicContentRouteImport } from './routes/_authenticated/dashboard.public-content'
+import { Route as AuthenticatedDashboardPoolRouteImport } from './routes/_authenticated/dashboard.pool'
 import { Route as AuthenticatedDashboardMosquesRouteImport } from './routes/_authenticated/dashboard.mosques'
 import { Route as AuthenticatedDashboardMosqueAdminRouteImport } from './routes/_authenticated/dashboard.mosque-admin'
 import { Route as AuthenticatedDashboardManageShaykhsRouteImport } from './routes/_authenticated/dashboard.manage-shaykhs'
@@ -108,6 +109,12 @@ const AuthenticatedDashboardPublicContentRoute =
     path: '/public-content',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardPoolRoute =
+  AuthenticatedDashboardPoolRouteImport.update({
+    id: '/pool',
+    path: '/pool',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardMosquesRoute =
   AuthenticatedDashboardMosquesRouteImport.update({
     id: '/mosques',
@@ -187,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/manage-shaykhs': typeof AuthenticatedDashboardManageShaykhsRoute
   '/dashboard/mosque-admin': typeof AuthenticatedDashboardMosqueAdminRoute
   '/dashboard/mosques': typeof AuthenticatedDashboardMosquesRoute
+  '/dashboard/pool': typeof AuthenticatedDashboardPoolRoute
   '/dashboard/public-content': typeof AuthenticatedDashboardPublicContentRoute
   '/dashboard/questions': typeof AuthenticatedDashboardQuestionsRouteWithChildren
   '/dashboard/reports': typeof AuthenticatedDashboardReportsRoute
@@ -210,6 +218,7 @@ export interface FileRoutesByTo {
   '/dashboard/manage-shaykhs': typeof AuthenticatedDashboardManageShaykhsRoute
   '/dashboard/mosque-admin': typeof AuthenticatedDashboardMosqueAdminRoute
   '/dashboard/mosques': typeof AuthenticatedDashboardMosquesRoute
+  '/dashboard/pool': typeof AuthenticatedDashboardPoolRoute
   '/dashboard/public-content': typeof AuthenticatedDashboardPublicContentRoute
   '/dashboard/questions': typeof AuthenticatedDashboardQuestionsRouteWithChildren
   '/dashboard/reports': typeof AuthenticatedDashboardReportsRoute
@@ -237,6 +246,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/manage-shaykhs': typeof AuthenticatedDashboardManageShaykhsRoute
   '/_authenticated/dashboard/mosque-admin': typeof AuthenticatedDashboardMosqueAdminRoute
   '/_authenticated/dashboard/mosques': typeof AuthenticatedDashboardMosquesRoute
+  '/_authenticated/dashboard/pool': typeof AuthenticatedDashboardPoolRoute
   '/_authenticated/dashboard/public-content': typeof AuthenticatedDashboardPublicContentRoute
   '/_authenticated/dashboard/questions': typeof AuthenticatedDashboardQuestionsRouteWithChildren
   '/_authenticated/dashboard/reports': typeof AuthenticatedDashboardReportsRoute
@@ -264,6 +274,7 @@ export interface FileRouteTypes {
     | '/dashboard/manage-shaykhs'
     | '/dashboard/mosque-admin'
     | '/dashboard/mosques'
+    | '/dashboard/pool'
     | '/dashboard/public-content'
     | '/dashboard/questions'
     | '/dashboard/reports'
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/dashboard/manage-shaykhs'
     | '/dashboard/mosque-admin'
     | '/dashboard/mosques'
+    | '/dashboard/pool'
     | '/dashboard/public-content'
     | '/dashboard/questions'
     | '/dashboard/reports'
@@ -313,6 +325,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/manage-shaykhs'
     | '/_authenticated/dashboard/mosque-admin'
     | '/_authenticated/dashboard/mosques'
+    | '/_authenticated/dashboard/pool'
     | '/_authenticated/dashboard/public-content'
     | '/_authenticated/dashboard/questions'
     | '/_authenticated/dashboard/reports'
@@ -430,6 +443,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardPublicContentRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/pool': {
+      id: '/_authenticated/dashboard/pool'
+      path: '/pool'
+      fullPath: '/dashboard/pool'
+      preLoaderRoute: typeof AuthenticatedDashboardPoolRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/mosques': {
       id: '/_authenticated/dashboard/mosques'
       path: '/mosques'
@@ -528,6 +548,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardManageShaykhsRoute: typeof AuthenticatedDashboardManageShaykhsRoute
   AuthenticatedDashboardMosqueAdminRoute: typeof AuthenticatedDashboardMosqueAdminRoute
   AuthenticatedDashboardMosquesRoute: typeof AuthenticatedDashboardMosquesRoute
+  AuthenticatedDashboardPoolRoute: typeof AuthenticatedDashboardPoolRoute
   AuthenticatedDashboardPublicContentRoute: typeof AuthenticatedDashboardPublicContentRoute
   AuthenticatedDashboardQuestionsRoute: typeof AuthenticatedDashboardQuestionsRouteWithChildren
   AuthenticatedDashboardReportsRoute: typeof AuthenticatedDashboardReportsRoute
@@ -551,6 +572,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardMosqueAdminRoute:
       AuthenticatedDashboardMosqueAdminRoute,
     AuthenticatedDashboardMosquesRoute: AuthenticatedDashboardMosquesRoute,
+    AuthenticatedDashboardPoolRoute: AuthenticatedDashboardPoolRoute,
     AuthenticatedDashboardPublicContentRoute:
       AuthenticatedDashboardPublicContentRoute,
     AuthenticatedDashboardQuestionsRoute:

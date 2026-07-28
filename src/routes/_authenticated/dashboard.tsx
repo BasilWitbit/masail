@@ -14,6 +14,8 @@ type ProfileInfo = {
   full_name: string | null;
   email: string | null;
   avatar_url: string | null;
+  user_id: string | null;
+  must_change_password: boolean;
 };
 
 function DashboardShell() {

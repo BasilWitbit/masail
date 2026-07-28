@@ -10,6 +10,9 @@ import {
   Flag,
   Globe,
   Users,
+  Inbox,
+  FileText,
+  ClipboardCheck,
   type LucideIcon,
 } from "lucide-react";
 

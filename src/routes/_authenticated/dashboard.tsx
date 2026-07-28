@@ -24,7 +24,7 @@ function DashboardShell() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const [role, setRole] = useState<UserRole | null>(null);
-  const [profile, setProfile] = useState<ProfileInfo>({ full_name: null, email: null, avatar_url: null });
+  const [profile, setProfile] = useState<ProfileInfo>({ full_name: null, email: null, avatar_url: null, user_id: null, must_change_password: false });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -37,7 +37,7 @@ function DashboardShell() {
       if (!userData.user) return;
       const { data } = await supabase
         .from("profiles")
-        .select("role, full_name")
+        .select("role, full_name, must_change_password")
         .eq("id", userData.user.id)
         .maybeSingle();
       if (!active) return;
@@ -46,6 +46,8 @@ function DashboardShell() {
         full_name: (data?.full_name as string | null) ?? null,
         email: userData.user.email ?? null,
         avatar_url: null,
+        user_id: userData.user.id,
+        must_change_password: Boolean(data?.must_change_password),
       });
     })();
     return () => {

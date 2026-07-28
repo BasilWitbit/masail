@@ -107,7 +107,7 @@ function AskQuestion() {
           is_private: isPrivate,
           is_anonymous: isAnonymous,
           is_urgent: isUrgent,
-          status: "submitted",
+          status: "in_pool",
         })
         .select("id")
         .single();

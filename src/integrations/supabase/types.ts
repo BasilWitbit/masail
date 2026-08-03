@@ -514,6 +514,7 @@ export type Database = {
         | "approved_for_publishing"
         | "published"
         | "rejected"
+        | "needs_revision"
       report_reason: "spam" | "abusive" | "other"
       review_decision: "approved" | "sent_back"
       user_role: "user" | "shaykh" | "mosque_admin" | "super_admin"
@@ -662,6 +663,7 @@ export const Constants = {
         "approved_for_publishing",
         "published",
         "rejected",
+        "needs_revision",
       ],
       report_reason: ["spam", "abusive", "other"],
       review_decision: ["approved", "sent_back"],

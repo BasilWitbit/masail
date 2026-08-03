@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, ArrowLeft, FileText, Loader2 } from "lucide-react";
+import { AlertTriangle, ArrowLeft, FileText, Loader2, MessageSquareWarning } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -8,10 +8,11 @@ export const Route = createFileRoute("/_authenticated/dashboard/my-answers")({
   component: MyAnswers,
 });
 
-type Tab = "drafts" | "submitted" | "approved" | "sent";
+type Tab = "drafts" | "needs_revision" | "submitted" | "approved" | "sent";
 
 const TABS: { key: Tab; label: string; empty: string }[] = [
   { key: "drafts", label: "Drafts", empty: "No drafts right now." },
+  { key: "needs_revision", label: "Needs Revision", empty: "No answers need revision right now." },
   { key: "submitted", label: "Submitted", empty: "Nothing submitted yet." },
   { key: "approved", label: "Approved", empty: "Nothing approved yet." },
   { key: "sent", label: "Sent", empty: "Nothing sent to users yet." },
@@ -94,6 +95,7 @@ function MyAnswers() {
   const [rows, setRows] = useState<Row[]>([]);
   const [selected, setSelected] = useState<Row | null>(null);
   const [reload, setReload] = useState(0);
+  const [reviewComments, setReviewComments] = useState<Record<string, string>>({});
 
   useEffect(() => {
     let active = true;
@@ -122,7 +124,31 @@ function MyAnswers() {
           .order("updated_at", { ascending: false });
         if (qErr) throw qErr;
         if (!active) return;
-        setRows((data as unknown as Row[]) ?? []);
+        const list = (data as unknown as Row[]) ?? [];
+        setRows(list);
+
+        const answerIds = list
+          .filter((r) => r.status === "needs_revision")
+          .flatMap((r) => r.answers ?? [])
+          .filter((a) => !shaykh.id || a.shaykh_id === (shaykh.id as string))
+          .map((a) => a.id);
+        if (answerIds.length > 0) {
+          const { data: reviews } = await supabase
+            .from("peer_reviews")
+            .select("answer_id, comments, created_at")
+            .in("answer_id", answerIds)
+            .eq("decision", "sent_back")
+            .order("created_at", { ascending: false });
+          if (!active) return;
+          const map: Record<string, string> = {};
+          for (const rev of reviews ?? []) {
+            const key = rev.answer_id as string;
+            if (!(key in map) && rev.comments) map[key] = rev.comments as string;
+          }
+          setReviewComments(map);
+        } else {
+          setReviewComments({});
+        }
       } catch (err) {
         if (active) setError(err instanceof Error ? err.message : "Failed to load.");
       } finally {
@@ -135,10 +161,17 @@ function MyAnswers() {
   }, [reload]);
 
   const buckets = useMemo(() => {
-    const out: Record<Tab, Row[]> = { drafts: [], submitted: [], approved: [], sent: [] };
+    const out: Record<Tab, Row[]> = {
+      drafts: [],
+      needs_revision: [],
+      submitted: [],
+      approved: [],
+      sent: [],
+    };
     for (const r of rows) {
       const a = myAnswer(r, shaykhId);
-      if (!a || a.status === "draft") out.drafts.push(r);
+      if (r.status === "needs_revision") out.needs_revision.push(r);
+      else if (!a || a.status === "draft") out.drafts.push(r);
       else if (a.status === "submitted" || a.status === "under_peer_review") out.submitted.push(r);
       else if (a.status === "peer_approved") out.approved.push(r);
       else if (a.status === "sent_to_user") out.sent.push(r);
@@ -148,17 +181,19 @@ function MyAnswers() {
 
   if (selected) {
     const a = myAnswer(selected, shaykhId);
-    const editable = !a || a.status === "draft";
+    const needsRevision = selected.status === "needs_revision";
+    const editable = needsRevision || !a || a.status === "draft";
     return (
       <Detail
         row={selected}
         answer={a}
         editable={editable}
+        revisionComment={needsRevision && a ? (reviewComments[a.id] ?? null) : null}
         shaykhId={shaykhId}
         onBack={() => setSelected(null)}
         onSaved={() => {
           setSelected(null);
-          setTab("drafts");
+          setTab(needsRevision ? "needs_revision" : "drafts");
           setReload((n) => n + 1);
         }}
         onSubmitted={() => {
@@ -238,13 +273,33 @@ function MyAnswers() {
                         </span>
                       )}
                       {r.categories?.name && <Tag>{r.categories.name}</Tag>}
-                      {a && <Tag tone="muted">{STATUS_LABEL[a.status]}</Tag>}
+                      {r.status === "needs_revision" ? (
+                        <Tag tone="muted">Needs revision</Tag>
+                      ) : (
+                        a && <Tag tone="muted">{STATUS_LABEL[a.status]}</Tag>
+                      )}
                       <span className="ml-auto text-xs text-muted-foreground">{formatDate(date)}</span>
                     </div>
                     <h2 className="mt-3 font-heading text-lg font-semibold text-foreground">
                       {r.title?.trim() || truncate(r.body, 90)}
                     </h2>
                     <p className="mt-1.5 text-sm text-muted-foreground">{truncate(r.body)}</p>
+                    {r.status === "needs_revision" && a && reviewComments[a.id] && (
+                      <div
+                        className="mt-4 rounded-lg border p-4"
+                        style={{
+                          background: "color-mix(in oklab, var(--secondary) 12%, transparent)",
+                          borderColor: "color-mix(in oklab, var(--secondary) 40%, transparent)",
+                        }}
+                      >
+                        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                          <MessageSquareWarning className="h-4 w-4" /> Reviewer's comment
+                        </div>
+                        <p className="mt-1.5 whitespace-pre-wrap text-sm text-foreground">
+                          {reviewComments[a.id]}
+                        </p>
+                      </div>
+                    )}
                   </button>
                 </li>
               );
@@ -260,6 +315,7 @@ function Detail({
   row,
   answer,
   editable,
+  revisionComment = null,
   shaykhId,
   onBack,
   onSaved,
@@ -268,6 +324,7 @@ function Detail({
   row: Row;
   answer: AnswerRow | null;
   editable: boolean;
+  revisionComment?: string | null;
   shaykhId: string | null;
   onBack: () => void;
   onSaved: () => void;
@@ -344,6 +401,23 @@ function Detail({
       >
         <ArrowLeft className="h-4 w-4" /> Back to My Answers
       </button>
+
+      {revisionComment && (
+        <div
+          className="mt-4 rounded-lg border p-5"
+          style={{
+            background: "color-mix(in oklab, var(--secondary) 12%, transparent)",
+            borderColor: "color-mix(in oklab, var(--secondary) 40%, transparent)",
+          }}
+        >
+          <div className="flex items-center gap-2 font-heading text-sm font-semibold text-foreground">
+            <MessageSquareWarning className="h-4 w-4" /> Reviewer asked for revisions
+          </div>
+          <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-foreground">
+            {revisionComment}
+          </p>
+        </div>
+      )}
 
       <div className="mt-4 rounded-lg border border-border bg-card p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">

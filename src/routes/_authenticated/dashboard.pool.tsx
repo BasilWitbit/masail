@@ -45,6 +45,49 @@ function QuestionPool() {
   const [categoryId, setCategoryId] = useState<string>("all");
   const [dateFilter, setDateFilter] = useState<DateFilter>("all");
   const [claimingId, setClaimingId] = useState<string | null>(null);
+  const [reportTarget, setReportTarget] = useState<PoolQuestion | null>(null);
+  const [reportReason, setReportReason] = useState<ReportReason>("spam");
+  const [reportNotes, setReportNotes] = useState("");
+  const [reportError, setReportError] = useState<string | null>(null);
+  const [reporting, setReporting] = useState(false);
+
+  function openReport(q: PoolQuestion) {
+    setReportTarget(q);
+    setReportReason("spam");
+    setReportNotes("");
+    setReportError(null);
+  }
+
+  async function submitReport(e: React.FormEvent) {
+    e.preventDefault();
+    if (!reportTarget || !shaykhId) return;
+    setReporting(true);
+    setReportError(null);
+    const qid = reportTarget.id;
+    const { error: rErr } = await supabase.from("reports").insert({
+      question_id: qid,
+      reported_by_shaykh_id: shaykhId,
+      reason: reportReason,
+      notes: reportNotes.trim() || null,
+    });
+    if (rErr) {
+      setReporting(false);
+      setReportError(rErr.message);
+      return;
+    }
+    const { error: uErr } = await supabase
+      .from("questions")
+      .update({ status: "reported" })
+      .eq("id", qid);
+    setReporting(false);
+    if (uErr) {
+      setReportError(uErr.message);
+      return;
+    }
+    setReportTarget(null);
+    setQuestions((cur) => cur.filter((q) => q.id !== qid));
+    toast.success("Question reported");
+  }
 
   useEffect(() => {
     let active = true;

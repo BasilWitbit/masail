@@ -95,6 +95,7 @@ function MyAnswers() {
   const [rows, setRows] = useState<Row[]>([]);
   const [selected, setSelected] = useState<Row | null>(null);
   const [reload, setReload] = useState(0);
+  const [reviewComments, setReviewComments] = useState<Record<string, string>>({});
 
   useEffect(() => {
     let active = true;
@@ -123,7 +124,31 @@ function MyAnswers() {
           .order("updated_at", { ascending: false });
         if (qErr) throw qErr;
         if (!active) return;
-        setRows((data as unknown as Row[]) ?? []);
+        const list = (data as unknown as Row[]) ?? [];
+        setRows(list);
+
+        const answerIds = list
+          .filter((r) => r.status === "needs_revision")
+          .flatMap((r) => r.answers ?? [])
+          .filter((a) => !shaykh.id || a.shaykh_id === (shaykh.id as string))
+          .map((a) => a.id);
+        if (answerIds.length > 0) {
+          const { data: reviews } = await supabase
+            .from("peer_reviews")
+            .select("answer_id, comments, created_at")
+            .in("answer_id", answerIds)
+            .eq("decision", "sent_back")
+            .order("created_at", { ascending: false });
+          if (!active) return;
+          const map: Record<string, string> = {};
+          for (const rev of reviews ?? []) {
+            const key = rev.answer_id as string;
+            if (!(key in map) && rev.comments) map[key] = rev.comments as string;
+          }
+          setReviewComments(map);
+        } else {
+          setReviewComments({});
+        }
       } catch (err) {
         if (active) setError(err instanceof Error ? err.message : "Failed to load.");
       } finally {
@@ -136,10 +161,17 @@ function MyAnswers() {
   }, [reload]);
 
   const buckets = useMemo(() => {
-    const out: Record<Tab, Row[]> = { drafts: [], submitted: [], approved: [], sent: [] };
+    const out: Record<Tab, Row[]> = {
+      drafts: [],
+      needs_revision: [],
+      submitted: [],
+      approved: [],
+      sent: [],
+    };
     for (const r of rows) {
       const a = myAnswer(r, shaykhId);
-      if (!a || a.status === "draft") out.drafts.push(r);
+      if (r.status === "needs_revision") out.needs_revision.push(r);
+      else if (!a || a.status === "draft") out.drafts.push(r);
       else if (a.status === "submitted" || a.status === "under_peer_review") out.submitted.push(r);
       else if (a.status === "peer_approved") out.approved.push(r);
       else if (a.status === "sent_to_user") out.sent.push(r);

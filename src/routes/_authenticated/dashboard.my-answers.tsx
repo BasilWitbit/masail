@@ -548,9 +548,114 @@ function Detail({
               Status: {answer ? STATUS_LABEL[answer.status] : "—"} · Updated{" "}
               {answer ? formatDate(answer.updated_at) : "—"}
             </p>
+            {isCompleted && (
+              <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-border pt-5">
+                {row.is_private ? (
+                  <Tag tone="muted">Private — not eligible for publishing</Tag>
+                ) : published ? (
+                  <span
+                    className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
+                    style={{
+                      background: "color-mix(in oklab, var(--secondary) 18%, transparent)",
+                      color: "color-mix(in oklab, var(--secondary) 70%, black)",
+                      border: "1px solid color-mix(in oklab, var(--secondary) 45%, transparent)",
+                    }}
+                  >
+                    <BookOpenCheck className="h-3.5 w-3.5" /> Published
+                  </span>
+                ) : isAuthor ? (
+                  <button
+                    onClick={() => {
+                      setPublishError(null);
+                      setShowPublish(true);
+                    }}
+                    className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90"
+                  >
+                    <BookOpenCheck className="h-4 w-4" /> Publish to Knowledge Base
+                  </button>
+                ) : null}
+              </div>
+            )}
           </>
         )}
       </div>
+
+      {showPublish && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4">
+          <form
+            onSubmit={submitPublish}
+            className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-lg bg-card p-6 shadow-xl"
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="font-heading text-xl font-bold text-primary">
+                Publish to Knowledge Base
+              </h2>
+              <button
+                type="button"
+                onClick={() => setShowPublish(false)}
+                className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground hover:bg-muted"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Reword these to remove any personal or identifying details before publishing. This
+              will be visible to the public.
+            </p>
+            <div className="mt-4 space-y-4">
+              <div>
+                <label className="text-sm font-semibold" htmlFor="generic-question">
+                  Generic Question
+                </label>
+                <textarea
+                  id="generic-question"
+                  required
+                  rows={5}
+                  value={genericQuestion}
+                  onChange={(e) => setGenericQuestion(e.target.value)}
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-semibold" htmlFor="generic-answer">
+                  Generic Answer
+                </label>
+                <textarea
+                  id="generic-answer"
+                  required
+                  rows={8}
+                  value={genericAnswer}
+                  onChange={(e) => setGenericAnswer(e.target.value)}
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+              {publishError && (
+                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+                  {publishError}
+                </div>
+              )}
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowPublish(false)}
+                className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-muted"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={publishing}
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {publishing && <Loader2 className="h-4 w-4 animate-spin" />}
+                {publishing ? "Publishing…" : "Publish"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }
+

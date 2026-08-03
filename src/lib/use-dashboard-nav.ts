@@ -13,6 +13,7 @@ import {
   Inbox,
   FileText,
   ClipboardCheck,
+  Palette,
   type LucideIcon,
 } from "lucide-react";
 

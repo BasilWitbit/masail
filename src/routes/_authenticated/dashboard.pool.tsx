@@ -300,7 +300,14 @@ function QuestionPool() {
                     {truncate(q.body, 180)}
                   </p>
                 )}
-                <div className="mt-4 flex justify-end">
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={() => openReport(q)}
+                    className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-semibold text-muted-foreground transition hover:bg-muted hover:text-red-600"
+                  >
+                    <Flag className="h-3.5 w-3.5" /> Report
+                  </button>
                   <button
                     onClick={() => claim(q.id)}
                     disabled={claimingId === q.id}
@@ -320,6 +327,88 @@ function QuestionPool() {
           </ul>
         )}
       </div>
+
+      {reportTarget && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4">
+          <form
+            onSubmit={submitReport}
+            className="w-full max-w-md rounded-lg bg-card p-6 shadow-xl"
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="font-heading text-xl font-bold text-primary">
+                Report Question
+              </h2>
+              <button
+                type="button"
+                onClick={() => setReportTarget(null)}
+                className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground hover:bg-muted"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {truncate(reportTarget.title?.trim() || reportTarget.body, 110)}
+            </p>
+            <div className="mt-4 space-y-4">
+              <div>
+                <label className="text-sm font-semibold" htmlFor="report-reason">
+                  Reason
+                </label>
+                <select
+                  id="report-reason"
+                  required
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value as ReportReason)}
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                >
+                  <option value="spam">Spam</option>
+                  <option value="abusive">Abusive</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-semibold" htmlFor="report-notes">
+                  Notes <span className="font-normal text-muted-foreground">(optional)</span>
+                </label>
+                <textarea
+                  id="report-notes"
+                  rows={4}
+                  value={reportNotes}
+                  onChange={(e) => setReportNotes(e.target.value)}
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+              {reportError && (
+                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+                  {reportError}
+                </div>
+              )}
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setReportTarget(null)}
+                className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-muted"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={reporting}
+                className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {reporting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" /> Submitting…
+                  </>
+                ) : (
+                  "Submit Report"
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

@@ -273,13 +273,33 @@ function MyAnswers() {
                         </span>
                       )}
                       {r.categories?.name && <Tag>{r.categories.name}</Tag>}
-                      {a && <Tag tone="muted">{STATUS_LABEL[a.status]}</Tag>}
+                      {r.status === "needs_revision" ? (
+                        <Tag tone="muted">Needs revision</Tag>
+                      ) : (
+                        a && <Tag tone="muted">{STATUS_LABEL[a.status]}</Tag>
+                      )}
                       <span className="ml-auto text-xs text-muted-foreground">{formatDate(date)}</span>
                     </div>
                     <h2 className="mt-3 font-heading text-lg font-semibold text-foreground">
                       {r.title?.trim() || truncate(r.body, 90)}
                     </h2>
                     <p className="mt-1.5 text-sm text-muted-foreground">{truncate(r.body)}</p>
+                    {r.status === "needs_revision" && a && reviewComments[a.id] && (
+                      <div
+                        className="mt-4 rounded-lg border p-4"
+                        style={{
+                          background: "color-mix(in oklab, var(--secondary) 12%, transparent)",
+                          borderColor: "color-mix(in oklab, var(--secondary) 40%, transparent)",
+                        }}
+                      >
+                        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                          <MessageSquareWarning className="h-4 w-4" /> Reviewer's comment
+                        </div>
+                        <p className="mt-1.5 whitespace-pre-wrap text-sm text-foreground">
+                          {reviewComments[a.id]}
+                        </p>
+                      </div>
+                    )}
                   </button>
                 </li>
               );

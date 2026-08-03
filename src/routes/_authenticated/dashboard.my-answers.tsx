@@ -34,11 +34,15 @@ type Row = {
   updated_at: string;
   is_urgent: boolean;
   is_anonymous: boolean;
+  is_private: boolean;
   status: string;
   asker_id: string | null;
+  category_id: string | null;
+  mosque_id: string;
   categories: { name: string } | null;
   answers: AnswerRow[];
 };
+
 
 const STATUS_LABEL: Record<AnswerRow["status"], string> = {
   draft: "Draft",

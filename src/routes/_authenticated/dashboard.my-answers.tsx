@@ -100,6 +100,8 @@ function MyAnswers() {
   const [selected, setSelected] = useState<Row | null>(null);
   const [reload, setReload] = useState(0);
   const [reviewComments, setReviewComments] = useState<Record<string, string>>({});
+  const [publishedIds, setPublishedIds] = useState<Set<string>>(new Set());
+
 
   useEffect(() => {
     let active = true;

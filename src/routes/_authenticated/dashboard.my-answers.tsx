@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, ArrowLeft, FileText, Loader2 } from "lucide-react";
+import { AlertTriangle, ArrowLeft, FileText, Loader2, MessageSquareWarning } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 

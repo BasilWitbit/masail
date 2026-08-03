@@ -19,9 +19,11 @@ export function SiteHeader({ active }: { active?: "home" | "qa" }) {
           <NavItem to="/qa" label="Public Q&A" active={active === "qa"} />
         </nav>
         <div className="flex items-center gap-3">
-          <button className="hidden text-sm font-medium text-white/90 hover:text-white md:inline">
-            Sign In
-          </button>
+          <Link to="/login">
+            <button className="hidden text-sm font-medium text-white/90 hover:text-white md:inline">
+              Sign In
+            </button>
+          </Link>
           <button
             className="rounded-md px-5 py-2.5 text-sm font-semibold shadow-sm transition hover:brightness-105"
             style={{ background: "var(--secondary)", color: "var(--secondary-foreground)" }}

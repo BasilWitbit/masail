@@ -23,6 +23,8 @@ type PoolQuestion = {
 
 type DateFilter = "7" | "30" | "all";
 
+type ReportReason = "spam" | "abusive" | "other";
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, {
     year: "numeric",

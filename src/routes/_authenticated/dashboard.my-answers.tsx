@@ -207,7 +207,10 @@ function MyAnswers() {
         editable={editable}
         revisionComment={needsRevision && a ? (reviewComments[a.id] ?? null) : null}
         shaykhId={shaykhId}
+        isPublished={publishedIds.has(selected.id)}
+        onPublished={() => setPublishedIds((prev) => new Set(prev).add(selected.id))}
         onBack={() => setSelected(null)}
+
         onSaved={() => {
           setSelected(null);
           setTab(needsRevision ? "needs_revision" : "drafts");

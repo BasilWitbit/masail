@@ -315,6 +315,7 @@ function Detail({
   row,
   answer,
   editable,
+  revisionComment = null,
   shaykhId,
   onBack,
   onSaved,
@@ -323,6 +324,7 @@ function Detail({
   row: Row;
   answer: AnswerRow | null;
   editable: boolean;
+  revisionComment?: string | null;
   shaykhId: string | null;
   onBack: () => void;
   onSaved: () => void;

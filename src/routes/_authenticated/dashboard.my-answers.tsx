@@ -402,6 +402,23 @@ function Detail({
         <ArrowLeft className="h-4 w-4" /> Back to My Answers
       </button>
 
+      {revisionComment && (
+        <div
+          className="mt-4 rounded-lg border p-5"
+          style={{
+            background: "color-mix(in oklab, var(--secondary) 12%, transparent)",
+            borderColor: "color-mix(in oklab, var(--secondary) 40%, transparent)",
+          }}
+        >
+          <div className="flex items-center gap-2 font-heading text-sm font-semibold text-foreground">
+            <MessageSquareWarning className="h-4 w-4" /> Reviewer asked for revisions
+          </div>
+          <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-foreground">
+            {revisionComment}
+          </p>
+        </div>
+      )}
+
       <div className="mt-4 rounded-lg border border-border bg-card p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
           {row.is_urgent && (

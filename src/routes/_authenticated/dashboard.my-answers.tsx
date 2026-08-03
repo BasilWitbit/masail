@@ -124,7 +124,7 @@ function MyAnswers() {
         const { data, error: qErr } = await supabase
           .from("questions")
           .select(
-            "id, title, body, created_at, updated_at, is_urgent, is_anonymous, status, asker_id, categories(name), answers(id, body, status, updated_at, shaykh_id)",
+            "id, title, body, created_at, updated_at, is_urgent, is_anonymous, is_private, status, asker_id, category_id, mosque_id, categories(name), answers(id, body, status, updated_at, shaykh_id)",
           )
           .eq("claimed_by", shaykh.id as string)
           .order("updated_at", { ascending: false });
@@ -132,6 +132,19 @@ function MyAnswers() {
         if (!active) return;
         const list = (data as unknown as Row[]) ?? [];
         setRows(list);
+
+        if (list.length > 0) {
+          const { data: pub } = await supabase
+            .from("published_qa")
+            .select("question_id")
+            .in("question_id", list.map((r) => r.id));
+          if (!active) return;
+          setPublishedIds(new Set((pub ?? []).map((p) => p.question_id as string)));
+        } else {
+          setPublishedIds(new Set());
+        }
+
+
 
         const answerIds = list
           .filter((r) => r.status === "needs_revision")

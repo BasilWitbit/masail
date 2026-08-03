@@ -196,6 +196,8 @@ export type Database = {
       }
       platform_settings: {
         Row: {
+          body_font: string
+          heading_font: string
           id: string
           logo_url: string | null
           primary_color: string
@@ -203,6 +205,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          body_font?: string
+          heading_font?: string
           id?: string
           logo_url?: string | null
           primary_color?: string
@@ -210,6 +214,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          body_font?: string
+          heading_font?: string
           id?: string
           logo_url?: string | null
           primary_color?: string

@@ -181,17 +181,19 @@ function MyAnswers() {
 
   if (selected) {
     const a = myAnswer(selected, shaykhId);
-    const editable = !a || a.status === "draft";
+    const needsRevision = selected.status === "needs_revision";
+    const editable = needsRevision || !a || a.status === "draft";
     return (
       <Detail
         row={selected}
         answer={a}
         editable={editable}
+        revisionComment={needsRevision && a ? (reviewComments[a.id] ?? null) : null}
         shaykhId={shaykhId}
         onBack={() => setSelected(null)}
         onSaved={() => {
           setSelected(null);
-          setTab("drafts");
+          setTab(needsRevision ? "needs_revision" : "drafts");
           setReload((n) => n + 1);
         }}
         onSubmitted={() => {

@@ -8,14 +8,13 @@ export const Route = createFileRoute("/_authenticated/dashboard/my-answers")({
   component: MyAnswers,
 });
 
-type Tab = "drafts" | "needs_revision" | "submitted" | "approved" | "sent";
+type Tab = "drafts" | "submitted" | "needs_revision" | "completed";
 
 const TABS: { key: Tab; label: string; empty: string }[] = [
   { key: "drafts", label: "Drafts", empty: "No drafts right now." },
-  { key: "needs_revision", label: "Needs Revision", empty: "No answers need revision right now." },
   { key: "submitted", label: "Submitted", empty: "Nothing submitted yet." },
-  { key: "approved", label: "Approved", empty: "Nothing approved yet." },
-  { key: "sent", label: "Sent", empty: "Nothing sent to users yet." },
+  { key: "needs_revision", label: "Needs Revision", empty: "No answers need revision right now." },
+  { key: "completed", label: "Completed", empty: "Nothing completed yet." },
 ];
 
 type AnswerRow = {

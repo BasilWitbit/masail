@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Bell, HelpCircle, LogOut, Menu, MoreVertical, X } from "lucide-react";
+import { Bell, LogOut, Menu, MoreVertical, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlatformTheme } from "@/lib/use-platform-theme";
 import { getNavForRole, type UserRole } from "@/lib/use-dashboard-nav";
@@ -139,12 +139,6 @@ function DashboardShell() {
             className="grid h-10 w-10 place-items-center rounded-full transition hover:bg-white/10"
           >
             <Bell className="h-5 w-5" />
-          </button>
-          <button
-            aria-label="Help"
-            className="grid h-10 w-10 place-items-center rounded-full border border-white/40 transition hover:bg-white/10"
-          >
-            <HelpCircle className="h-5 w-5" />
           </button>
         </div>
       </header>

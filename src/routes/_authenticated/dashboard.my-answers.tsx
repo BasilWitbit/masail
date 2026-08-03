@@ -337,6 +337,8 @@ function Detail({
   editable,
   revisionComment = null,
   shaykhId,
+  isPublished = false,
+  onPublished,
   onBack,
   onSaved,
   onSubmitted,
@@ -346,12 +348,60 @@ function Detail({
   editable: boolean;
   revisionComment?: string | null;
   shaykhId: string | null;
+  isPublished?: boolean;
+  onPublished?: () => void;
   onBack: () => void;
   onSaved: () => void;
   onSubmitted: () => void;
 }) {
   const [body, setBody] = useState(answer?.body ?? "");
   const [busy, setBusy] = useState<"draft" | "submit" | null>(null);
+  const [published, setPublished] = useState(isPublished);
+  const [showPublish, setShowPublish] = useState(false);
+  const [genericQuestion, setGenericQuestion] = useState(
+    (row.title?.trim() ? `${row.title.trim()}\n\n` : "") + row.body,
+  );
+  const [genericAnswer, setGenericAnswer] = useState(answer?.body ?? "");
+  const [publishing, setPublishing] = useState(false);
+  const [publishError, setPublishError] = useState<string | null>(null);
+
+  const isCompleted = answer?.status === "sent_to_user";
+  const isAuthor = !!answer && !!shaykhId && answer.shaykh_id === shaykhId;
+
+  async function submitPublish(e: React.FormEvent) {
+    e.preventDefault();
+    if (!genericQuestion.trim() || !genericAnswer.trim()) {
+      setPublishError("Both the generic question and answer are required.");
+      return;
+    }
+    setPublishing(true);
+    setPublishError(null);
+    try {
+      const { error: insErr } = await supabase.from("published_qa").insert({
+        question_id: row.id,
+        published_by_shaykh_id: shaykhId!,
+        generic_question: genericQuestion.trim(),
+        generic_answer: genericAnswer.trim(),
+        category_id: row.category_id,
+        mosque_id: row.mosque_id,
+      });
+      if (insErr) throw insErr;
+      const { error: qErr } = await supabase
+        .from("questions")
+        .update({ status: "published" })
+        .eq("id", row.id);
+      if (qErr) throw qErr;
+      setPublished(true);
+      setShowPublish(false);
+      onPublished?.();
+      toast.success("Published to the knowledge base");
+    } catch (err) {
+      setPublishError(err instanceof Error ? err.message : "Could not publish. Please try again.");
+    } finally {
+      setPublishing(false);
+    }
+  }
+
 
   async function persist(): Promise<string> {
     if (!shaykhId) throw new Error("Missing shaykh id.");

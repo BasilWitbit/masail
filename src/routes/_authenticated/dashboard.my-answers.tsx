@@ -162,18 +162,16 @@ function MyAnswers() {
   const buckets = useMemo(() => {
     const out: Record<Tab, Row[]> = {
       drafts: [],
-      needs_revision: [],
       submitted: [],
-      approved: [],
-      sent: [],
+      needs_revision: [],
+      completed: [],
     };
     for (const r of rows) {
       const a = myAnswer(r, shaykhId);
       if (r.status === "needs_revision") out.needs_revision.push(r);
       else if (!a || a.status === "draft") out.drafts.push(r);
       else if (a.status === "submitted" || a.status === "under_peer_review") out.submitted.push(r);
-      else if (a.status === "peer_approved") out.approved.push(r);
-      else if (a.status === "sent_to_user") out.sent.push(r);
+      else if (a.status === "sent_to_user") out.completed.push(r);
     }
     return out;
   }, [rows, shaykhId]);

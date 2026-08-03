@@ -8,14 +8,13 @@ export const Route = createFileRoute("/_authenticated/dashboard/my-answers")({
   component: MyAnswers,
 });
 
-type Tab = "drafts" | "needs_revision" | "submitted" | "approved" | "sent";
+type Tab = "drafts" | "submitted" | "needs_revision" | "completed";
 
 const TABS: { key: Tab; label: string; empty: string }[] = [
   { key: "drafts", label: "Drafts", empty: "No drafts right now." },
-  { key: "needs_revision", label: "Needs Revision", empty: "No answers need revision right now." },
   { key: "submitted", label: "Submitted", empty: "Nothing submitted yet." },
-  { key: "approved", label: "Approved", empty: "Nothing approved yet." },
-  { key: "sent", label: "Sent", empty: "Nothing sent to users yet." },
+  { key: "needs_revision", label: "Needs Revision", empty: "No answers need revision right now." },
+  { key: "completed", label: "Completed", empty: "Nothing completed yet." },
 ];
 
 type AnswerRow = {
@@ -163,18 +162,16 @@ function MyAnswers() {
   const buckets = useMemo(() => {
     const out: Record<Tab, Row[]> = {
       drafts: [],
-      needs_revision: [],
       submitted: [],
-      approved: [],
-      sent: [],
+      needs_revision: [],
+      completed: [],
     };
     for (const r of rows) {
       const a = myAnswer(r, shaykhId);
       if (r.status === "needs_revision") out.needs_revision.push(r);
       else if (!a || a.status === "draft") out.drafts.push(r);
       else if (a.status === "submitted" || a.status === "under_peer_review") out.submitted.push(r);
-      else if (a.status === "peer_approved") out.approved.push(r);
-      else if (a.status === "sent_to_user") out.sent.push(r);
+      else if (a.status === "sent_to_user") out.completed.push(r);
     }
     return out;
   }, [rows, shaykhId]);

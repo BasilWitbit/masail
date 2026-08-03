@@ -140,12 +140,6 @@ function DashboardShell() {
           >
             <Bell className="h-5 w-5" />
           </button>
-          <button
-            aria-label="Help"
-            className="grid h-10 w-10 place-items-center rounded-full border border-white/40 transition hover:bg-white/10"
-          >
-            <HelpCircle className="h-5 w-5" />
-          </button>
         </div>
       </header>
 

@@ -2,8 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AlertCircle, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { requireRole } from "@/lib/require-role";
 
 export const Route = createFileRoute("/_authenticated/dashboard/categories")({
+  beforeLoad: requireRole(["super_admin"]),
   component: ManageCategories,
 });
 

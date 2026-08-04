@@ -3,8 +3,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AlertCircle, CheckCircle2, Paperclip, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Switch } from "@/components/ui/switch";
+import { requireRole } from "@/lib/require-role";
 
 export const Route = createFileRoute("/_authenticated/dashboard/ask")({
+  beforeLoad: requireRole(["user"]),
   component: AskQuestion,
 });
 

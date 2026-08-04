@@ -2,8 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { requireRole } from "@/lib/require-role";
 
 export const Route = createFileRoute("/_authenticated/dashboard/create-shaykh")({
+  beforeLoad: requireRole(["mosque_admin"]),
   component: CreateShaykh,
 });
 

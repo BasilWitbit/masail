@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { Flag, Loader2, ShieldCheck, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { requireRole } from "@/lib/require-role";
 
 export const Route = createFileRoute("/_authenticated/dashboard/reports")({
+  beforeLoad: requireRole(["super_admin"]),
   component: Reports,
 });
 

@@ -42,7 +42,7 @@ function Home() {
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
               Connect directly with verified Imams and scholars from your community. Get reliable, faithful answers to
-              your questions in a serene and confidential
+              your questions in a serene and confidential environment.
             </p>
 
             {/* Search bar */}

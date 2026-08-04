@@ -33,6 +33,7 @@ const STATUS_LABELS: Record<QuestionStatus, string> = {
   sent_to_user: "Answered",
   reported: "Under Review",
   rejected: "Not Accepted",
+  published: "Published",
 };
 
 function statusStyle(status: QuestionStatus): React.CSSProperties {

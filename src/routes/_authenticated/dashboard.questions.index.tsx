@@ -11,7 +11,8 @@ type QuestionStatus =
   | "peer_approved"
   | "sent_to_user"
   | "reported"
-  | "rejected";
+  | "rejected"
+  | "published";
 
 type QuestionRow = {
   id: string;

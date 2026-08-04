@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Search, FileText, BookOpen, CheckCircle2, Facebook, Instagram, Youtube } from "lucide-react";
 import { usePlatformTheme } from "@/lib/use-platform-theme";
 import { SiteHeader } from "@/components/site-header";
-import { HeroIllustration, HeroPattern } from "@/components/hero-illustration";
+import { HeroIllustration } from "@/components/hero-illustration";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -18,90 +18,53 @@ function Home() {
       <SiteHeader active="home" />
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-surface">
-        <HeroPattern className="text-primary opacity-[0.04]" />
-
-        {/* Decorative depth: soft gold radial glow */}
+      <section className="relative isolate overflow-hidden bg-surface">
+        {/* Right-hand mihrab arch with embossed geometric texture */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 opacity-[0.10] md:block"
-          style={{
-            backgroundImage: "radial-gradient(circle at 70% 40%, var(--secondary) 0%, transparent 55%)",
-          }}
-        />
-        {/* Decorative depth: blurred primary blob */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -bottom-40 -right-40 hidden h-[28rem] w-[28rem] rounded-full opacity-[0.10] blur-[120px] md:block"
-          style={{ background: "var(--primary)" }}
-        />
+          className="pointer-events-none absolute inset-y-0 right-0 w-[72%] opacity-35 sm:w-[62%] sm:opacity-50 md:w-[52%] md:opacity-80 lg:w-[46%]"
+        >
+          <HeroIllustration />
+        </div>
 
-        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 py-24 md:py-32 lg:grid-cols-2 lg:py-40">
-          <div className="max-w-2xl animate-fade-up" style={{ animationDelay: "0.1s" }}>
+        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-6 py-24 md:py-32 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,0.5fr)] lg:py-40">
+          <div className="max-w-3xl animate-fade-up" style={{ animationDelay: "0.1s" }}>
             <span
-              className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest"
+              className="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em]"
               style={{
-                background: "color-mix(in oklab, var(--secondary) 20%, transparent)",
+                background: "color-mix(in oklab, var(--secondary) 22%, transparent)",
                 color: "var(--primary)",
               }}
             >
               Sakinah · Ihtiram
             </span>
-            <h1 className="mt-6 font-heading text-5xl font-bold leading-[1.1] text-primary md:text-6xl lg:text-7xl">
+            <h1 className="mt-8 font-heading text-4xl font-bold leading-[1.08] text-primary sm:text-5xl md:text-6xl">
               Seek Guidance from
               <br /> Your Local Scholars
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
               Connect directly with verified Imams and scholars from your community. Get reliable, faithful answers to
               your questions in a serene and confidential environment.
             </p>
 
-            {/* Search bar */}
-            {/* <form
-              onSubmit={(e) => e.preventDefault()}
-              className="mt-8 flex w-full max-w-xl items-center gap-2 rounded-2xl border border-border bg-card p-2 shadow-sm"
-            >
-              <div className="flex flex-1 items-center gap-3 px-3">
-                <Search className="h-5 w-5 text-muted-foreground" />
-                <input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search the public Q&A library…"
-                  className="w-full bg-transparent py-2 text-base outline-none placeholder:text-muted-foreground"
-                />
-              </div>
-              <button
-                type="submit"
-                className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
-              >
-                Search
-              </button>
-            </form> */}
-
-            <div className="mt-8 flex flex-wrap gap-3 animate-fade-up" style={{ animationDelay: "0.25s" }}>
+            <div className="mt-10 flex flex-wrap gap-4 animate-fade-up" style={{ animationDelay: "0.25s" }}>
               <Link to="/login">
-                <button className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:brightness-110">
+                <button className="rounded-lg bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-sm transition hover:brightness-110">
                   Ask a Question
                 </button>
               </Link>
               <Link to="/qa">
-                <button className="rounded-lg border-2 border-primary bg-transparent px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/5">
+                <button className="rounded-lg border-2 border-primary bg-transparent px-7 py-3.5 text-sm font-semibold text-primary transition hover:bg-primary/5">
                   Browse Q&A
                 </button>
               </Link>
             </div>
           </div>
 
-          <div
-            className="hidden items-center justify-center lg:flex animate-fade-in"
-            style={{ animationDelay: "0.4s" }}
-          >
-            <div className="animate-slow-float">
-              <HeroIllustration />
-            </div>
-          </div>
+          <div aria-hidden className="hidden lg:block" />
         </div>
       </section>
+
 
       {/* Divider ornament */}
       <div className="flex items-center justify-center py-16">

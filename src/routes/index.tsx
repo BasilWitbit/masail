@@ -16,15 +16,13 @@ function Home() {
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader active="home" />
 
-
       {/* Hero */}
       <section className="relative overflow-hidden bg-surface">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 opacity-[0.12] md:block"
           style={{
-            backgroundImage:
-              "radial-gradient(circle at 70% 40%, var(--primary) 0%, transparent 55%)",
+            backgroundImage: "radial-gradient(circle at 70% 40%, var(--primary) 0%, transparent 55%)",
           }}
         />
         <div className="relative mx-auto max-w-6xl px-6 pb-24 pt-20 md:pt-28">
@@ -43,13 +41,12 @@ function Home() {
               <br /> Your Local Scholars
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Connect directly with verified Imams and scholars from your community.
-              Get reliable, faithful answers to your questions in a serene and
-              confidential environment.
+              Connect directly with verified Imams and scholars from your community. Get reliable, faithful answers to
+              your questions in a serene and confidential environment.
             </p>
 
             {/* Search bar */}
-            <form
+            {/* <form
               onSubmit={(e) => e.preventDefault()}
               className="mt-8 flex w-full max-w-xl items-center gap-2 rounded-2xl border border-border bg-card p-2 shadow-sm"
             >
@@ -68,7 +65,7 @@ function Home() {
               >
                 Search
               </button>
-            </form>
+            </form> */}
 
             <div className="mt-8 flex flex-wrap gap-3">
               <button className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:brightness-110">
@@ -85,10 +82,7 @@ function Home() {
       {/* Divider ornament */}
       <div className="flex items-center justify-center py-16">
         <div className="h-px w-24 bg-border" />
-        <div
-          className="mx-4 h-4 w-4 rotate-45"
-          style={{ background: "var(--secondary)" }}
-        />
+        <div className="mx-4 h-4 w-4 rotate-45" style={{ background: "var(--secondary)" }} />
         <div className="h-px w-24 bg-border" />
       </div>
 
@@ -96,9 +90,7 @@ function Home() {
       <section className="mx-auto max-w-6xl px-6 pb-24">
         <div className="text-center">
           <h2 className="font-heading text-4xl font-bold text-primary">How Masail Works</h2>
-          <p className="mt-3 text-muted-foreground">
-            A simple, respectful process for spiritual guidance.
-          </p>
+          <p className="mt-3 text-muted-foreground">A simple, respectful process for spiritual guidance.</p>
         </div>
 
         <div className="mt-16 grid gap-12 md:grid-cols-3">
@@ -143,9 +135,15 @@ function Home() {
               Connecting communities with trusted Islamic knowledge.
             </p>
             <div className="mt-5 flex gap-3">
-              <SocialIcon><Facebook className="h-4 w-4" /></SocialIcon>
-              <SocialIcon><Instagram className="h-4 w-4" /></SocialIcon>
-              <SocialIcon><Youtube className="h-4 w-4" /></SocialIcon>
+              <SocialIcon>
+                <Facebook className="h-4 w-4" />
+              </SocialIcon>
+              <SocialIcon>
+                <Instagram className="h-4 w-4" />
+              </SocialIcon>
+              <SocialIcon>
+                <Youtube className="h-4 w-4" />
+              </SocialIcon>
             </div>
           </div>
           <FooterCol title="Platform" items={["Public Q&A", "Ask a Question", "Scholars"]} />
@@ -160,31 +158,14 @@ function Home() {
   );
 }
 
-
-
-
-function Step({
-  n,
-  icon,
-  title,
-  body,
-}: {
-  n: number;
-  icon: React.ReactNode;
-  title: string;
-  body: string;
-}) {
+function Step({ n, icon, title, body }: { n: number; icon: React.ReactNode; title: string; body: string }) {
   return (
     <div className="text-center">
-      <div className="relative mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-        {icon}
-      </div>
+      <div className="relative mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-muted">{icon}</div>
       <h3 className="mt-6 font-heading text-lg font-bold text-foreground">
         <span style={{ color: "var(--secondary)" }}>{n}.</span> {title}
       </h3>
-      <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
-        {body}
-      </p>
+      <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">{body}</p>
     </div>
   );
 }

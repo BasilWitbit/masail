@@ -34,29 +34,52 @@ export function HeroPattern({ className }: { className?: string }) {
 
 export function HeroIllustration({ className }: { className?: string }) {
   const id = useId().replace(/:/g, "");
+
+  // 8-point Rub el Hizb star (alternating long r=72, short r=32)
+  const starPoints = [
+    [0, -72],
+    [12.24, -29.58],
+    [50.91, -50.91],
+    [29.58, -12.24],
+    [72, 0],
+    [29.58, 12.24],
+    [50.91, 50.91],
+    [12.24, 29.58],
+    [0, 72],
+    [-12.24, 29.58],
+    [-50.91, 50.91],
+    [-29.58, 12.24],
+    [-72, 0],
+    [-29.58, -12.24],
+    [-50.91, -50.91],
+    [-12.24, -29.58],
+  ]
+    .map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`)
+    .join(" ");
+
   return (
     <svg
       viewBox="0 0 440 520"
-      className={cn("w-full max-w-md", className)}
+      className={cn("w-full max-w-lg", className)}
       aria-hidden
     >
       <defs>
         <linearGradient id={`${id}-archFill`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.12" />
-          <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.02" />
+          <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.04" />
         </linearGradient>
       </defs>
 
       {/* Soft glow behind the arch */}
-      <circle cx="220" cy="260" r="170" fill="var(--secondary)" opacity="0.08" />
+      <circle cx="220" cy="260" r="170" fill="var(--secondary)" opacity="0.10" />
 
       {/* Outer arch frame */}
       <path
         d="M60 520 L60 200 C60 100 140 40 220 40 C300 40 380 100 380 200 L380 520"
         fill="none"
         stroke="var(--secondary)"
-        strokeWidth="2"
-        opacity="0.45"
+        strokeWidth="2.5"
+        opacity="0.65"
       />
 
       {/* Inner arch fill */}
@@ -65,23 +88,23 @@ export function HeroIllustration({ className }: { className?: string }) {
         fill={`url(#${id}-archFill)`}
         stroke="var(--secondary)"
         strokeWidth="1.5"
-        opacity="0.8"
+        opacity="0.9"
       />
 
       {/* Central Rub el Hizb star */}
-      <g transform="translate(220, 220)" fill="var(--secondary)" opacity="0.85">
-        <path d="M0 -72 L14 -22 L66 -10 L26 26 L42 78 L0 48 L-42 78 L-26 26 L-66 -10 L-14 -22 Z" />
-        <circle r="10" opacity="0.4" />
+      <g transform="translate(220, 220)" opacity="0.9">
+        <polygon points={starPoints} fill="var(--secondary)" />
+        <circle r="12" fill="var(--primary)" opacity="0.35" />
       </g>
 
       {/* Decorative horizontal lines inside the arch */}
-      <line x1="150" y1="360" x2="290" y2="360" stroke="var(--secondary)" strokeWidth="1" opacity="0.3" />
-      <line x1="170" y1="390" x2="270" y2="390" stroke="var(--secondary)" strokeWidth="1" opacity="0.3" />
-      <line x1="190" y1="420" x2="250" y2="420" stroke="var(--secondary)" strokeWidth="1" opacity="0.3" />
+      <line x1="150" y1="355" x2="290" y2="355" stroke="var(--secondary)" strokeWidth="1.5" opacity="0.45" />
+      <line x1="170" y1="385" x2="270" y2="385" stroke="var(--secondary)" strokeWidth="1.5" opacity="0.45" />
+      <line x1="190" y1="415" x2="250" y2="415" stroke="var(--secondary)" strokeWidth="1.5" opacity="0.45" />
 
       {/* Corner ornaments */}
-      <circle cx="60" cy="200" r="4" fill="var(--secondary)" opacity="0.5" />
-      <circle cx="380" cy="200" r="4" fill="var(--secondary)" opacity="0.5" />
+      <circle cx="60" cy="200" r="5" fill="var(--secondary)" opacity="0.7" />
+      <circle cx="380" cy="200" r="5" fill="var(--secondary)" opacity="0.7" />
     </svg>
   );
 }

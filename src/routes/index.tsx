@@ -42,8 +42,30 @@ function Home() {
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
               Connect directly with verified Imams and scholars from your community. Get reliable, faithful answers to
-              your questions in a serene and confidential environment.
+              your questions in a serene and confidential
             </p>
+
+            {/* Search bar */}
+            {/* <form
+              onSubmit={(e) => e.preventDefault()}
+              className="mt-8 flex w-full max-w-xl items-center gap-2 rounded-2xl border border-border bg-card p-2 shadow-sm"
+            >
+              <div className="flex flex-1 items-center gap-3 px-3">
+                <Search className="h-5 w-5 text-muted-foreground" />
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search the public Q&A library…"
+                  className="w-full bg-transparent py-2 text-base outline-none placeholder:text-muted-foreground"
+                />
+              </div>
+              <button
+                type="submit"
+                className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
+              >
+                Search
+              </button>
+            </form> */}
 
             <div className="mt-8 flex flex-wrap gap-3">
               <button className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:brightness-110">

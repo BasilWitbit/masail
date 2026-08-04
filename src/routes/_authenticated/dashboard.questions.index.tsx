@@ -37,7 +37,7 @@ const STATUS_LABELS: Record<QuestionStatus, string> = {
 };
 
 function statusStyle(status: QuestionStatus): React.CSSProperties {
-  if (status === "sent_to_user") {
+  if (status === "sent_to_user" || status === "published") {
     return {
       background: "color-mix(in oklab, var(--secondary) 18%, transparent)",
       color: "color-mix(in oklab, var(--secondary) 55%, #4a3a00)",

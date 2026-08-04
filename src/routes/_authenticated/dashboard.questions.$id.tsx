@@ -90,6 +90,7 @@ function QuestionDetail() {
     (async () => {
       setLoading(true);
       const { data: userData } = await supabase.auth.getUser();
+      console.log("[QuestionDetail] userData.user:", userData.user);
       if (!userData.user) {
         if (active) setLoading(false);
         return;
@@ -97,7 +98,8 @@ function QuestionDetail() {
       const uid = userData.user.id;
       if (active) setUserId(uid);
 
-      const { data: q } = await supabase
+      console.log("[QuestionDetail] id param:", id);
+      const { data: q, error: qError } = await supabase
         .from("questions")
         .select(
           "id, title, body, created_at, is_urgent, status, asker_id, categories(name)",
@@ -105,6 +107,7 @@ function QuestionDetail() {
         .eq("id", id)
         .eq("asker_id", uid)
         .maybeSingle();
+      console.log("[QuestionDetail] questions query result:", { data: q, error: qError });
 
       if (!active) return;
       const qRow = q as unknown as QuestionRow | null;

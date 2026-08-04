@@ -40,7 +40,7 @@ type Row = {
   category_id: string | null;
   mosque_id: string;
   categories: { name: string } | null;
-  answers: AnswerRow[];
+  answers: AnswerRow | null;
 };
 
 

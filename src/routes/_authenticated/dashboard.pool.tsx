@@ -3,8 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, Flag, Inbox, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { requireRole } from "@/lib/require-role";
 
 export const Route = createFileRoute("/_authenticated/dashboard/pool")({
+  beforeLoad: requireRole(["shaykh"]),
   component: QuestionPool,
 });
 

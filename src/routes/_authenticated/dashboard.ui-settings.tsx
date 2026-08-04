@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { AlertCircle, CheckCircle2, Loader2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
+import { requireRole } from "@/lib/require-role";
   FONT_OPTIONS,
   applyPlatformSettings,
 } from "@/lib/use-platform-theme";
 
 export const Route = createFileRoute("/_authenticated/dashboard/ui-settings")({
+  beforeLoad: requireRole(["super_admin"]),
   component: UiSettings,
 });
 

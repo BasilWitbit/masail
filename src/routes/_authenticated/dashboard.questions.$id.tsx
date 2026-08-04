@@ -11,7 +11,8 @@ type QuestionStatus =
   | "peer_approved"
   | "sent_to_user"
   | "reported"
-  | "rejected";
+  | "rejected"
+  | "published";
 
 const STATUS_LABELS: Record<QuestionStatus, string> = {
   submitted: "Submitted",
@@ -22,6 +23,7 @@ const STATUS_LABELS: Record<QuestionStatus, string> = {
   sent_to_user: "Answered",
   reported: "Under Review",
   rejected: "Not Accepted",
+  published: "Published",
 };
 
 type QuestionRow = {

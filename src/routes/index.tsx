@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Search, FileText, BookOpen, CheckCircle2, Facebook, Instagram, Youtube } from "lucide-react";
 import { usePlatformTheme } from "@/lib/use-platform-theme";
 import { SiteHeader } from "@/components/site-header";
+import { HeroIllustration, HeroPattern } from "@/components/hero-illustration";
 
 export const Route = createFileRoute("/")({
   component: Home,

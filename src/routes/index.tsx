@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Search, FileText, BookOpen, CheckCircle2, Facebook, Instagram, Youtube } from "lucide-react";
 import { usePlatformTheme } from "@/lib/use-platform-theme";
@@ -68,12 +68,16 @@ function Home() {
             </form> */}
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <button className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:brightness-110">
-                Ask a Question
-              </button>
-              <button className="rounded-lg border-2 border-primary bg-transparent px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/5">
-                Browse Q&A
-              </button>
+              <Link to="/login">
+                <button className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:brightness-110">
+                  Ask a Question
+                </button>
+              </Link>
+              <Link to="/qa">
+                <button className="rounded-lg border-2 border-primary bg-transparent px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/5">
+                  Browse Q&A
+                </button>
+              </Link>
             </div>
           </div>
         </div>

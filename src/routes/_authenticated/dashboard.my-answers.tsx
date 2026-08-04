@@ -40,7 +40,7 @@ type Row = {
   category_id: string | null;
   mosque_id: string;
   categories: { name: string } | null;
-  answers: AnswerRow[];
+  answers: AnswerRow | null;
 };
 
 
@@ -66,7 +66,9 @@ function truncate(text: string, n = 160) {
 }
 
 function myAnswer(r: Row, shaykhId: string | null) {
-  return r.answers?.find((a) => !shaykhId || a.shaykh_id === shaykhId) ?? null;
+  if (!r.answers) return null;
+  if (!shaykhId || r.answers.shaykh_id === shaykhId) return r.answers;
+  return null;
 }
 
 function Tag({ children, tone = "primary" }: { children: React.ReactNode; tone?: "primary" | "muted" }) {
@@ -148,8 +150,8 @@ function MyAnswers() {
 
         const answerIds = list
           .filter((r) => r.status === "needs_revision")
-          .flatMap((r) => r.answers ?? [])
-          .filter((a) => !shaykh.id || a.shaykh_id === (shaykh.id as string))
+          .map((r) => r.answers)
+          .filter((a): a is AnswerRow => !!a && (!shaykh.id || a.shaykh_id === (shaykh.id as string)))
           .map((a) => a.id);
         if (answerIds.length > 0) {
           const { data: reviews } = await supabase

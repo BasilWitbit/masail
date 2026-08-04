@@ -36,6 +36,7 @@ import { Route as AuthenticatedDashboardCreateAdminRouteImport } from './routes/
 import { Route as AuthenticatedDashboardCategoriesRouteImport } from './routes/_authenticated/dashboard.categories'
 import { Route as AuthenticatedDashboardAskRouteImport } from './routes/_authenticated/dashboard.ask'
 import { Route as AuthenticatedDashboardAdminRouteImport } from './routes/_authenticated/dashboard.admin'
+import { Route as AuthenticatedDashboardQuestionsIndexRouteImport } from './routes/_authenticated/dashboard.questions.index'
 import { Route as AuthenticatedDashboardQuestionsIdRouteImport } from './routes/_authenticated/dashboard.questions.$id'
 
 const VerifyOtpRoute = VerifyOtpRouteImport.update({
@@ -190,6 +191,12 @@ const AuthenticatedDashboardAdminRoute =
     path: '/admin',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardQuestionsIndexRoute =
+  AuthenticatedDashboardQuestionsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDashboardQuestionsRoute,
+  } as any)
 const AuthenticatedDashboardQuestionsIdRoute =
   AuthenticatedDashboardQuestionsIdRouteImport.update({
     id: '/$id',
@@ -225,6 +232,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/ui-settings': typeof AuthenticatedDashboardUiSettingsRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
+  '/dashboard/questions/': typeof AuthenticatedDashboardQuestionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -246,12 +254,12 @@ export interface FileRoutesByTo {
   '/dashboard/peer-review': typeof AuthenticatedDashboardPeerReviewRoute
   '/dashboard/pool': typeof AuthenticatedDashboardPoolRoute
   '/dashboard/public-content': typeof AuthenticatedDashboardPublicContentRoute
-  '/dashboard/questions': typeof AuthenticatedDashboardQuestionsRouteWithChildren
   '/dashboard/reports': typeof AuthenticatedDashboardReportsRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/ui-settings': typeof AuthenticatedDashboardUiSettingsRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
+  '/dashboard/questions': typeof AuthenticatedDashboardQuestionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -283,6 +291,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/ui-settings': typeof AuthenticatedDashboardUiSettingsRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
+  '/_authenticated/dashboard/questions/': typeof AuthenticatedDashboardQuestionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -314,6 +323,7 @@ export interface FileRouteTypes {
     | '/dashboard/ui-settings'
     | '/dashboard/'
     | '/dashboard/questions/$id'
+    | '/dashboard/questions/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -335,12 +345,12 @@ export interface FileRouteTypes {
     | '/dashboard/peer-review'
     | '/dashboard/pool'
     | '/dashboard/public-content'
-    | '/dashboard/questions'
     | '/dashboard/reports'
     | '/dashboard/settings'
     | '/dashboard/ui-settings'
     | '/dashboard'
     | '/dashboard/questions/$id'
+    | '/dashboard/questions'
   id:
     | '__root__'
     | '/'
@@ -371,6 +381,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/ui-settings'
     | '/_authenticated/dashboard/'
     | '/_authenticated/dashboard/questions/$id'
+    | '/_authenticated/dashboard/questions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -573,6 +584,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardAdminRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/questions/': {
+      id: '/_authenticated/dashboard/questions/'
+      path: '/'
+      fullPath: '/dashboard/questions/'
+      preLoaderRoute: typeof AuthenticatedDashboardQuestionsIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardQuestionsRoute
+    }
     '/_authenticated/dashboard/questions/$id': {
       id: '/_authenticated/dashboard/questions/$id'
       path: '/$id'
@@ -585,12 +603,15 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedDashboardQuestionsRouteChildren {
   AuthenticatedDashboardQuestionsIdRoute: typeof AuthenticatedDashboardQuestionsIdRoute
+  AuthenticatedDashboardQuestionsIndexRoute: typeof AuthenticatedDashboardQuestionsIndexRoute
 }
 
 const AuthenticatedDashboardQuestionsRouteChildren: AuthenticatedDashboardQuestionsRouteChildren =
   {
     AuthenticatedDashboardQuestionsIdRoute:
       AuthenticatedDashboardQuestionsIdRoute,
+    AuthenticatedDashboardQuestionsIndexRoute:
+      AuthenticatedDashboardQuestionsIndexRoute,
   }
 
 const AuthenticatedDashboardQuestionsRouteWithChildren =
@@ -689,3 +710,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

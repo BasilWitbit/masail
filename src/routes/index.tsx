@@ -19,15 +19,25 @@ function Home() {
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-surface">
+        <HeroPattern className="text-primary opacity-[0.04]" />
+
+        {/* Decorative depth: soft gold radial glow */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 opacity-[0.12] md:block"
+          className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 opacity-[0.10] md:block"
           style={{
-            backgroundImage: "radial-gradient(circle at 70% 40%, var(--primary) 0%, transparent 55%)",
+            backgroundImage: "radial-gradient(circle at 70% 40%, var(--secondary) 0%, transparent 55%)",
           }}
         />
-        <div className="relative mx-auto max-w-6xl px-6 pb-24 pt-20 md:pt-28">
-          <div className="max-w-2xl">
+        {/* Decorative depth: blurred primary blob */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-40 -right-40 hidden h-[28rem] w-[28rem] rounded-full opacity-[0.10] blur-[120px] md:block"
+          style={{ background: "var(--primary)" }}
+        />
+
+        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 py-24 md:py-32 lg:grid-cols-2 lg:py-40">
+          <div className="max-w-2xl animate-fade-up" style={{ animationDelay: "0.1s" }}>
             <span
               className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest"
               style={{
@@ -37,7 +47,7 @@ function Home() {
             >
               Sakinah · Ihtiram
             </span>
-            <h1 className="mt-6 font-heading text-5xl font-bold leading-[1.1] text-primary md:text-6xl">
+            <h1 className="mt-6 font-heading text-5xl font-bold leading-[1.1] text-primary md:text-6xl lg:text-7xl">
               Seek Guidance from
               <br /> Your Local Scholars
             </h1>
@@ -68,7 +78,7 @@ function Home() {
               </button>
             </form> */}
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-3 animate-fade-up" style={{ animationDelay: "0.25s" }}>
               <Link to="/login">
                 <button className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:brightness-110">
                   Ask a Question
@@ -79,6 +89,15 @@ function Home() {
                   Browse Q&A
                 </button>
               </Link>
+            </div>
+          </div>
+
+          <div
+            className="hidden items-center justify-center lg:flex animate-fade-in"
+            style={{ animationDelay: "0.4s" }}
+          >
+            <div className="animate-slow-float">
+              <HeroIllustration />
             </div>
           </div>
         </div>

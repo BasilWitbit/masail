@@ -189,13 +189,19 @@ function Pill({
   );
 }
 
-function QACard({ qa, categoryName }: { qa: QA; categoryName: string | null }) {
-  return (
-    <Link
-      to="/qa/$id"
-      params={{ id: qa.id }}
-      className="group flex h-full flex-col justify-between rounded-lg border border-border bg-card p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
-    >
+function QACard({
+  qa,
+  categoryName,
+  onSelect,
+}: {
+  qa: QA;
+  categoryName: string | null;
+  onSelect?: () => void;
+}) {
+  const className =
+    "group flex h-full flex-col justify-between rounded-lg border border-border bg-card p-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md";
+  const inner = (
+    <>
       <div>
         <div className="flex items-center justify-between gap-3">
           {categoryName ? (
@@ -223,12 +229,150 @@ function QACard({ qa, categoryName }: { qa: QA; categoryName: string | null }) {
       <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary transition group-hover:gap-3">
         Read answer <ArrowRight className="h-4 w-4" />
       </div>
+    </>
+  );
+
+  if (onSelect) {
+    return (
+      <button type="button" onClick={onSelect} className={className}>
+        {inner}
+      </button>
+    );
+  }
+
+  return (
+    <Link to="/qa/$id" params={{ id: qa.id }} className={className}>
+      {inner}
     </Link>
   );
 }
 
+function InlineQADetail({
+  qa,
+  categoryName,
+  onBack,
+}: {
+  qa: QA;
+  categoryName: string | null;
+  onBack: () => void;
+}) {
+  const [mosqueName, setMosqueName] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    if (!qa.mosque_id) {
+      setMosqueName(null);
+      return;
+    }
+    (async () => {
+      const { data } = await supabase
+        .from("mosques")
+        .select("name")
+        .eq("id", qa.mosque_id!)
+        .maybeSingle();
+      if (active) setMosqueName((data as { name: string } | null)?.name ?? null);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [qa.mosque_id]);
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={onBack}
+        className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-primary"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Q&A Library
+      </button>
+
+      <div className="mt-6 space-y-8">
+        <article className="rounded-3xl border border-border bg-card p-8 shadow-sm md:p-10">
+          <div className="flex flex-wrap items-center gap-3">
+            {categoryName ? (
+              <span
+                className="inline-flex items-center rounded-md px-3 py-1 text-xs font-semibold"
+                style={{
+                  background: "color-mix(in oklab, var(--secondary) 22%, transparent)",
+                  color: "var(--primary)",
+                }}
+              >
+                {categoryName}
+              </span>
+            ) : null}
+            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Calendar className="h-3.5 w-3.5" />
+              {formatFullDate(qa.created_at)}
+            </span>
+          </div>
+
+          <h1 className="mt-6 font-heading text-3xl font-bold leading-tight text-primary md:text-4xl">
+            {qa.generic_question}
+          </h1>
+
+          {mosqueName ? (
+            <p className="mt-4 text-sm text-muted-foreground">
+              Answered via{" "}
+              <span className="font-medium text-foreground">{mosqueName}</span>
+            </p>
+          ) : null}
+
+          <div className="mt-8 border-t border-border pt-8">
+            <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-primary">
+              <BookOpen className="h-4 w-4" />
+              Answer
+            </div>
+            <div className="text-lg leading-relaxed text-foreground">
+              <p className="whitespace-pre-wrap">{qa.generic_answer}</p>
+            </div>
+          </div>
+        </article>
+
+        <div
+          className="rounded-3xl border p-6 md:p-8"
+          style={{
+            background: "color-mix(in oklab, var(--secondary) 10%, #ffffff)",
+            borderColor: "color-mix(in oklab, var(--secondary) 30%, transparent)",
+          }}
+        >
+          <div className="flex items-start gap-4">
+            <div
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
+              style={{ background: "color-mix(in oklab, var(--primary) 8%, transparent)" }}
+            >
+              <Info className="h-5 w-5" style={{ color: "var(--primary)" }} />
+            </div>
+            <div>
+              <h3 className="font-heading text-base font-semibold text-primary">
+                Religious guidance disclaimer
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                This answer is provided for general guidance. Rulings may vary depending on
+                context, madhhab (school of thought), and individual circumstances. For
+                matters specific to your situation, please consult your local mosque or a
+                qualified scholar directly.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function formatFullDate(iso: string) {
+  return new Date(iso).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 function ResultsSkeleton() {
   return (
+
     <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 6 }).map((_, i) => (
         <div key={i} className="h-48 animate-pulse rounded-lg border border-border bg-muted/60" />

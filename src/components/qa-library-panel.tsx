@@ -61,8 +61,19 @@ export function QALibraryPanel({
 
   const isEmbedded = variant === "embedded";
 
+  if (isEmbedded && selectedQA) {
+    return (
+      <InlineQADetail
+        qa={selectedQA}
+        categoryName={catName(selectedQA.category_id)}
+        onBack={() => setSelectedQA(null)}
+      />
+    );
+  }
+
   return (
     <div>
+
       {isEmbedded ? (
         <div className="mb-8">
           <h1 className="font-heading text-3xl font-bold text-primary md:text-4xl">

@@ -1,10 +1,11 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Bell, LogOut, Menu, MoreVertical, X } from "lucide-react";
+import { LogOut, Menu, MoreVertical, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlatformTheme } from "@/lib/use-platform-theme";
 import { getNavForRole, type UserRole } from "@/lib/use-dashboard-nav";
 import { PasswordChangeBanner } from "@/components/password-change-banner";
+import { NotificationBell } from "@/components/notification-bell";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardShell,
@@ -134,12 +135,7 @@ function DashboardShell() {
           )}
         </Link>
         <div className="ml-auto flex items-center gap-2">
-          <button
-            aria-label="Notifications"
-            className="grid h-10 w-10 place-items-center rounded-full transition hover:bg-white/10"
-          >
-            <Bell className="h-5 w-5" />
-          </button>
+          <NotificationBell userId={profile.user_id} role={role} />
         </div>
       </header>
 

@@ -150,8 +150,14 @@ export function QALibraryPanel({
           ) : (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {filtered.map((qa) => (
-                <QACard key={qa.id} qa={qa} categoryName={catName(qa.category_id)} />
+                <QACard
+                  key={qa.id}
+                  qa={qa}
+                  categoryName={catName(qa.category_id)}
+                  onSelect={isEmbedded ? () => setSelectedQA(qa) : undefined}
+                />
               ))}
+
             </div>
           )}
         </div>

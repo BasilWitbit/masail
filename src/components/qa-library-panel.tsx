@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Calendar, ArrowRight, Inbox } from "lucide-react";
+import { Search, Calendar, ArrowRight, ArrowLeft, Inbox, BookOpen, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 type Category = { id: string; name: string };
@@ -22,6 +22,8 @@ export function QALibraryPanel({
   const [activeCat, setActiveCat] = useState<string | "all">("all");
   const [categories, setCategories] = useState<Category[]>([]);
   const [items, setItems] = useState<QA[] | null>(null);
+  const [selectedQA, setSelectedQA] = useState<QA | null>(null);
+
 
   useEffect(() => {
     let active = true;

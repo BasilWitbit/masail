@@ -152,6 +152,54 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          related_question_id: string | null
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          related_question_id?: string | null
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          related_question_id?: string | null
+          title?: string
+          type?: Database["public"]["Enums"]["notification_type"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_related_question_id_fkey"
+            columns: ["related_question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       peer_reviews: {
         Row: {
           answer_id: string
@@ -509,6 +557,12 @@ export type Database = {
         | "under_peer_review"
         | "peer_approved"
         | "sent_to_user"
+      notification_type:
+        | "question_answered"
+        | "question_rejected"
+        | "answer_approved"
+        | "answer_needs_revision"
+        | "question_reported"
       question_status:
         | "submitted"
         | "in_pool"
@@ -657,6 +711,13 @@ export const Constants = {
         "under_peer_review",
         "peer_approved",
         "sent_to_user",
+      ],
+      notification_type: [
+        "question_answered",
+        "question_rejected",
+        "answer_approved",
+        "answer_needs_revision",
+        "question_reported",
       ],
       question_status: [
         "submitted",

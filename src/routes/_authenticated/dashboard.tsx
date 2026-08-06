@@ -125,20 +125,24 @@ function DashboardShell() {
     <div className="h-screen overflow-hidden bg-surface text-foreground flex flex-col">
       {/* Top bar */}
       <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-4 bg-primary px-4 text-white shadow-sm md:px-6">
-        <button
-          aria-label="Toggle navigation"
-          onClick={() => setMobileOpen((v) => !v)}
-          className="grid h-10 w-10 place-items-center rounded-lg bg-white/10 transition hover:bg-white/20 md:hidden"
-        >
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
-        <button
-          aria-label="Toggle sidebar"
-          onClick={() => setCollapsed((v) => !v)}
-          className="hidden h-10 w-10 place-items-center rounded-lg bg-white/10 transition hover:bg-white/20 md:grid"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
+        {!deactivated && (
+          <button
+            aria-label="Toggle navigation"
+            onClick={() => setMobileOpen((v) => !v)}
+            className="grid h-10 w-10 place-items-center rounded-lg bg-white/10 transition hover:bg-white/20 md:hidden"
+          >
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        )}
+        {!deactivated && (
+          <button
+            aria-label="Toggle sidebar"
+            onClick={() => setCollapsed((v) => !v)}
+            className="hidden h-10 w-10 place-items-center rounded-lg bg-white/10 transition hover:bg-white/20 md:grid"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+        )}
         <Link to="/dashboard" className="flex items-center gap-2">
           {settings?.logo_url ? (
             <img src={settings.logo_url} alt="Masail" className="h-10 w-auto" />

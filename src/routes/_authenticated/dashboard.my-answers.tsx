@@ -80,7 +80,35 @@ function isImagePath(path: string) {
   return /\.(jpe?g|png|webp|gif)$/i.test(path);
 }
 
+async function downloadBlob(url: string, filename: string) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("download failed");
+  const blob = await res.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = objectUrl;
+  a.download = filename;
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+}
+
 function QuestionAttachments({ paths }: { paths: string[] }) {
+  const [downloading, setDownloading] = useState<string | null>(null);
+
+  const handleDownload = async (it: Attachment) => {
+    setDownloading(it.path);
+    try {
+      await downloadBlob(it.url, it.name);
+    } catch {
+      toast.error("Could not download the file. Please try again.");
+    } finally {
+      setDownloading(null);
+    }
+  };
+
   const [items, setItems] = useState<Attachment[]>([]);
   const [loading, setLoading] = useState(true);
   const [lightbox, setLightbox] = useState<Attachment | null>(null);
@@ -128,20 +156,37 @@ function QuestionAttachments({ paths }: { paths: string[] }) {
         <div className="mt-4 flex flex-wrap gap-3">
           {items.map((it) =>
             it.isImage ? (
-              <button
+              <div
                 key={it.path}
-                type="button"
-                onClick={() => setLightbox(it)}
-                title={it.name}
-                className="group overflow-hidden rounded-lg border border-border bg-muted transition hover:border-primary"
+                className="overflow-hidden rounded-lg border border-border bg-muted transition hover:border-primary"
               >
-                <img
-                  src={it.url}
-                  alt={it.name}
-                  className="h-24 w-24 object-cover transition group-hover:opacity-90"
-                  loading="lazy"
-                />
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setLightbox(it)}
+                  title={it.name}
+                  className="group block"
+                >
+                  <img
+                    src={it.url}
+                    alt={it.name}
+                    className="h-24 w-24 object-cover transition group-hover:opacity-90"
+                    loading="lazy"
+                  />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDownload(it)}
+                  disabled={downloading === it.path}
+                  className="flex w-full items-center justify-center gap-1 border-t border-border bg-background px-2 py-1 text-xs font-semibold text-primary transition hover:bg-muted disabled:opacity-60"
+                >
+                  {downloading === it.path ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Download className="h-3.5 w-3.5" />
+                  )}
+                  Download
+                </button>
+              </div>
             ) : (
               <div
                 key={it.path}
@@ -149,17 +194,23 @@ function QuestionAttachments({ paths }: { paths: string[] }) {
               >
                 <FileText className="h-5 w-5 text-muted-foreground" />
                 <span className="max-w-[200px] truncate text-sm text-foreground">{it.name}</span>
-                <a
-                  href={it.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-xs font-semibold text-primary transition hover:bg-muted"
+                <button
+                  type="button"
+                  onClick={() => handleDownload(it)}
+                  disabled={downloading === it.path}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-xs font-semibold text-primary transition hover:bg-muted disabled:opacity-60"
                 >
-                  <Download className="h-3.5 w-3.5" /> Download
-                </a>
+                  {downloading === it.path ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Download className="h-3.5 w-3.5" />
+                  )}
+                  Download
+                </button>
               </div>
             ),
           )}
+
         </div>
       )}
 

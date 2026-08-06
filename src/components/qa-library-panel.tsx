@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { Search, Calendar, ArrowRight, ArrowLeft, Inbox, BookOpen, Info } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Search, Calendar, ArrowRight, ArrowLeft, Inbox, BookOpen, Info, Filter, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 type Category = { id: string; name: string };
@@ -19,7 +19,7 @@ export function QALibraryPanel({
   variant?: "public" | "embedded";
 }) {
   const [query, setQuery] = useState("");
-  const [activeCat, setActiveCat] = useState<string | "all">("all");
+  const [selectedCats, setSelectedCats] = useState<string[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [items, setItems] = useState<QA[] | null>(null);
   const [selectedQA, setSelectedQA] = useState<QA | null>(null);
@@ -53,11 +53,12 @@ export function QALibraryPanel({
     if (!items) return null;
     const q = query.trim().toLowerCase();
     return items.filter((i) => {
-      if (activeCat !== "all" && i.category_id !== activeCat) return false;
+      if (selectedCats.length > 0 && (!i.category_id || !selectedCats.includes(i.category_id)))
+        return false;
       if (q && !i.generic_question.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [items, query, activeCat]);
+  }, [items, query, selectedCats]);
 
   const isEmbedded = variant === "embedded";
 
@@ -127,26 +128,19 @@ export function QALibraryPanel({
           </button>
         </form>
 
-        <div className="mt-6 flex flex-wrap gap-2">
-          <Pill active={activeCat === "all"} onClick={() => setActiveCat("all")}>
-            All
-          </Pill>
-          {categories.map((c) => (
-            <Pill
-              key={c.id}
-              active={activeCat === c.id}
-              onClick={() => setActiveCat(c.id)}
-            >
-              {c.name}
-            </Pill>
-          ))}
+        <div className="mt-6">
+          <CategoryFilter
+            categories={categories}
+            selected={selectedCats}
+            onChange={setSelectedCats}
+          />
         </div>
 
         <div className="mt-8 pb-12">
           {filtered === null ? (
             <ResultsSkeleton />
           ) : filtered.length === 0 ? (
-            <EmptyState hasFilters={query.length > 0 || activeCat !== "all"} />
+            <EmptyState hasFilters={query.length > 0 || selectedCats.length > 0} />
           ) : (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {filtered.map((qa) => (
@@ -166,26 +160,121 @@ export function QALibraryPanel({
   );
 }
 
-function Pill({
-  active,
-  onClick,
-  children,
+function CategoryFilter({
+  categories,
+  selected,
+  onChange,
 }: {
-  active?: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
+  categories: Category[];
+  selected: string[];
+  onChange: (next: string[]) => void;
 }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onDocClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, [open]);
+
+  function toggle(id: string) {
+    onChange(selected.includes(id) ? selected.filter((s) => s !== id) : [...selected, id]);
+  }
+
   return (
-    <button
-      onClick={onClick}
-      className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-        active
-          ? "border-transparent bg-primary text-primary-foreground shadow-sm"
-          : "border-border bg-card text-foreground hover:border-primary/40 hover:text-primary"
-      }`}
-    >
-      {children}
-    </button>
+    <div ref={ref} className="relative inline-block">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className={`inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition ${
+          selected.length > 0 || open
+            ? "border-primary/50 bg-card text-primary shadow-sm"
+            : "border-border bg-card text-foreground hover:border-primary/40 hover:text-primary"
+        }`}
+      >
+        <Filter className="h-4 w-4" />
+        Filter by Category
+        {selected.length > 0 ? (
+          <span
+            className="ml-1 inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-xs font-semibold"
+            style={{
+              background: "color-mix(in oklab, var(--secondary) 30%, transparent)",
+              color: "var(--primary)",
+            }}
+          >
+            {selected.length}
+          </span>
+        ) : null}
+      </button>
+
+      {open ? (
+        <div className="absolute left-0 z-30 mt-2 w-72 rounded-lg border border-border bg-card p-2 shadow-lg">
+          <div className="flex items-center justify-between gap-2 border-b border-border px-2 pb-2">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Categories
+            </span>
+            <button
+              type="button"
+              onClick={() => onChange([])}
+              disabled={selected.length === 0}
+              className="text-xs font-semibold text-primary transition hover:underline disabled:opacity-40 disabled:hover:no-underline"
+            >
+              Clear all
+            </button>
+          </div>
+
+          <div className="max-h-64 overflow-y-auto py-1">
+            {categories.length === 0 ? (
+              <p className="px-2 py-3 text-sm text-muted-foreground">No categories yet.</p>
+            ) : (
+              categories.map((c) => {
+                const checked = selected.includes(c.id);
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => toggle(c.id)}
+                    className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm transition hover:bg-muted/60"
+                  >
+                    <span
+                      className="grid h-4 w-4 shrink-0 place-items-center rounded border transition"
+                      style={
+                        checked
+                          ? {
+                              background: "var(--primary)",
+                              borderColor: "var(--primary)",
+                              color: "var(--primary-foreground)",
+                            }
+                          : { borderColor: "var(--border)" }
+                      }
+                    >
+                      {checked ? <Check className="h-3 w-3" /> : null}
+                    </span>
+                    <span className={checked ? "font-semibold text-foreground" : "text-foreground"}>
+                      {c.name}
+                    </span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+
+          <div className="border-t border-border pt-2">
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
+            >
+              Apply
+            </button>
+          </div>
+        </div>
+      ) : null}
+    </div>
   );
 }
 

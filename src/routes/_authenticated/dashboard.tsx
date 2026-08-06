@@ -25,6 +25,7 @@ function DashboardShell() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const [role, setRole] = useState<UserRole | null>(null);
+  const [deactivated, setDeactivated] = useState(false);
   const [profile, setProfile] = useState<ProfileInfo>({ full_name: null, email: null, avatar_url: null, user_id: null, must_change_password: false });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -43,6 +44,15 @@ function DashboardShell() {
         .maybeSingle();
       if (!active) return;
       setRole(((data?.role as UserRole) ?? "user"));
+      if (data?.role === "shaykh") {
+        const { data: shaykh } = await supabase
+          .from("shaykhs")
+          .select("is_active")
+          .eq("profile_id", userData.user.id)
+          .maybeSingle();
+        if (!active) return;
+        if (shaykh && shaykh.is_active === false) setDeactivated(true);
+      }
       setProfile({
         full_name: (data?.full_name as string | null) ?? null,
         email: userData.user.email ?? null,
@@ -97,7 +107,7 @@ function DashboardShell() {
     };
   }, []);
 
-  const nav = getNavForRole(role);
+  const nav = deactivated ? [] : getNavForRole(role);
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -247,10 +257,25 @@ function DashboardShell() {
         {/* Main content */}
         <main className="h-full flex-1 min-w-0 overflow-y-auto transition-[width] duration-200 ease-out">
           <div className="mx-auto max-w-6xl px-6 py-10 md:py-12">
-            {profile.must_change_password && profile.user_id && profile.email && (
-              <PasswordChangeBanner userId={profile.user_id} email={profile.email} />
+            {deactivated ? (
+              <div className="mx-auto max-w-xl rounded-lg border border-border bg-card p-10 text-center shadow-sm">
+                <h1 className="font-heading text-2xl font-bold text-foreground">
+                  Your account has been deactivated
+                </h1>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  Your scholar account at this mosque has been deactivated by the mosque
+                  administrator. If you believe this is a mistake, please contact your mosque admin
+                  directly.
+                </p>
+              </div>
+            ) : (
+              <>
+                {profile.must_change_password && profile.user_id && profile.email && (
+                  <PasswordChangeBanner userId={profile.user_id} email={profile.email} />
+                )}
+                <Outlet />
+              </>
             )}
-            <Outlet />
           </div>
         </main>
       </div>

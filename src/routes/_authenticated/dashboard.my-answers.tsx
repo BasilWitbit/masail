@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, ArrowLeft, BookOpenCheck, FileText, Loader2, MessageSquareWarning, X } from "lucide-react";
+import { AlertTriangle, ArrowLeft, BookOpenCheck, Download, FileText, Loader2, MessageSquareWarning, Paperclip, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { requireRole } from "@/lib/require-role";

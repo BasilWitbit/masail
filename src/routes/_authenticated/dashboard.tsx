@@ -61,6 +61,10 @@ function DashboardShell() {
   }, [pathname]);
 
   useEffect(() => {
+    if (collapsed) setMenuOpen(false);
+  }, [collapsed]);
+
+  useEffect(() => {
     if (!menuOpen) return;
     function handleClick(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -176,11 +180,8 @@ function DashboardShell() {
             <div className={`mt-6 border-t border-border ${collapsed ? "pt-3" : "pt-4"}`}>
               <div ref={menuRef} className={`relative flex items-center ${collapsed ? "justify-center" : "gap-3"}`}>
                 {collapsed ? (
-                  <button
-                    aria-label="Open menu"
-                    aria-expanded={menuOpen}
-                    onClick={() => setMenuOpen((v) => !v)}
-                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary/10 font-heading text-sm font-bold text-primary transition hover:bg-primary/20"
+                  <div
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary/10 font-heading text-sm font-bold text-primary"
                     title={profile.full_name ?? "Account"}
                   >
                     {profile.avatar_url ? (
@@ -192,7 +193,7 @@ function DashboardShell() {
                     ) : (
                       initials
                     )}
-                  </button>
+                  </div>
                 ) : (
                   <>
                     {profile.avatar_url ? (
@@ -224,8 +225,8 @@ function DashboardShell() {
                     </button>
                   </>
                 )}
-                {menuOpen && (
-                  <div className={`absolute bottom-full mb-2 w-48 rounded-lg border border-border bg-card p-1 shadow-lg ${collapsed ? "left-1/2 -translate-x-1/2" : "right-0"}`}>
+                {!collapsed && menuOpen && (
+                  <div className="absolute bottom-full right-0 mb-2 w-48 rounded-lg border border-border bg-card p-1 shadow-lg">
                     <button
                       onClick={() => {
                         setMenuOpen(false);

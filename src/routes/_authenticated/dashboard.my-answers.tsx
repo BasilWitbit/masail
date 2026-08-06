@@ -156,20 +156,37 @@ function QuestionAttachments({ paths }: { paths: string[] }) {
         <div className="mt-4 flex flex-wrap gap-3">
           {items.map((it) =>
             it.isImage ? (
-              <button
+              <div
                 key={it.path}
-                type="button"
-                onClick={() => setLightbox(it)}
-                title={it.name}
-                className="group overflow-hidden rounded-lg border border-border bg-muted transition hover:border-primary"
+                className="overflow-hidden rounded-lg border border-border bg-muted transition hover:border-primary"
               >
-                <img
-                  src={it.url}
-                  alt={it.name}
-                  className="h-24 w-24 object-cover transition group-hover:opacity-90"
-                  loading="lazy"
-                />
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setLightbox(it)}
+                  title={it.name}
+                  className="group block"
+                >
+                  <img
+                    src={it.url}
+                    alt={it.name}
+                    className="h-24 w-24 object-cover transition group-hover:opacity-90"
+                    loading="lazy"
+                  />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDownload(it)}
+                  disabled={downloading === it.path}
+                  className="flex w-full items-center justify-center gap-1 border-t border-border bg-background px-2 py-1 text-xs font-semibold text-primary transition hover:bg-muted disabled:opacity-60"
+                >
+                  {downloading === it.path ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Download className="h-3.5 w-3.5" />
+                  )}
+                  Download
+                </button>
+              </div>
             ) : (
               <div
                 key={it.path}
@@ -177,17 +194,23 @@ function QuestionAttachments({ paths }: { paths: string[] }) {
               >
                 <FileText className="h-5 w-5 text-muted-foreground" />
                 <span className="max-w-[200px] truncate text-sm text-foreground">{it.name}</span>
-                <a
-                  href={it.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-xs font-semibold text-primary transition hover:bg-muted"
+                <button
+                  type="button"
+                  onClick={() => handleDownload(it)}
+                  disabled={downloading === it.path}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-xs font-semibold text-primary transition hover:bg-muted disabled:opacity-60"
                 >
-                  <Download className="h-3.5 w-3.5" /> Download
-                </a>
+                  {downloading === it.path ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Download className="h-3.5 w-3.5" />
+                  )}
+                  Download
+                </button>
               </div>
             ),
           )}
+
         </div>
       )}
 

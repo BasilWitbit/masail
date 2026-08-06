@@ -86,7 +86,11 @@ export function AccountSettingsPanel({ showMosque = false }: { showMosque?: bool
     if (!userId) return;
 
     setSavingProfile(true);
-    const payload: Record<string, unknown> = {
+    const payload: {
+      full_name: string;
+      phone: string | null;
+      mosque_id?: string | null;
+    } = {
       full_name: fullName.trim(),
       phone: phone.trim() || null,
     };

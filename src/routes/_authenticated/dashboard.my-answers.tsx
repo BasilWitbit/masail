@@ -129,7 +129,7 @@ function MyAnswers() {
         const { data, error: qErr } = await supabase
           .from("questions")
           .select(
-            "id, title, body, created_at, updated_at, is_urgent, is_anonymous, is_private, status, asker_id, category_id, mosque_id, categories(name), answers(id, body, status, updated_at, shaykh_id)",
+            "id, title, body, created_at, updated_at, is_urgent, is_anonymous, is_private, status, asker_id, category_id, mosque_id, attachment_urls, categories(name), answers(id, body, status, updated_at, shaykh_id)",
           )
           .eq("claimed_by", shaykh.id as string)
           .order("updated_at", { ascending: false });

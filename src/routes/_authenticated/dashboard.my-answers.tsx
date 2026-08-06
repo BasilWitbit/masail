@@ -630,6 +630,12 @@ function Detail({
         <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-foreground">{row.body}</p>
       </div>
 
+      {row.attachment_urls && row.attachment_urls.length > 0 && (
+        <QuestionAttachments paths={row.attachment_urls} />
+      )}
+
+
+
       <div className="mt-6 rounded-lg border border-border bg-card p-6 shadow-sm">
         <h2 className="font-heading text-lg font-semibold text-primary">
           {editable ? "Your Answer" : "Answer"}

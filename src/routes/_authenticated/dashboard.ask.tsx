@@ -98,9 +98,31 @@ function AskQuestion() {
 
     setSubmitting(true);
     try {
+      // Generate the question id up-front so attachments can be uploaded to
+      // {user_id}/{question_id}/{filename} BEFORE the row is inserted. The
+      // asker has INSERT rights but no UPDATE policy on `questions`, so the
+      // paths must be written as part of the initial insert.
+      const questionId = crypto.randomUUID();
+
+      const uploadedPaths: string[] = [];
+      const failed: string[] = [];
+      for (const file of files) {
+        const safeName = file.name.replace(/[^\w.\-]+/g, "_");
+        const path = `${userId}/${questionId}/${safeName}`;
+        const { error: upErr } = await supabase.storage
+          .from("question-attachments")
+          .upload(path, file, { upsert: true });
+        if (upErr) {
+          failed.push(file.name);
+        } else {
+          uploadedPaths.push(path);
+        }
+      }
+
       const { data: inserted, error: insertError } = await supabase
         .from("questions")
         .insert({
+          id: questionId,
           asker_id: userId,
           mosque_id: mosqueId,
           category_id: categoryId,
@@ -110,6 +132,7 @@ function AskQuestion() {
           is_anonymous: isAnonymous,
           is_urgent: isUrgent,
           status: "in_pool",
+          attachment_urls: uploadedPaths.length > 0 ? uploadedPaths : null,
         })
         .select("id")
         .single();
@@ -120,38 +143,12 @@ function AskQuestion() {
         return;
       }
 
-      const questionId = inserted.id as string;
-
-      if (files.length > 0) {
-        const uploadedPaths: string[] = [];
-        const failed: string[] = [];
-        for (const file of files) {
-          const safeName = file.name.replace(/[^\w.\-]+/g, "_");
-          const path = `${userId}/${questionId}/${safeName}`;
-          const { error: upErr } = await supabase.storage
-            .from("question-attachments")
-            .upload(path, file, { upsert: false });
-          if (upErr) {
-            failed.push(file.name);
-          } else {
-            uploadedPaths.push(path);
-          }
-        }
-
-        if (uploadedPaths.length > 0) {
-          await supabase
-            .from("questions")
-            .update({ attachment_urls: uploadedPaths })
-            .eq("id", questionId);
-        }
-
-        if (failed.length > 0) {
-          setAttachmentWarning(
-            `Your question was submitted, but ${failed.length} attachment${
-              failed.length === 1 ? "" : "s"
-            } failed to upload (${failed.join(", ")}). You can share them with the scholar later.`,
-          );
-        }
+      if (failed.length > 0) {
+        setAttachmentWarning(
+          `Your question was submitted, but ${failed.length} attachment${
+            failed.length === 1 ? "" : "s"
+          } failed to upload (${failed.join(", ")}). You can share them with the scholar later.`,
+        );
       }
 
       setSuccessId(questionId);

@@ -46,13 +46,15 @@ function AccountSettings() {
         setEmail(userData.user.email ?? "");
         const { data: profile } = await supabase
           .from("profiles")
-          .select("full_name, phone, mosque_id")
+          .select("full_name, phone, mosque_id, avatar_url")
           .eq("id", userData.user.id)
           .maybeSingle();
         if (!active) return;
         setFullName((profile?.full_name as string | null) ?? "");
         setPhone((profile?.phone as string | null) ?? "");
         setMosqueId((profile?.mosque_id as string | null) ?? "");
+        setAvatarUrl((profile?.avatar_url as string | null) ?? null);
+
       }
       setLoading(false);
     })();

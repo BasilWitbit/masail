@@ -40,18 +40,21 @@ const superAdminNav: DashboardNavItem[] = [
   { to: "/dashboard/reports", label: "Reports", icon: Flag },
   { to: "/dashboard/public-content", label: "Manage Public Content", icon: Globe },
   { to: "/dashboard/ui-settings", label: "UI Settings", icon: Palette },
+  { to: "/dashboard/account-settings", label: "Account Settings", icon: Settings },
 ];
 
 const mosqueAdminNav: DashboardNavItem[] = [
   { to: "/dashboard/mosque-admin", label: "Dashboard", icon: LayoutDashboard },
   { to: "/dashboard/create-shaykh", label: "Create Shaykh", icon: UserPlus },
   { to: "/dashboard/manage-shaykhs", label: "Manage Shaykhs", icon: Users },
+  { to: "/dashboard/account-settings", label: "Account Settings", icon: Settings },
 ];
 
 const shaykhNav: DashboardNavItem[] = [
   { to: "/dashboard/pool", label: "Question Pool", icon: Inbox },
   { to: "/dashboard/my-answers", label: "My Answers", icon: FileText },
   { to: "/dashboard/peer-review", label: "Peer Review", icon: ClipboardCheck },
+  { to: "/dashboard/account-settings", label: "Account Settings", icon: Settings },
 ];
 
 export function getNavForRole(role: UserRole | null | undefined): DashboardNavItem[] {

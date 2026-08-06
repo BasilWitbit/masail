@@ -36,6 +36,7 @@ import { Route as AuthenticatedDashboardCreateAdminRouteImport } from './routes/
 import { Route as AuthenticatedDashboardCategoriesRouteImport } from './routes/_authenticated/dashboard.categories'
 import { Route as AuthenticatedDashboardAskRouteImport } from './routes/_authenticated/dashboard.ask'
 import { Route as AuthenticatedDashboardAdminRouteImport } from './routes/_authenticated/dashboard.admin'
+import { Route as AuthenticatedDashboardAccountSettingsRouteImport } from './routes/_authenticated/dashboard.account-settings'
 import { Route as AuthenticatedDashboardQuestionsIndexRouteImport } from './routes/_authenticated/dashboard.questions.index'
 import { Route as AuthenticatedDashboardQuestionsIdRouteImport } from './routes/_authenticated/dashboard.questions.$id'
 
@@ -191,6 +192,12 @@ const AuthenticatedDashboardAdminRoute =
     path: '/admin',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardAccountSettingsRoute =
+  AuthenticatedDashboardAccountSettingsRouteImport.update({
+    id: '/account-settings',
+    path: '/account-settings',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardQuestionsIndexRoute =
   AuthenticatedDashboardQuestionsIndexRouteImport.update({
     id: '/',
@@ -213,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/qa/$id': typeof QaIdRoute
   '/qa/': typeof QaIndexRoute
+  '/dashboard/account-settings': typeof AuthenticatedDashboardAccountSettingsRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/ask': typeof AuthenticatedDashboardAskRoute
   '/dashboard/categories': typeof AuthenticatedDashboardCategoriesRoute
@@ -241,6 +249,7 @@ export interface FileRoutesByTo {
   '/verify-otp': typeof VerifyOtpRoute
   '/qa/$id': typeof QaIdRoute
   '/qa': typeof QaIndexRoute
+  '/dashboard/account-settings': typeof AuthenticatedDashboardAccountSettingsRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/ask': typeof AuthenticatedDashboardAskRoute
   '/dashboard/categories': typeof AuthenticatedDashboardCategoriesRoute
@@ -272,6 +281,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/qa/$id': typeof QaIdRoute
   '/qa/': typeof QaIndexRoute
+  '/_authenticated/dashboard/account-settings': typeof AuthenticatedDashboardAccountSettingsRoute
   '/_authenticated/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/_authenticated/dashboard/ask': typeof AuthenticatedDashboardAskRoute
   '/_authenticated/dashboard/categories': typeof AuthenticatedDashboardCategoriesRoute
@@ -304,6 +314,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/qa/$id'
     | '/qa/'
+    | '/dashboard/account-settings'
     | '/dashboard/admin'
     | '/dashboard/ask'
     | '/dashboard/categories'
@@ -332,6 +343,7 @@ export interface FileRouteTypes {
     | '/verify-otp'
     | '/qa/$id'
     | '/qa'
+    | '/dashboard/account-settings'
     | '/dashboard/admin'
     | '/dashboard/ask'
     | '/dashboard/categories'
@@ -362,6 +374,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/qa/$id'
     | '/qa/'
+    | '/_authenticated/dashboard/account-settings'
     | '/_authenticated/dashboard/admin'
     | '/_authenticated/dashboard/ask'
     | '/_authenticated/dashboard/categories'
@@ -584,6 +597,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardAdminRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/account-settings': {
+      id: '/_authenticated/dashboard/account-settings'
+      path: '/account-settings'
+      fullPath: '/dashboard/account-settings'
+      preLoaderRoute: typeof AuthenticatedDashboardAccountSettingsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/questions/': {
       id: '/_authenticated/dashboard/questions/'
       path: '/'
@@ -620,6 +640,7 @@ const AuthenticatedDashboardQuestionsRouteWithChildren =
   )
 
 interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardAccountSettingsRoute: typeof AuthenticatedDashboardAccountSettingsRoute
   AuthenticatedDashboardAdminRoute: typeof AuthenticatedDashboardAdminRoute
   AuthenticatedDashboardAskRoute: typeof AuthenticatedDashboardAskRoute
   AuthenticatedDashboardCategoriesRoute: typeof AuthenticatedDashboardCategoriesRoute
@@ -642,6 +663,8 @@ interface AuthenticatedDashboardRouteChildren {
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
+    AuthenticatedDashboardAccountSettingsRoute:
+      AuthenticatedDashboardAccountSettingsRoute,
     AuthenticatedDashboardAdminRoute: AuthenticatedDashboardAdminRoute,
     AuthenticatedDashboardAskRoute: AuthenticatedDashboardAskRoute,
     AuthenticatedDashboardCategoriesRoute:

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { requireRole } from "@/lib/require-role";
@@ -19,6 +19,13 @@ function AccountSettings() {
   const [mosqueId, setMosqueId] = useState("");
   const [mosques, setMosques] = useState<Mosque[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
+  const [avatarSuccess, setAvatarSuccess] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
 
   const [nameError, setNameError] = useState<string | null>(null);
   const [profileError, setProfileError] = useState<string | null>(null);
@@ -46,13 +53,15 @@ function AccountSettings() {
         setEmail(userData.user.email ?? "");
         const { data: profile } = await supabase
           .from("profiles")
-          .select("full_name, phone, mosque_id")
+          .select("full_name, phone, mosque_id, avatar_url")
           .eq("id", userData.user.id)
           .maybeSingle();
         if (!active) return;
         setFullName((profile?.full_name as string | null) ?? "");
         setPhone((profile?.phone as string | null) ?? "");
         setMosqueId((profile?.mosque_id as string | null) ?? "");
+        setAvatarUrl((profile?.avatar_url as string | null) ?? null);
+
       }
       setLoading(false);
     })();
@@ -147,6 +156,65 @@ function AccountSettings() {
     setTimeout(() => setPasswordSuccess(false), 4000);
   }
 
+  const initials =
+    (fullName || email || "U")
+      .split(" ")
+      .filter(Boolean)
+      .map((s) => s[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "U";
+
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setAvatarError(null);
+    setAvatarSuccess(false);
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !userId) return;
+
+    const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type)) {
+      setAvatarError("Please choose a JPG, PNG, or WebP image.");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setAvatarError("Image is too large. Maximum size is 2MB.");
+      return;
+    }
+
+    const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
+    const path = `${userId}/avatar.${ext}`;
+
+    setUploading(true);
+    const { error: uploadErr } = await supabase.storage
+      .from("avatars")
+      .upload(path, file, { upsert: true, contentType: file.type });
+    if (uploadErr) {
+      setUploading(false);
+      setAvatarError(uploadErr.message);
+      return;
+    }
+
+    const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
+    const publicUrl = `${pub.publicUrl}?v=${Date.now()}`;
+
+    const { error: updateErr } = await supabase
+      .from("profiles")
+      .update({ avatar_url: publicUrl })
+      .eq("id", userId);
+    setUploading(false);
+
+    if (updateErr) {
+      setAvatarError(updateErr.message);
+      return;
+    }
+
+    setAvatarUrl(publicUrl);
+    window.dispatchEvent(new CustomEvent("masail:avatar-updated", { detail: publicUrl }));
+    setAvatarSuccess(true);
+    setTimeout(() => setAvatarSuccess(false), 4000);
+  }
+
   if (loading) {
     return (
       <div className="max-w-3xl">
@@ -166,6 +234,67 @@ function AccountSettings() {
           Manage your profile information and password.
         </p>
       </div>
+
+      {/* Section 0: Profile Photo */}
+      <div className="space-y-6 rounded-lg border border-border bg-card p-6 shadow-sm md:p-8">
+        <div>
+          <h2 className="font-heading text-xl font-semibold text-foreground">Profile Photo</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            JPG, PNG or WebP. Maximum size 2MB.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-6">
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt={fullName || "Profile photo"}
+              className="h-24 w-24 shrink-0 rounded-full object-cover"
+            />
+          ) : (
+            <div className="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-primary/10 font-heading text-2xl font-bold text-primary">
+              {initials}
+            </div>
+          )}
+
+          <div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleAvatarChange}
+              className="hidden"
+            />
+            <button
+              type="button"
+              disabled={uploading}
+              onClick={() => fileInputRef.current?.click()}
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {uploading ? "Uploading…" : "Upload Photo"}
+            </button>
+          </div>
+        </div>
+
+        {avatarError && (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>{avatarError}</span>
+            </div>
+          </div>
+        )}
+
+        {avatarSuccess && (
+          <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>Profile photo updated</span>
+            </div>
+          </div>
+        )}
+      </div>
+
 
       {/* Section 1: Profile Information */}
       <form

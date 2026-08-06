@@ -39,7 +39,7 @@ function DashboardShell() {
       if (!userData.user) return;
       const { data } = await supabase
         .from("profiles")
-        .select("role, full_name, must_change_password")
+        .select("role, full_name, must_change_password, avatar_url")
         .eq("id", userData.user.id)
         .maybeSingle();
       if (!active) return;
@@ -56,7 +56,7 @@ function DashboardShell() {
       setProfile({
         full_name: (data?.full_name as string | null) ?? null,
         email: userData.user.email ?? null,
-        avatar_url: null,
+        avatar_url: (data?.avatar_url as string | null) ?? null,
         user_id: userData.user.id,
         must_change_password: Boolean(data?.must_change_password),
       });
@@ -65,6 +65,17 @@ function DashboardShell() {
       active = false;
     };
   }, []);
+
+  // Live-update the sidebar avatar when the user changes their photo in settings.
+  useEffect(() => {
+    function onAvatarUpdated(event: Event) {
+      const url = (event as CustomEvent<string>).detail ?? null;
+      setProfile((p) => ({ ...p, avatar_url: url }));
+    }
+    window.addEventListener("masail:avatar-updated", onAvatarUpdated);
+    return () => window.removeEventListener("masail:avatar-updated", onAvatarUpdated);
+  }, []);
+
 
   useEffect(() => {
     setMobileOpen(false);

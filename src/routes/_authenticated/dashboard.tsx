@@ -25,6 +25,7 @@ function DashboardShell() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const [role, setRole] = useState<UserRole | null>(null);
+  const [deactivated, setDeactivated] = useState(false);
   const [profile, setProfile] = useState<ProfileInfo>({ full_name: null, email: null, avatar_url: null, user_id: null, must_change_password: false });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -43,6 +44,15 @@ function DashboardShell() {
         .maybeSingle();
       if (!active) return;
       setRole(((data?.role as UserRole) ?? "user"));
+      if (data?.role === "shaykh") {
+        const { data: shaykh } = await supabase
+          .from("shaykhs")
+          .select("is_active")
+          .eq("profile_id", userData.user.id)
+          .maybeSingle();
+        if (!active) return;
+        if (shaykh && shaykh.is_active === false) setDeactivated(true);
+      }
       setProfile({
         full_name: (data?.full_name as string | null) ?? null,
         email: userData.user.email ?? null,

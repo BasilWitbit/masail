@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { Search, Calendar, ArrowRight, ArrowLeft, Inbox, BookOpen, Info } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Search, Calendar, ArrowRight, ArrowLeft, Inbox, BookOpen, Info, Filter, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 type Category = { id: string; name: string };
@@ -19,7 +19,7 @@ export function QALibraryPanel({
   variant?: "public" | "embedded";
 }) {
   const [query, setQuery] = useState("");
-  const [activeCat, setActiveCat] = useState<string | "all">("all");
+  const [selectedCats, setSelectedCats] = useState<string[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [items, setItems] = useState<QA[] | null>(null);
   const [selectedQA, setSelectedQA] = useState<QA | null>(null);
@@ -53,11 +53,12 @@ export function QALibraryPanel({
     if (!items) return null;
     const q = query.trim().toLowerCase();
     return items.filter((i) => {
-      if (activeCat !== "all" && i.category_id !== activeCat) return false;
+      if (selectedCats.length > 0 && (!i.category_id || !selectedCats.includes(i.category_id)))
+        return false;
       if (q && !i.generic_question.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [items, query, activeCat]);
+  }, [items, query, selectedCats]);
 
   const isEmbedded = variant === "embedded";
 
@@ -127,26 +128,19 @@ export function QALibraryPanel({
           </button>
         </form>
 
-        <div className="mt-6 flex flex-wrap gap-2">
-          <Pill active={activeCat === "all"} onClick={() => setActiveCat("all")}>
-            All
-          </Pill>
-          {categories.map((c) => (
-            <Pill
-              key={c.id}
-              active={activeCat === c.id}
-              onClick={() => setActiveCat(c.id)}
-            >
-              {c.name}
-            </Pill>
-          ))}
+        <div className="mt-6">
+          <CategoryFilter
+            categories={categories}
+            selected={selectedCats}
+            onChange={setSelectedCats}
+          />
         </div>
 
         <div className="mt-8 pb-12">
           {filtered === null ? (
             <ResultsSkeleton />
           ) : filtered.length === 0 ? (
-            <EmptyState hasFilters={query.length > 0 || activeCat !== "all"} />
+            <EmptyState hasFilters={query.length > 0 || selectedCats.length > 0} />
           ) : (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {filtered.map((qa) => (

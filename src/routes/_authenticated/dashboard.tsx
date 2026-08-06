@@ -61,6 +61,10 @@ function DashboardShell() {
   }, [pathname]);
 
   useEffect(() => {
+    if (collapsed) setMenuOpen(false);
+  }, [collapsed]);
+
+  useEffect(() => {
     if (!menuOpen) return;
     function handleClick(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {

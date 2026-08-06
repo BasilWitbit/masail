@@ -41,6 +41,7 @@ type Row = {
   asker_id: string | null;
   category_id: string | null;
   mosque_id: string;
+  attachment_urls: string[] | null;
   categories: { name: string } | null;
   answers: AnswerRow | null;
 };

@@ -80,7 +80,35 @@ function isImagePath(path: string) {
   return /\.(jpe?g|png|webp|gif)$/i.test(path);
 }
 
+async function downloadBlob(url: string, filename: string) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("download failed");
+  const blob = await res.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = objectUrl;
+  a.download = filename;
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+}
+
 function QuestionAttachments({ paths }: { paths: string[] }) {
+  const [downloading, setDownloading] = useState<string | null>(null);
+
+  const handleDownload = async (it: Attachment) => {
+    setDownloading(it.path);
+    try {
+      await downloadBlob(it.url, it.name);
+    } catch {
+      toast.error("Could not download the file. Please try again.");
+    } finally {
+      setDownloading(null);
+    }
+  };
+
   const [items, setItems] = useState<Attachment[]>([]);
   const [loading, setLoading] = useState(true);
   const [lightbox, setLightbox] = useState<Attachment | null>(null);

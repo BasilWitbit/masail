@@ -70,7 +70,6 @@ function truncate(text: string, n = 160) {
 
 function myAnswer(r: Row, shaykhId: string | null) {
   if (!r.answers) return null;
-  if (!r.answers) return null;
   if (!shaykhId || r.answers.shaykh_id === shaykhId) return r.answers;
   return null;
 }

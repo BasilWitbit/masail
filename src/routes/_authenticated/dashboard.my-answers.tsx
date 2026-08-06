@@ -70,9 +70,126 @@ function truncate(text: string, n = 160) {
 
 function myAnswer(r: Row, shaykhId: string | null) {
   if (!r.answers) return null;
+  if (!r.answers) return null;
   if (!shaykhId || r.answers.shaykh_id === shaykhId) return r.answers;
   return null;
 }
+
+type Attachment = { path: string; name: string; url: string; isImage: boolean };
+
+function isImagePath(path: string) {
+  return /\.(jpe?g|png|webp|gif)$/i.test(path);
+}
+
+function QuestionAttachments({ paths }: { paths: string[] }) {
+  const [items, setItems] = useState<Attachment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [lightbox, setLightbox] = useState<Attachment | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      setLoading(true);
+      const { data } = await supabase.storage
+        .from("question-attachments")
+        .createSignedUrls(paths, 60 * 60);
+      if (!active) return;
+      const list: Attachment[] = (data ?? [])
+        .map((d, i) => {
+          const path = (d as { path?: string | null }).path ?? paths[i];
+          if (!d.signedUrl || !path) return null;
+          return {
+            path,
+            name: path.split("/").pop() ?? path,
+            url: d.signedUrl,
+            isImage: isImagePath(path),
+          };
+        })
+        .filter((x): x is Attachment => x !== null);
+      setItems(list);
+      setLoading(false);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [paths.join("|")]);
+
+  if (!loading && items.length === 0) return null;
+
+  return (
+    <div className="mt-6 rounded-lg border border-border bg-card p-6 shadow-sm">
+      <h2 className="flex items-center gap-2 font-heading text-lg font-semibold text-primary">
+        <Paperclip className="h-4 w-4" /> Attachments
+      </h2>
+      {loading ? (
+        <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" /> Loading attachments…
+        </div>
+      ) : (
+        <div className="mt-4 flex flex-wrap gap-3">
+          {items.map((it) =>
+            it.isImage ? (
+              <button
+                key={it.path}
+                type="button"
+                onClick={() => setLightbox(it)}
+                title={it.name}
+                className="group overflow-hidden rounded-lg border border-border bg-muted transition hover:border-primary"
+              >
+                <img
+                  src={it.url}
+                  alt={it.name}
+                  className="h-24 w-24 object-cover transition group-hover:opacity-90"
+                  loading="lazy"
+                />
+              </button>
+            ) : (
+              <div
+                key={it.path}
+                className="flex items-center gap-3 rounded-lg border border-border bg-background px-3 py-2"
+              >
+                <FileText className="h-5 w-5 text-muted-foreground" />
+                <span className="max-w-[200px] truncate text-sm text-foreground">{it.name}</span>
+                <a
+                  href={it.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-xs font-semibold text-primary transition hover:bg-muted"
+                >
+                  <Download className="h-3.5 w-3.5" /> Download
+                </a>
+              </div>
+            ),
+          )}
+        </div>
+      )}
+
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6"
+          onClick={() => setLightbox(null)}
+        >
+          <div className="relative max-h-full max-w-3xl" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => setLightbox(null)}
+              className="absolute -top-3 -right-3 rounded-full border border-border bg-card p-1.5 text-foreground shadow-sm"
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <img
+              src={lightbox.url}
+              alt={lightbox.name}
+              className="max-h-[80vh] w-auto rounded-lg object-contain"
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 function Tag({ children, tone = "primary" }: { children: React.ReactNode; tone?: "primary" | "muted" }) {
   if (tone === "muted") {

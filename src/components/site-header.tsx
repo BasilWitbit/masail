@@ -39,8 +39,8 @@ export function SiteHeader({ active }: { active?: "home" | "qa" }) {
             onClick={() => setOpen((v) => !v)}
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-white transition hover:bg-white/10 md:hidden"
           >
-            {open ? <Menu className="h-6 w-6" style={{ display: "none" }} /> : null}
             {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+
           </button>
         </div>
       </div>

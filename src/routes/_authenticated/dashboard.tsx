@@ -107,7 +107,7 @@ function DashboardShell() {
     };
   }, []);
 
-  const nav = getNavForRole(role);
+  const nav = deactivated ? [] : getNavForRole(role);
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -257,10 +257,25 @@ function DashboardShell() {
         {/* Main content */}
         <main className="h-full flex-1 min-w-0 overflow-y-auto transition-[width] duration-200 ease-out">
           <div className="mx-auto max-w-6xl px-6 py-10 md:py-12">
-            {profile.must_change_password && profile.user_id && profile.email && (
-              <PasswordChangeBanner userId={profile.user_id} email={profile.email} />
+            {deactivated ? (
+              <div className="mx-auto max-w-xl rounded-lg border border-border bg-card p-10 text-center shadow-sm">
+                <h1 className="font-heading text-2xl font-bold text-foreground">
+                  Your account has been deactivated
+                </h1>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  Your scholar account at this mosque has been deactivated by the mosque
+                  administrator. If you believe this is a mistake, please contact your mosque admin
+                  directly.
+                </p>
+              </div>
+            ) : (
+              <>
+                {profile.must_change_password && profile.user_id && profile.email && (
+                  <PasswordChangeBanner userId={profile.user_id} email={profile.email} />
+                )}
+                <Outlet />
+              </>
             )}
-            <Outlet />
           </div>
         </main>
       </div>

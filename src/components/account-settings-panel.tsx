@@ -2,15 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-type Mosque = { id: string; name: string; city: string | null };
-
-export function AccountSettingsPanel({ showMosque = false }: { showMosque?: boolean }) {
+export function AccountSettingsPanel() {
   const [userId, setUserId] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
-  const [mosqueId, setMosqueId] = useState("");
-  const [mosques, setMosques] = useState<Mosque[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -34,26 +30,19 @@ export function AccountSettingsPanel({ showMosque = false }: { showMosque?: bool
   useEffect(() => {
     let active = true;
     (async () => {
-      const [{ data: userData }, mosqueRes] = await Promise.all([
-        supabase.auth.getUser(),
-        showMosque
-          ? supabase.from("mosques").select("id, name, city").order("name")
-          : Promise.resolve({ data: [] as Mosque[] }),
-      ]);
+      const { data: userData } = await supabase.auth.getUser();
       if (!active) return;
-      setMosques(((mosqueRes as { data: Mosque[] | null }).data as Mosque[]) ?? []);
       if (userData.user) {
         setUserId(userData.user.id);
         setEmail(userData.user.email ?? "");
         const { data: profile } = await supabase
           .from("profiles")
-          .select("full_name, phone, mosque_id, avatar_url")
+          .select("full_name, phone, avatar_url")
           .eq("id", userData.user.id)
           .maybeSingle();
         if (!active) return;
         setFullName((profile?.full_name as string | null) ?? "");
         setPhone((profile?.phone as string | null) ?? "");
-        setMosqueId((profile?.mosque_id as string | null) ?? "");
         setAvatarUrl((profile?.avatar_url as string | null) ?? null);
       }
       setLoading(false);
@@ -61,7 +50,7 @@ export function AccountSettingsPanel({ showMosque = false }: { showMosque?: bool
     return () => {
       active = false;
     };
-  }, [showMosque]);
+  }, []);
 
   const pwChecks = useMemo(
     () => ({
@@ -86,15 +75,10 @@ export function AccountSettingsPanel({ showMosque = false }: { showMosque?: bool
     if (!userId) return;
 
     setSavingProfile(true);
-    const payload: {
-      full_name: string;
-      phone: string | null;
-      mosque_id?: string | null;
-    } = {
+    const payload = {
       full_name: fullName.trim(),
       phone: phone.trim() || null,
     };
-    if (showMosque) payload.mosque_id = mosqueId || null;
     const { error } = await supabase.from("profiles").update(payload).eq("id", userId);
     setSavingProfile(false);
 
@@ -300,9 +284,7 @@ export function AccountSettingsPanel({ showMosque = false }: { showMosque?: bool
             Profile Information
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {showMosque
-              ? "Update your personal details and mosque affiliation."
-              : "Update your personal details."}
+            Update your personal details.
           </p>
         </div>
 
@@ -353,28 +335,6 @@ export function AccountSettingsPanel({ showMosque = false }: { showMosque?: bool
             className="mt-2 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
         </div>
-
-        {showMosque && (
-          <div>
-            <label htmlFor="mosque" className="block text-sm font-semibold text-foreground">
-              Mosque
-            </label>
-            <select
-              id="mosque"
-              value={mosqueId}
-              onChange={(e) => setMosqueId(e.target.value)}
-              className="mt-2 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-            >
-              <option value="">Select a mosque…</option>
-              {mosques.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.name}
-                  {m.city ? ` — ${m.city}` : ""}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
 
         {profileError && (
           <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">

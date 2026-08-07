@@ -284,9 +284,7 @@ export function AccountSettingsPanel() {
             Profile Information
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {showMosque
-              ? "Update your personal details and mosque affiliation."
-              : "Update your personal details."}
+            Update your personal details.
           </p>
         </div>
 
@@ -337,28 +335,6 @@ export function AccountSettingsPanel() {
             className="mt-2 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
         </div>
-
-        {showMosque && (
-          <div>
-            <label htmlFor="mosque" className="block text-sm font-semibold text-foreground">
-              Mosque
-            </label>
-            <select
-              id="mosque"
-              value={mosqueId}
-              onChange={(e) => setMosqueId(e.target.value)}
-              className="mt-2 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-            >
-              <option value="">Select a mosque…</option>
-              {mosques.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.name}
-                  {m.city ? ` — ${m.city}` : ""}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
 
         {profileError && (
           <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">

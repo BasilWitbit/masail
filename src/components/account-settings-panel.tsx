@@ -2,15 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-type Mosque = { id: string; name: string; city: string | null };
-
-export function AccountSettingsPanel({ showMosque = false }: { showMosque?: boolean }) {
+export function AccountSettingsPanel() {
   const [userId, setUserId] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
-  const [mosqueId, setMosqueId] = useState("");
-  const [mosques, setMosques] = useState<Mosque[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);

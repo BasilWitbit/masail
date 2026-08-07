@@ -8,5 +8,5 @@ export const Route = createFileRoute("/_authenticated/dashboard/settings")({
 });
 
 function AccountSettings() {
-  return <AccountSettingsPanel showMosque />;
+  return <AccountSettingsPanel />;
 }

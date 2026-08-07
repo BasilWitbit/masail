@@ -30,26 +30,19 @@ export function AccountSettingsPanel() {
   useEffect(() => {
     let active = true;
     (async () => {
-      const [{ data: userData }, mosqueRes] = await Promise.all([
-        supabase.auth.getUser(),
-        showMosque
-          ? supabase.from("mosques").select("id, name, city").order("name")
-          : Promise.resolve({ data: [] as Mosque[] }),
-      ]);
+      const { data: userData } = await supabase.auth.getUser();
       if (!active) return;
-      setMosques(((mosqueRes as { data: Mosque[] | null }).data as Mosque[]) ?? []);
       if (userData.user) {
         setUserId(userData.user.id);
         setEmail(userData.user.email ?? "");
         const { data: profile } = await supabase
           .from("profiles")
-          .select("full_name, phone, mosque_id, avatar_url")
+          .select("full_name, phone, avatar_url")
           .eq("id", userData.user.id)
           .maybeSingle();
         if (!active) return;
         setFullName((profile?.full_name as string | null) ?? "");
         setPhone((profile?.phone as string | null) ?? "");
-        setMosqueId((profile?.mosque_id as string | null) ?? "");
         setAvatarUrl((profile?.avatar_url as string | null) ?? null);
       }
       setLoading(false);
@@ -57,7 +50,7 @@ export function AccountSettingsPanel() {
     return () => {
       active = false;
     };
-  }, [showMosque]);
+  }, []);
 
   const pwChecks = useMemo(
     () => ({
@@ -82,15 +75,10 @@ export function AccountSettingsPanel() {
     if (!userId) return;
 
     setSavingProfile(true);
-    const payload: {
-      full_name: string;
-      phone: string | null;
-      mosque_id?: string | null;
-    } = {
+    const payload = {
       full_name: fullName.trim(),
       phone: phone.trim() || null,
     };
-    if (showMosque) payload.mosque_id = mosqueId || null;
     const { error } = await supabase.from("profiles").update(payload).eq("id", userId);
     setSavingProfile(false);
 

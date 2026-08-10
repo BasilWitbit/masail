@@ -136,6 +136,7 @@ function DashboardShell() {
 
   async function handleLogout() {
     await supabase.auth.signOut();
+    clearPlatformTheme();
     navigate({ to: "/" });
   }
 

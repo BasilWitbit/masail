@@ -37,7 +37,7 @@ const superAdminNav: DashboardNavItem[] = [
   { to: "/dashboard/admin", label: "Dashboard", icon: LayoutDashboard },
   { to: "/dashboard/mosques", label: "Manage Mosques", icon: Building2 },
   { to: "/dashboard/categories", label: "Manage Categories", icon: Tags },
-  { to: "/dashboard/create-admin", label: "Create Mosque Admin", icon: UserPlus },
+  
   { to: "/dashboard/reports", label: "Reports", icon: Flag },
   { to: "/dashboard/public-content", label: "Manage Public Content", icon: Globe },
   { to: "/dashboard/ui-settings", label: "UI Settings", icon: Palette },

@@ -214,3 +214,121 @@ function MosqueUsers() {
     </div>
   );
 }
+
+type MosqueInfo = { name: string; slug: string | null };
+
+function SignupQrPanel() {
+  const [mosque, setMosque] = useState<MosqueInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState<string | null>(null);
+  const [origin, setOrigin] = useState("");
+  const qrRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+    let active = true;
+    (async () => {
+      try {
+        const { data: userData } = await supabase.auth.getUser();
+        if (!userData.user) return;
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("mosque_id")
+          .eq("id", userData.user.id)
+          .maybeSingle();
+        if (!profile?.mosque_id) {
+          if (active) setErr("Your account isn't linked to a mosque.");
+          return;
+        }
+        const { data, error } = await supabase
+          .from("mosques")
+          .select("name, slug")
+          .eq("id", profile.mosque_id)
+          .maybeSingle();
+        if (error) throw error;
+        if (active) setMosque((data as MosqueInfo | null) ?? null);
+      } catch (e) {
+        if (active) setErr(e instanceof Error ? e.message : "Failed to load mosque.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const signupUrl = mosque?.slug && origin ? `${origin}/${mosque.slug}/signup` : "";
+
+  function handleDownload() {
+    const source = qrRef.current?.querySelector("canvas") as HTMLCanvasElement | null;
+    if (!source || !mosque) return;
+
+    const pad = 48;
+    const qrSize = 640;
+    const textBlock = 110;
+    const canvas = document.createElement("canvas");
+    canvas.width = qrSize + pad * 2;
+    canvas.height = qrSize + pad * 2 + textBlock;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(source, pad, pad, qrSize, qrSize);
+
+    ctx.fillStyle = "#000000";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "bold 40px Arial, Helvetica, sans-serif";
+    ctx.fillText(mosque.name, canvas.width / 2, qrSize + pad * 2 + textBlock / 2, qrSize);
+
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = `${mosque.slug ?? "mosque"}-signup-qr.png`;
+    link.click();
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center rounded-lg border border-border bg-card p-12 text-sm text-muted-foreground">
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading QR code…
+      </div>
+    );
+  }
+
+  if (err || !mosque || !mosque.slug) {
+    return (
+      <div className="rounded-lg border border-dashed border-border bg-muted/40 p-12 text-center text-sm text-muted-foreground">
+        {err ?? "Your mosque doesn't have a signup link configured yet."}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-6 rounded-lg border border-border bg-card p-8 shadow-sm md:p-12">
+      <p className="max-w-md text-center text-sm text-muted-foreground">
+        Share or print this QR code so members can scan it and sign up directly to your mosque.
+      </p>
+
+      <div
+        ref={qrRef}
+        className="flex flex-col items-center gap-4 rounded-lg border border-border bg-white p-8"
+      >
+        <QRCodeCanvas value={signupUrl} size={640} level="M" marginSize={2} className="h-56 w-56" />
+        <div className="text-base font-bold text-black">{mosque.name}</div>
+      </div>
+
+      <code className="break-all rounded-lg bg-muted/60 px-3 py-2 text-center text-xs text-muted-foreground">
+        {signupUrl}
+      </code>
+
+      <button
+        onClick={handleDownload}
+        className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+      >
+        <Download className="h-4 w-4" /> Download QR Code
+      </button>
+    </div>
+  );
+}

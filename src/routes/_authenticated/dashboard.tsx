@@ -129,12 +129,33 @@ function DashboardShell() {
     };
   }, []);
 
-  const nav = deactivated ? [] : getNavForRole(role);
+  const gated =
+    role === "user" && (approvalStatus === "pending_approval" || approvalStatus === "rejected");
+  const nav = deactivated || gated ? [] : getNavForRole(role);
 
   async function handleLogout() {
     await supabase.auth.signOut();
     navigate({ to: "/" });
   }
+
+  async function handleRequestAgain() {
+    if (!profile.user_id) return;
+    setRequesting(true);
+    setRequestError(null);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ approval_status: "pending_approval" })
+      .eq("id", profile.user_id);
+    setRequesting(false);
+    if (error) {
+      setRequestError(
+        "Something went wrong. Please try again or contact your mosque admin directly.",
+      );
+      return;
+    }
+    setApprovalStatus("pending_approval");
+  }
+
 
   const initials = (profile.full_name || profile.email || "U")
     .split(" ")

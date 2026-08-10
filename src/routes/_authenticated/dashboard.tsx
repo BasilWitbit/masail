@@ -2,7 +2,7 @@ import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tan
 import { useEffect, useRef, useState } from "react";
 import { LogOut, Menu, MoreVertical, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { usePlatformThemeGate } from "@/lib/use-platform-theme";
+import { clearPlatformTheme, usePlatformThemeGate } from "@/lib/use-platform-theme";
 import { ThemeLoadingScreen } from "@/components/theme-loading-screen";
 import { getNavForRole, type UserRole } from "@/lib/use-dashboard-nav";
 import { PasswordChangeBanner } from "@/components/password-change-banner";

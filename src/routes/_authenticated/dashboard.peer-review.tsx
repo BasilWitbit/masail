@@ -208,7 +208,7 @@ function PeerReview() {
                       <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                         Submitted answer
                       </div>
-                      <p className="mt-1.5 whitespace-pre-wrap text-sm text-foreground">{i.body}</p>
+                      <RichText html={i.body} className="mt-1.5 text-sm text-foreground" />
                     </div>
                   </button>
                 </li>

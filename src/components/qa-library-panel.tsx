@@ -329,12 +329,9 @@ function QACard({
     );
   }
 
-  return (
-    <Link to="/qa/$id" params={{ id: qa.id }} className={className}>
-      {inner}
-    </Link>
-  );
+  return <div className={className}>{inner}</div>;
 }
+
 
 function InlineQADetail({
   qa,

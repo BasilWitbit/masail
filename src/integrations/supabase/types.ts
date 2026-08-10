@@ -564,6 +564,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_my_effective_mosque_id: { Args: never; Returns: string }
       get_my_mosque_id: { Args: never; Returns: string }
       get_my_role: {
         Args: never

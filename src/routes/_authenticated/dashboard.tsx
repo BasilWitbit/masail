@@ -226,6 +226,38 @@ function DashboardShell() {
             Log Out
           </button>
         </main>
+      ) : gated ? (
+        <main className="flex-1 flex flex-col items-center justify-center px-6 py-10 md:py-12">
+          <div className="mx-auto w-full max-w-xl rounded-lg border border-border bg-card p-10 text-center shadow-sm">
+            <h1 className="font-heading text-2xl font-bold text-foreground">
+              {approvalStatus === "rejected" ? "Signup Not Approved" : "Awaiting Approval"}
+            </h1>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              {approvalStatus === "rejected"
+                ? "Your signup request was not approved. Please contact your mosque admin for more information."
+                : "Your account is awaiting approval from your mosque admin. You'll be notified once approved."}
+            </p>
+            {requestError && <p className="mt-3 text-sm text-muted-foreground">{requestError}</p>}
+          </div>
+          <div className="mt-6 flex w-full max-w-xl flex-col items-center justify-center gap-3 sm:flex-row">
+            {approvalStatus === "rejected" && (
+              <button
+                onClick={handleRequestAgain}
+                disabled={requesting}
+                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 disabled:opacity-60"
+              >
+                {requesting ? "Requesting..." : "Request Again"}
+              </button>
+            )}
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-6 py-3 text-sm font-semibold text-red-600 shadow-sm transition hover:bg-accent"
+            >
+              <LogOut className="h-4 w-4" />
+              Log Out
+            </button>
+          </div>
+        </main>
       ) : (
         <div className="flex flex-1 min-h-0 overflow-hidden">
           {/* Sidebar */}

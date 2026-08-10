@@ -214,7 +214,7 @@ function MosqueAdminDashboard() {
                   <div className="text-sm text-muted-foreground">
                     No shaykhs added yet.{" "}
                     <Link
-                      to="/dashboard/create-shaykh"
+                      to="/dashboard/manage-shaykhs"
                       className="font-semibold text-primary hover:underline"
                     >
                       Create a shaykh

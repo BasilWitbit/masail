@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   Building2,
   Tags,
-  UserPlus,
   UserCheck,
   Flag,
   Globe,
@@ -46,7 +45,7 @@ const superAdminNav: DashboardNavItem[] = [
 
 const mosqueAdminNav: DashboardNavItem[] = [
   { to: "/dashboard/mosque-admin", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/dashboard/create-shaykh", label: "Create Shaykh", icon: UserPlus },
+  
   { to: "/dashboard/manage-shaykhs", label: "Manage Shaykhs", icon: Users },
   { to: "/dashboard/users", label: "Users", icon: UserCheck },
   { to: "/dashboard/account-settings", label: "Account Settings", icon: Settings },

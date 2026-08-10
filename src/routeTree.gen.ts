@@ -37,6 +37,7 @@ import { Route as AuthenticatedDashboardAskRouteImport } from './routes/_authent
 import { Route as AuthenticatedDashboardAdminRouteImport } from './routes/_authenticated/dashboard.admin'
 import { Route as AuthenticatedDashboardAccountSettingsRouteImport } from './routes/_authenticated/dashboard.account-settings'
 import { Route as AuthenticatedDashboardQuestionsIndexRouteImport } from './routes/_authenticated/dashboard.questions.index'
+import { Route as AuthenticatedDashboardMosquesIndexRouteImport } from './routes/_authenticated/dashboard.mosques.index'
 import { Route as AuthenticatedDashboardQuestionsIdRouteImport } from './routes/_authenticated/dashboard.questions.$id'
 
 const VerifyOtpRoute = VerifyOtpRouteImport.update({
@@ -199,6 +200,12 @@ const AuthenticatedDashboardQuestionsIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedDashboardQuestionsRoute,
   } as any)
+const AuthenticatedDashboardMosquesIndexRoute =
+  AuthenticatedDashboardMosquesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDashboardMosquesRoute,
+  } as any)
 const AuthenticatedDashboardQuestionsIdRoute =
   AuthenticatedDashboardQuestionsIdRouteImport.update({
     id: '/$id',
@@ -222,7 +229,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/library': typeof AuthenticatedDashboardLibraryRoute
   '/dashboard/manage-shaykhs': typeof AuthenticatedDashboardManageShaykhsRoute
   '/dashboard/mosque-admin': typeof AuthenticatedDashboardMosqueAdminRoute
-  '/dashboard/mosques': typeof AuthenticatedDashboardMosquesRoute
+  '/dashboard/mosques': typeof AuthenticatedDashboardMosquesRouteWithChildren
   '/dashboard/my-answers': typeof AuthenticatedDashboardMyAnswersRoute
   '/dashboard/peer-review': typeof AuthenticatedDashboardPeerReviewRoute
   '/dashboard/pool': typeof AuthenticatedDashboardPoolRoute
@@ -234,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/users': typeof AuthenticatedDashboardUsersRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
+  '/dashboard/mosques/': typeof AuthenticatedDashboardMosquesIndexRoute
   '/dashboard/questions/': typeof AuthenticatedDashboardQuestionsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -251,7 +259,6 @@ export interface FileRoutesByTo {
   '/dashboard/library': typeof AuthenticatedDashboardLibraryRoute
   '/dashboard/manage-shaykhs': typeof AuthenticatedDashboardManageShaykhsRoute
   '/dashboard/mosque-admin': typeof AuthenticatedDashboardMosqueAdminRoute
-  '/dashboard/mosques': typeof AuthenticatedDashboardMosquesRoute
   '/dashboard/my-answers': typeof AuthenticatedDashboardMyAnswersRoute
   '/dashboard/peer-review': typeof AuthenticatedDashboardPeerReviewRoute
   '/dashboard/pool': typeof AuthenticatedDashboardPoolRoute
@@ -262,6 +269,7 @@ export interface FileRoutesByTo {
   '/dashboard/users': typeof AuthenticatedDashboardUsersRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
+  '/dashboard/mosques': typeof AuthenticatedDashboardMosquesIndexRoute
   '/dashboard/questions': typeof AuthenticatedDashboardQuestionsIndexRoute
 }
 export interface FileRoutesById {
@@ -282,7 +290,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/library': typeof AuthenticatedDashboardLibraryRoute
   '/_authenticated/dashboard/manage-shaykhs': typeof AuthenticatedDashboardManageShaykhsRoute
   '/_authenticated/dashboard/mosque-admin': typeof AuthenticatedDashboardMosqueAdminRoute
-  '/_authenticated/dashboard/mosques': typeof AuthenticatedDashboardMosquesRoute
+  '/_authenticated/dashboard/mosques': typeof AuthenticatedDashboardMosquesRouteWithChildren
   '/_authenticated/dashboard/my-answers': typeof AuthenticatedDashboardMyAnswersRoute
   '/_authenticated/dashboard/peer-review': typeof AuthenticatedDashboardPeerReviewRoute
   '/_authenticated/dashboard/pool': typeof AuthenticatedDashboardPoolRoute
@@ -294,6 +302,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/users': typeof AuthenticatedDashboardUsersRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
+  '/_authenticated/dashboard/mosques/': typeof AuthenticatedDashboardMosquesIndexRoute
   '/_authenticated/dashboard/questions/': typeof AuthenticatedDashboardQuestionsIndexRoute
 }
 export interface FileRouteTypes {
@@ -326,6 +335,7 @@ export interface FileRouteTypes {
     | '/dashboard/users'
     | '/dashboard/'
     | '/dashboard/questions/$id'
+    | '/dashboard/mosques/'
     | '/dashboard/questions/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -343,7 +353,6 @@ export interface FileRouteTypes {
     | '/dashboard/library'
     | '/dashboard/manage-shaykhs'
     | '/dashboard/mosque-admin'
-    | '/dashboard/mosques'
     | '/dashboard/my-answers'
     | '/dashboard/peer-review'
     | '/dashboard/pool'
@@ -354,6 +363,7 @@ export interface FileRouteTypes {
     | '/dashboard/users'
     | '/dashboard'
     | '/dashboard/questions/$id'
+    | '/dashboard/mosques'
     | '/dashboard/questions'
   id:
     | '__root__'
@@ -385,6 +395,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/users'
     | '/_authenticated/dashboard/'
     | '/_authenticated/dashboard/questions/$id'
+    | '/_authenticated/dashboard/mosques/'
     | '/_authenticated/dashboard/questions/'
   fileRoutesById: FileRoutesById
 }
@@ -595,6 +606,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardQuestionsIndexRouteImport
       parentRoute: typeof AuthenticatedDashboardQuestionsRoute
     }
+    '/_authenticated/dashboard/mosques/': {
+      id: '/_authenticated/dashboard/mosques/'
+      path: '/'
+      fullPath: '/dashboard/mosques/'
+      preLoaderRoute: typeof AuthenticatedDashboardMosquesIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardMosquesRoute
+    }
     '/_authenticated/dashboard/questions/$id': {
       id: '/_authenticated/dashboard/questions/$id'
       path: '/$id'
@@ -604,6 +622,21 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthenticatedDashboardMosquesRouteChildren {
+  AuthenticatedDashboardMosquesIndexRoute: typeof AuthenticatedDashboardMosquesIndexRoute
+}
+
+const AuthenticatedDashboardMosquesRouteChildren: AuthenticatedDashboardMosquesRouteChildren =
+  {
+    AuthenticatedDashboardMosquesIndexRoute:
+      AuthenticatedDashboardMosquesIndexRoute,
+  }
+
+const AuthenticatedDashboardMosquesRouteWithChildren =
+  AuthenticatedDashboardMosquesRoute._addFileChildren(
+    AuthenticatedDashboardMosquesRouteChildren,
+  )
 
 interface AuthenticatedDashboardQuestionsRouteChildren {
   AuthenticatedDashboardQuestionsIdRoute: typeof AuthenticatedDashboardQuestionsIdRoute
@@ -633,7 +666,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardLibraryRoute: typeof AuthenticatedDashboardLibraryRoute
   AuthenticatedDashboardManageShaykhsRoute: typeof AuthenticatedDashboardManageShaykhsRoute
   AuthenticatedDashboardMosqueAdminRoute: typeof AuthenticatedDashboardMosqueAdminRoute
-  AuthenticatedDashboardMosquesRoute: typeof AuthenticatedDashboardMosquesRoute
+  AuthenticatedDashboardMosquesRoute: typeof AuthenticatedDashboardMosquesRouteWithChildren
   AuthenticatedDashboardMyAnswersRoute: typeof AuthenticatedDashboardMyAnswersRoute
   AuthenticatedDashboardPeerReviewRoute: typeof AuthenticatedDashboardPeerReviewRoute
   AuthenticatedDashboardPoolRoute: typeof AuthenticatedDashboardPoolRoute
@@ -663,7 +696,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardManageShaykhsRoute,
     AuthenticatedDashboardMosqueAdminRoute:
       AuthenticatedDashboardMosqueAdminRoute,
-    AuthenticatedDashboardMosquesRoute: AuthenticatedDashboardMosquesRoute,
+    AuthenticatedDashboardMosquesRoute:
+      AuthenticatedDashboardMosquesRouteWithChildren,
     AuthenticatedDashboardMyAnswersRoute: AuthenticatedDashboardMyAnswersRoute,
     AuthenticatedDashboardPeerReviewRoute:
       AuthenticatedDashboardPeerReviewRoute,
@@ -707,3 +741,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

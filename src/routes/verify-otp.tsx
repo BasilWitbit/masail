@@ -150,9 +150,9 @@ function VerifyOtpPage() {
     setResendCountdown(30);
   }
 
-  if (!email) {
-    if (!themeReady) return <ThemeLoadingScreen />;
+  if (!themeReady) return <ThemeLoadingScreen />;
 
+  if (!email) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <SiteHeader />

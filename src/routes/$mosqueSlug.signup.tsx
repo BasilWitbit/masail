@@ -110,6 +110,8 @@ function MosqueSignupPage() {
     navigate({ to: "/verify-otp", search: { email } });
   }
 
+  if (!themeReady) return <ThemeLoadingScreen />;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />

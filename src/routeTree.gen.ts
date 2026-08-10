@@ -15,6 +15,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as MosqueSlugSignupRouteImport } from './routes/$mosqueSlug.signup'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedDashboardUiSettingsRouteImport } from './routes/_authenticated/dashboard.ui-settings'
 import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
@@ -65,6 +66,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const MosqueSlugSignupRoute = MosqueSlugSignupRouteImport.update({
+  id: '/$mosqueSlug/signup',
+  path: '/$mosqueSlug/signup',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardIndexRoute =
   AuthenticatedDashboardIndexRouteImport.update({
@@ -198,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
+  '/$mosqueSlug/signup': typeof MosqueSlugSignupRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/dashboard/account-settings': typeof AuthenticatedDashboardAccountSettingsRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
@@ -226,6 +233,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
+  '/$mosqueSlug/signup': typeof MosqueSlugSignupRoute
   '/dashboard/account-settings': typeof AuthenticatedDashboardAccountSettingsRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/ask': typeof AuthenticatedDashboardAskRoute
@@ -254,6 +262,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
+  '/$mosqueSlug/signup': typeof MosqueSlugSignupRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/_authenticated/dashboard/account-settings': typeof AuthenticatedDashboardAccountSettingsRoute
   '/_authenticated/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
@@ -284,6 +293,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/verify-otp'
+    | '/$mosqueSlug/signup'
     | '/dashboard'
     | '/dashboard/account-settings'
     | '/dashboard/admin'
@@ -312,6 +322,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/verify-otp'
+    | '/$mosqueSlug/signup'
     | '/dashboard/account-settings'
     | '/dashboard/admin'
     | '/dashboard/ask'
@@ -339,6 +350,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/verify-otp'
+    | '/$mosqueSlug/signup'
     | '/_authenticated/dashboard'
     | '/_authenticated/dashboard/account-settings'
     | '/_authenticated/dashboard/admin'
@@ -369,6 +381,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
   VerifyOtpRoute: typeof VerifyOtpRoute
+  MosqueSlugSignupRoute: typeof MosqueSlugSignupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -414,6 +427,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/$mosqueSlug/signup': {
+      id: '/$mosqueSlug/signup'
+      path: '/$mosqueSlug/signup'
+      fullPath: '/$mosqueSlug/signup'
+      preLoaderRoute: typeof MosqueSlugSignupRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard/': {
       id: '/_authenticated/dashboard/'
@@ -660,7 +680,18 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
   VerifyOtpRoute: VerifyOtpRoute,
+  MosqueSlugSignupRoute: MosqueSlugSignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

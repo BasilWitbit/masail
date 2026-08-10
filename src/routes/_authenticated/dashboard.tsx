@@ -26,6 +26,11 @@ function DashboardShell() {
 
   const [role, setRole] = useState<UserRole | null>(null);
   const [deactivated, setDeactivated] = useState(false);
+  const [approvalStatus, setApprovalStatus] = useState<
+    "pending_approval" | "approved" | "rejected" | null
+  >(null);
+  const [requesting, setRequesting] = useState(false);
+  const [requestError, setRequestError] = useState<string | null>(null);
   const [profile, setProfile] = useState<ProfileInfo>({ full_name: null, email: null, avatar_url: null, user_id: null, must_change_password: false });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -39,11 +44,17 @@ function DashboardShell() {
       if (!userData.user) return;
       const { data } = await supabase
         .from("profiles")
-        .select("role, full_name, must_change_password, avatar_url")
+        .select("role, full_name, must_change_password, avatar_url, approval_status")
         .eq("id", userData.user.id)
         .maybeSingle();
       if (!active) return;
       setRole(((data?.role as UserRole) ?? "user"));
+      if ((data?.role ?? "user") === "user") {
+        setApprovalStatus(
+          (data?.approval_status as "pending_approval" | "approved" | "rejected" | undefined) ??
+            null,
+        );
+      }
       if (data?.role === "shaykh") {
         const { data: shaykh } = await supabase
           .from("shaykhs")

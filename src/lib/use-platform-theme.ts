@@ -127,22 +127,34 @@ export async function resolvePlatformSettings(
   return fetchGlobalSettings();
 }
 
-export function usePlatformTheme() {
+export function usePlatformThemeGate() {
   const [settings, setSettings] = useState<PlatformSettings | null>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let active = true;
     const pathname = typeof window === "undefined" ? "/" : window.location.pathname;
-    resolvePlatformSettings(pathname).then((data) => {
-      if (!active || !data) return;
-      setSettings(data);
-      applyPlatformSettings(data);
-    });
+    resolvePlatformSettings(pathname)
+      .then((data) => {
+        if (!active) return;
+        if (data) {
+          setSettings(data);
+          applyPlatformSettings(data);
+        }
+      })
+      .finally(() => {
+        if (active) setReady(true);
+      });
     return () => {
       active = false;
     };
   }, []);
 
-  return settings;
+  return { settings, ready };
 }
+
+export function usePlatformTheme() {
+  return usePlatformThemeGate().settings;
+}
+
 

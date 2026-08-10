@@ -4,6 +4,9 @@ import { AlertTriangle, ArrowLeft, BookOpenCheck, Download, FileText, Loader2, M
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { requireRole } from "@/lib/require-role";
+import { RichText } from "@/components/rich-text";
+import { RichTextEditor } from "@/components/rich-text-editor";
+import { richTextToPlain } from "@/lib/sanitize-html";
 
 
 export const Route = createFileRoute("/_authenticated/dashboard/my-answers")({
@@ -542,7 +545,7 @@ function Detail({
 
   async function submitPublish(e: React.FormEvent) {
     e.preventDefault();
-    if (!genericQuestion.trim() || !genericAnswer.trim()) {
+    if (!genericQuestion.trim() || !richTextToPlain(genericAnswer)) {
       setPublishError("Both the generic question and answer are required.");
       return;
     }
@@ -553,7 +556,7 @@ function Detail({
         question_id: row.id,
         published_by_shaykh_id: shaykhId!,
         generic_question: genericQuestion.trim(),
-        generic_answer: genericAnswer.trim(),
+        generic_answer: genericAnswer,
         category_id: row.category_id,
         mosque_id: row.mosque_id,
       });
@@ -577,7 +580,7 @@ function Detail({
 
   async function persist(): Promise<string> {
     if (!shaykhId) throw new Error("Missing shaykh id.");
-    if (!body.trim()) throw new Error("Please write an answer first.");
+    if (!richTextToPlain(body)) throw new Error("Please write an answer first.");
     if (answer) {
       const { error } = await supabase
         .from("answers")
@@ -693,13 +696,15 @@ function Detail({
         </h2>
         {editable ? (
           <>
-            <textarea
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              rows={10}
-              placeholder="Write your answer here…"
-              className="mt-3 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-            />
+            <div className="mt-3">
+              <RichTextEditor
+                value={body}
+                onChange={setBody}
+                placeholder="Write your answer here…"
+                ariaLabel="Your answer"
+                minHeight={220}
+              />
+            </div>
             <div className="mt-4 flex flex-wrap justify-end gap-3">
               <button
                 onClick={saveDraft}
@@ -719,9 +724,7 @@ function Detail({
           </>
         ) : (
           <>
-            <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-foreground">
-              {answer?.body}
-            </p>
+            <RichText html={answer?.body} className="mt-3 text-sm leading-relaxed text-foreground" />
             <p className="mt-4 text-xs text-muted-foreground">
               Status: {answer ? STATUS_LABEL[answer.status] : "—"} · Updated{" "}
               {answer ? formatDate(answer.updated_at) : "—"}
@@ -798,14 +801,15 @@ function Detail({
                 <label className="text-sm font-semibold" htmlFor="generic-answer">
                   Generic Answer
                 </label>
-                <textarea
-                  id="generic-answer"
-                  required
-                  rows={8}
-                  value={genericAnswer}
-                  onChange={(e) => setGenericAnswer(e.target.value)}
-                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
+                <div className="mt-1">
+                  <RichTextEditor
+                    value={genericAnswer}
+                    onChange={setGenericAnswer}
+                    placeholder="Reword the answer for the public knowledge base…"
+                    ariaLabel="Generic answer"
+                    minHeight={180}
+                  />
+                </div>
               </div>
               {publishError && (
                 <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">

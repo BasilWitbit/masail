@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, Calendar, ArrowRight, ArrowLeft, Inbox, BookOpen, Info, Filter, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { RichText } from "@/components/rich-text";
 
 type Category = { id: string; name: string };
 type QA = {
@@ -411,7 +412,7 @@ function InlineQADetail({
               Answer
             </div>
             <div className="text-lg leading-relaxed text-foreground">
-              <p className="whitespace-pre-wrap">{qa.generic_answer}</p>
+              <RichText html={qa.generic_answer} />
             </div>
           </div>
         </article>

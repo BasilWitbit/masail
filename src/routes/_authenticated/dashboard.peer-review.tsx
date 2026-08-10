@@ -11,6 +11,7 @@ import {
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { requireRole } from "@/lib/require-role";
+import { RichText } from "@/components/rich-text";
 
 export const Route = createFileRoute("/_authenticated/dashboard/peer-review")({
   beforeLoad: requireRole(["shaykh"]),
@@ -208,7 +209,7 @@ function PeerReview() {
                       <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                         Submitted answer
                       </div>
-                      <p className="mt-1.5 whitespace-pre-wrap text-sm text-foreground">{i.body}</p>
+                      <RichText html={i.body} className="mt-1.5 text-sm text-foreground" />
                     </div>
                   </button>
                 </li>
@@ -352,9 +353,7 @@ function ReviewDetail({
           <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Submitted answer
           </div>
-          <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-foreground">
-            {item.body}
-          </p>
+          <RichText html={item.body} className="mt-2 text-sm leading-relaxed text-foreground" />
         </div>
       </div>
 

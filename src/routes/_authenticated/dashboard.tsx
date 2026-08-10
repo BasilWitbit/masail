@@ -2,7 +2,8 @@ import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tan
 import { useEffect, useRef, useState } from "react";
 import { LogOut, Menu, MoreVertical, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { usePlatformTheme } from "@/lib/use-platform-theme";
+import { usePlatformThemeGate } from "@/lib/use-platform-theme";
+import { ThemeLoadingScreen } from "@/components/theme-loading-screen";
 import { getNavForRole, type UserRole } from "@/lib/use-dashboard-nav";
 import { PasswordChangeBanner } from "@/components/password-change-banner";
 import { NotificationBell } from "@/components/notification-bell";
@@ -20,7 +21,7 @@ type ProfileInfo = {
 };
 
 function DashboardShell() {
-  const settings = usePlatformTheme();
+  const { settings, ready: themeReady } = usePlatformThemeGate();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 

@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { AlertCircle, Check, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { usePlatformTheme } from "@/lib/use-platform-theme";
+import { usePlatformThemeGate } from "@/lib/use-platform-theme";
+import { ThemeLoadingScreen } from "@/components/theme-loading-screen";
 import { SiteHeader } from "@/components/site-header";
 
 export const Route = createFileRoute("/$mosqueSlug/signup")({
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/$mosqueSlug/signup")({
 type Mosque = { id: string; name: string };
 
 function MosqueSignupPage() {
-  usePlatformTheme();
+  const { ready: themeReady } = usePlatformThemeGate();
   const { mosqueSlug } = Route.useParams();
   const navigate = useNavigate();
 

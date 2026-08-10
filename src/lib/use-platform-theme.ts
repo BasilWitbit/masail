@@ -40,20 +40,104 @@ export function applyPlatformSettings(data: PlatformSettings) {
   }
 }
 
+const SETTINGS_COLUMNS =
+  "primary_color, secondary_color, logo_url, heading_font, body_font";
+
+const RESERVED_SEGMENTS = new Set([
+  "qa",
+  "login",
+  "signup",
+  "verify-otp",
+  "dashboard",
+  "api",
+]);
+
+function getMosqueSlugFromPath(pathname: string): string | null {
+  const first = pathname.split("/").filter(Boolean)[0];
+  if (!first) return null;
+  if (RESERVED_SEGMENTS.has(first)) return null;
+  if (first.includes(".")) return null;
+  return first;
+}
+
+async function fetchSettingsForMosque(mosqueId: string) {
+  const { data } = await supabase
+    .from("platform_settings")
+    .select(SETTINGS_COLUMNS)
+    .eq("mosque_id", mosqueId)
+    .maybeSingle();
+  return (data as PlatformSettings | null) ?? null;
+}
+
+async function fetchGlobalSettings() {
+  const { data } = await supabase
+    .from("platform_settings")
+    .select(SETTINGS_COLUMNS)
+    .is("mosque_id", null)
+    .maybeSingle();
+  return (data as PlatformSettings | null) ?? null;
+}
+
+export async function resolvePlatformSettings(
+  pathname: string,
+): Promise<PlatformSettings | null> {
+  // 1. Mosque-slug scoped route
+  const slug = getMosqueSlugFromPath(pathname);
+  if (slug) {
+    const { data: mosque } = await supabase
+      .from("mosques")
+      .select("id")
+      .eq("slug", slug)
+      .maybeSingle();
+    if (mosque?.id) {
+      const settings = await fetchSettingsForMosque(mosque.id);
+      if (settings) return settings;
+    }
+    return fetchGlobalSettings();
+  }
+
+  // 2. Logged-in user
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData?.user;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role, mosque_id")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (profile && profile.role !== "super_admin") {
+      let mosqueId: string | null = profile.mosque_id ?? null;
+      if (profile.role === "shaykh") {
+        const { data: shaykh } = await supabase
+          .from("shaykhs")
+          .select("mosque_id")
+          .eq("profile_id", user.id)
+          .maybeSingle();
+        mosqueId = shaykh?.mosque_id ?? mosqueId;
+      }
+      if (mosqueId) {
+        const settings = await fetchSettingsForMosque(mosqueId);
+        if (settings) return settings;
+      }
+    }
+  }
+
+  // 3. Guest / super admin / fallback
+  return fetchGlobalSettings();
+}
+
 export function usePlatformTheme() {
   const [settings, setSettings] = useState<PlatformSettings | null>(null);
 
   useEffect(() => {
     let active = true;
-    supabase
-      .from("platform_settings")
-      .select("primary_color, secondary_color, logo_url, heading_font, body_font")
-      .maybeSingle()
-      .then(({ data }) => {
-        if (!active || !data) return;
-        setSettings(data as PlatformSettings);
-        applyPlatformSettings(data as PlatformSettings);
-      });
+    const pathname = typeof window === "undefined" ? "/" : window.location.pathname;
+    resolvePlatformSettings(pathname).then((data) => {
+      if (!active || !data) return;
+      setSettings(data);
+      applyPlatformSettings(data);
+    });
     return () => {
       active = false;
     };
@@ -61,3 +145,4 @@ export function usePlatformTheme() {
 
   return settings;
 }
+

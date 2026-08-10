@@ -129,6 +129,7 @@ export type Database = {
           created_at: string
           id: string
           name: string
+          slug: string | null
         }
         Insert: {
           address: string
@@ -139,6 +140,7 @@ export type Database = {
           created_at?: string
           id?: string
           name: string
+          slug?: string | null
         }
         Update: {
           address?: string
@@ -149,6 +151,7 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
+          slug?: string | null
         }
         Relationships: []
       }
@@ -248,6 +251,7 @@ export type Database = {
           heading_font: string
           id: string
           logo_url: string | null
+          mosque_id: string | null
           primary_color: string
           secondary_color: string
           updated_at: string
@@ -257,6 +261,7 @@ export type Database = {
           heading_font?: string
           id?: string
           logo_url?: string | null
+          mosque_id?: string | null
           primary_color?: string
           secondary_color?: string
           updated_at?: string
@@ -266,14 +271,24 @@ export type Database = {
           heading_font?: string
           id?: string
           logo_url?: string | null
+          mosque_id?: string | null
           primary_color?: string
           secondary_color?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "platform_settings_mosque_id_fkey"
+            columns: ["mosque_id"]
+            isOneToOne: true
+            referencedRelation: "mosques"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
+          approval_status: Database["public"]["Enums"]["approval_status"]
           avatar_url: string | null
           created_at: string
           email: string | null
@@ -286,6 +301,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          approval_status?: Database["public"]["Enums"]["approval_status"]
           avatar_url?: string | null
           created_at?: string
           email?: string | null
@@ -298,6 +314,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          approval_status?: Database["public"]["Enums"]["approval_status"]
           avatar_url?: string | null
           created_at?: string
           email?: string | null
@@ -560,6 +577,7 @@ export type Database = {
         | "under_peer_review"
         | "peer_approved"
         | "sent_to_user"
+      approval_status: "pending_approval" | "approved" | "rejected"
       notification_type:
         | "question_answered"
         | "question_rejected"
@@ -715,6 +733,7 @@ export const Constants = {
         "peer_approved",
         "sent_to_user",
       ],
+      approval_status: ["pending_approval", "approved", "rejected"],
       notification_type: [
         "question_answered",
         "question_rejected",

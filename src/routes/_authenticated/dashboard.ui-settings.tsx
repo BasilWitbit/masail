@@ -43,6 +43,7 @@ function UiSettings() {
     supabase
       .from("platform_settings")
       .select("id, primary_color, secondary_color, logo_url, heading_font, body_font")
+      .is("mosque_id", null)
       .maybeSingle()
       .then(({ data, error: err }) => {
         if (!active) return;
@@ -96,10 +97,6 @@ function UiSettings() {
       setError("Secondary color must be a valid hex code (e.g. #D4AF37).");
       return;
     }
-    if (!row) {
-      setError("Settings row not found.");
-      return;
-    }
     setSaving(true);
     const payload = {
       primary_color: primary.trim(),
@@ -108,13 +105,28 @@ function UiSettings() {
       heading_font: headingFont,
       body_font: bodyFont,
     };
-    const { error: err } = await supabase
-      .from("platform_settings")
-      .update({ ...payload, updated_at: new Date().toISOString() })
-      .eq("id", row.id);
+    const now = new Date().toISOString();
+    let saveError: typeof err | null = null;
+
+    if (row) {
+      const { error } = await supabase
+        .from("platform_settings")
+        .update({ ...payload, updated_at: now })
+        .eq("id", row.id);
+      saveError = error;
+    } else {
+      const { data, error } = await supabase
+        .from("platform_settings")
+        .insert({ ...payload, mosque_id: null, updated_at: now })
+        .select("id, primary_color, secondary_color, logo_url, heading_font, body_font")
+        .single();
+      saveError = error;
+      if (data) setRow(data as Settings);
+    }
+
     setSaving(false);
-    if (err) {
-      setError(err.message);
+    if (saveError) {
+      setError(saveError.message);
       return;
     }
     applyPlatformSettings(payload);

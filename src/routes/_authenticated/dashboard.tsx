@@ -172,7 +172,7 @@ function DashboardShell() {
     <div className="h-screen overflow-hidden bg-surface text-foreground flex flex-col">
       {/* Top bar */}
       <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-4 bg-primary px-4 text-white shadow-sm md:px-6">
-        {!deactivated && (
+        {!deactivated && !gated && (
           <button
             aria-label="Toggle navigation"
             onClick={() => setMobileOpen((v) => !v)}
@@ -181,7 +181,7 @@ function DashboardShell() {
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         )}
-        {!deactivated && (
+        {!deactivated && !gated && (
           <button
             aria-label="Toggle sidebar"
             onClick={() => setCollapsed((v) => !v)}
@@ -199,9 +199,11 @@ function DashboardShell() {
             </span>
           )}
         </Link>
-        <div className="ml-auto flex items-center gap-2">
-          <NotificationBell userId={profile.user_id} role={role} />
-        </div>
+        {!deactivated && !gated && (
+          <div className="ml-auto flex items-center gap-2">
+            <NotificationBell userId={profile.user_id} role={role} />
+          </div>
+        )}
       </header>
 
       {deactivated ? (
@@ -223,6 +225,38 @@ function DashboardShell() {
             <LogOut className="h-4 w-4" />
             Log Out
           </button>
+        </main>
+      ) : gated ? (
+        <main className="flex-1 flex flex-col items-center justify-center px-6 py-10 md:py-12">
+          <div className="mx-auto w-full max-w-xl rounded-lg border border-border bg-card p-10 text-center shadow-sm">
+            <h1 className="font-heading text-2xl font-bold text-foreground">
+              {approvalStatus === "rejected" ? "Signup Not Approved" : "Awaiting Approval"}
+            </h1>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              {approvalStatus === "rejected"
+                ? "Your signup request was not approved. Please contact your mosque admin for more information."
+                : "Your account is awaiting approval from your mosque admin. You'll be notified once approved."}
+            </p>
+            {requestError && <p className="mt-3 text-sm text-muted-foreground">{requestError}</p>}
+          </div>
+          <div className="mt-6 flex w-full max-w-xl flex-col items-center justify-center gap-3 sm:flex-row">
+            {approvalStatus === "rejected" && (
+              <button
+                onClick={handleRequestAgain}
+                disabled={requesting}
+                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 disabled:opacity-60"
+              >
+                {requesting ? "Requesting..." : "Request Again"}
+              </button>
+            )}
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-6 py-3 text-sm font-semibold text-red-600 shadow-sm transition hover:bg-accent"
+            >
+              <LogOut className="h-4 w-4" />
+              Log Out
+            </button>
+          </div>
         </main>
       ) : (
         <div className="flex flex-1 min-h-0 overflow-hidden">
@@ -329,41 +363,10 @@ function DashboardShell() {
           {/* Main content */}
           <main className="h-full flex-1 min-w-0 overflow-y-auto transition-[width] duration-200 ease-out">
             <div className="mx-auto max-w-6xl px-6 py-10 md:py-12">
-              {gated ? (
-                <div className="flex min-h-[60vh] items-center justify-center">
-                  <div className="w-full max-w-lg rounded-lg border border-border bg-card p-10 text-center shadow-sm">
-                    <h1 className="font-heading text-2xl font-bold text-foreground">
-                      {approvalStatus === "rejected" ? "Signup Not Approved" : "Awaiting Approval"}
-                    </h1>
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                      {approvalStatus === "rejected"
-                        ? "Your signup request was not approved. Please contact your mosque admin for more information."
-                        : "Your account is awaiting approval from your mosque admin. You'll be notified once approved."}
-                    </p>
-                    {approvalStatus === "rejected" && (
-                      <>
-                        <button
-                          onClick={handleRequestAgain}
-                          disabled={requesting}
-                          className="mt-6 inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 disabled:opacity-60"
-                        >
-                          {requesting ? "Requesting..." : "Request Again"}
-                        </button>
-                        {requestError && (
-                          <p className="mt-3 text-sm text-muted-foreground">{requestError}</p>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <>
-                  {profile.must_change_password && profile.user_id && profile.email && (
-                    <PasswordChangeBanner userId={profile.user_id} email={profile.email} />
-                  )}
-                  <Outlet />
-                </>
+              {profile.must_change_password && profile.user_id && profile.email && (
+                <PasswordChangeBanner userId={profile.user_id} email={profile.email} />
               )}
+              <Outlet />
             </div>
           </main>
 

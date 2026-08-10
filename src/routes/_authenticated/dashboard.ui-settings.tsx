@@ -106,7 +106,7 @@ function UiSettings() {
       body_font: bodyFont,
     };
     const now = new Date().toISOString();
-    let saveError: typeof err | null = null;
+    let saveError: { message: string } | null = null;
 
     if (row) {
       const { error } = await supabase

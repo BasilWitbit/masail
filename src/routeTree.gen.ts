@@ -39,6 +39,7 @@ import { Route as AuthenticatedDashboardAccountSettingsRouteImport } from './rou
 import { Route as AuthenticatedDashboardQuestionsIndexRouteImport } from './routes/_authenticated/dashboard.questions.index'
 import { Route as AuthenticatedDashboardMosquesIndexRouteImport } from './routes/_authenticated/dashboard.mosques.index'
 import { Route as AuthenticatedDashboardQuestionsIdRouteImport } from './routes/_authenticated/dashboard.questions.$id'
+import { Route as AuthenticatedDashboardMosquesIdSettingsRouteImport } from './routes/_authenticated/dashboard.mosques.$id.settings'
 
 const VerifyOtpRoute = VerifyOtpRouteImport.update({
   id: '/verify-otp',
@@ -212,6 +213,12 @@ const AuthenticatedDashboardQuestionsIdRoute =
     path: '/$id',
     getParentRoute: () => AuthenticatedDashboardQuestionsRoute,
   } as any)
+const AuthenticatedDashboardMosquesIdSettingsRoute =
+  AuthenticatedDashboardMosquesIdSettingsRouteImport.update({
+    id: '/$id/settings',
+    path: '/$id/settings',
+    getParentRoute: () => AuthenticatedDashboardMosquesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -243,6 +250,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
   '/dashboard/mosques/': typeof AuthenticatedDashboardMosquesIndexRoute
   '/dashboard/questions/': typeof AuthenticatedDashboardQuestionsIndexRoute
+  '/dashboard/mosques/$id/settings': typeof AuthenticatedDashboardMosquesIdSettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -271,6 +279,7 @@ export interface FileRoutesByTo {
   '/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
   '/dashboard/mosques': typeof AuthenticatedDashboardMosquesIndexRoute
   '/dashboard/questions': typeof AuthenticatedDashboardQuestionsIndexRoute
+  '/dashboard/mosques/$id/settings': typeof AuthenticatedDashboardMosquesIdSettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -304,6 +313,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
   '/_authenticated/dashboard/mosques/': typeof AuthenticatedDashboardMosquesIndexRoute
   '/_authenticated/dashboard/questions/': typeof AuthenticatedDashboardQuestionsIndexRoute
+  '/_authenticated/dashboard/mosques/$id/settings': typeof AuthenticatedDashboardMosquesIdSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -337,6 +347,7 @@ export interface FileRouteTypes {
     | '/dashboard/questions/$id'
     | '/dashboard/mosques/'
     | '/dashboard/questions/'
+    | '/dashboard/mosques/$id/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -365,6 +376,7 @@ export interface FileRouteTypes {
     | '/dashboard/questions/$id'
     | '/dashboard/mosques'
     | '/dashboard/questions'
+    | '/dashboard/mosques/$id/settings'
   id:
     | '__root__'
     | '/'
@@ -397,6 +409,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/questions/$id'
     | '/_authenticated/dashboard/mosques/'
     | '/_authenticated/dashboard/questions/'
+    | '/_authenticated/dashboard/mosques/$id/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -620,17 +633,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardQuestionsIdRouteImport
       parentRoute: typeof AuthenticatedDashboardQuestionsRoute
     }
+    '/_authenticated/dashboard/mosques/$id/settings': {
+      id: '/_authenticated/dashboard/mosques/$id/settings'
+      path: '/$id/settings'
+      fullPath: '/dashboard/mosques/$id/settings'
+      preLoaderRoute: typeof AuthenticatedDashboardMosquesIdSettingsRouteImport
+      parentRoute: typeof AuthenticatedDashboardMosquesRoute
+    }
   }
 }
 
 interface AuthenticatedDashboardMosquesRouteChildren {
   AuthenticatedDashboardMosquesIndexRoute: typeof AuthenticatedDashboardMosquesIndexRoute
+  AuthenticatedDashboardMosquesIdSettingsRoute: typeof AuthenticatedDashboardMosquesIdSettingsRoute
 }
 
 const AuthenticatedDashboardMosquesRouteChildren: AuthenticatedDashboardMosquesRouteChildren =
   {
     AuthenticatedDashboardMosquesIndexRoute:
       AuthenticatedDashboardMosquesIndexRoute,
+    AuthenticatedDashboardMosquesIdSettingsRoute:
+      AuthenticatedDashboardMosquesIdSettingsRoute,
   }
 
 const AuthenticatedDashboardMosquesRouteWithChildren =
@@ -741,13 +764,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

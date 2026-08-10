@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AlertCircle, ArrowLeft, ThumbsDown, ThumbsUp, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { RichText } from "@/components/rich-text";
 
 type QuestionStatus =
   | "submitted"
@@ -295,9 +296,7 @@ function QuestionDetail() {
                   Scholar's Answer
                 </h2>
               </div>
-              <p className="mt-4 whitespace-pre-wrap text-base leading-[1.8] text-foreground">
-                {answer.body}
-              </p>
+              <RichText html={answer.body} className="mt-4 text-base leading-[1.8] text-foreground" />
             </div>
           </div>
 

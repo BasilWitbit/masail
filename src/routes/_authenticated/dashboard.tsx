@@ -172,7 +172,7 @@ function DashboardShell() {
     <div className="h-screen overflow-hidden bg-surface text-foreground flex flex-col">
       {/* Top bar */}
       <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-4 bg-primary px-4 text-white shadow-sm md:px-6">
-        {!deactivated && (
+        {!deactivated && !gated && (
           <button
             aria-label="Toggle navigation"
             onClick={() => setMobileOpen((v) => !v)}
@@ -181,7 +181,7 @@ function DashboardShell() {
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         )}
-        {!deactivated && (
+        {!deactivated && !gated && (
           <button
             aria-label="Toggle sidebar"
             onClick={() => setCollapsed((v) => !v)}
@@ -199,9 +199,11 @@ function DashboardShell() {
             </span>
           )}
         </Link>
-        <div className="ml-auto flex items-center gap-2">
-          <NotificationBell userId={profile.user_id} role={role} />
-        </div>
+        {!deactivated && !gated && (
+          <div className="ml-auto flex items-center gap-2">
+            <NotificationBell userId={profile.user_id} role={role} />
+          </div>
+        )}
       </header>
 
       {deactivated ? (

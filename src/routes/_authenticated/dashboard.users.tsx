@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { AlertCircle, Check, Loader2, Mail, UserRound, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AlertCircle, Check, Download, Loader2, Mail, UserRound, X } from "lucide-react";
 import { toast } from "sonner";
+import { QRCodeCanvas } from "qrcode.react";
 import { supabase } from "@/integrations/supabase/client";
 import { requireRole } from "@/lib/require-role";
 
@@ -10,11 +11,12 @@ export const Route = createFileRoute("/_authenticated/dashboard/users")({
   component: MosqueUsers,
 });
 
-type Tab = "pending" | "approved";
+type Tab = "pending" | "approved" | "qr";
 
 const TABS: { key: Tab; label: string; empty: string }[] = [
   { key: "pending", label: "Pending Users", empty: "No pending signup requests right now." },
   { key: "approved", label: "Approved Users", empty: "No approved users yet." },
+  { key: "qr", label: "Signup QR Code", empty: "" },
 ];
 
 type UserRow = {

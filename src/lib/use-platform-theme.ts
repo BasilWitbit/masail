@@ -100,26 +100,43 @@ export async function resolvePlatformSettings(
   const { data: userData } = await supabase.auth.getUser();
   const user = userData?.user;
   if (user) {
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("role, mosque_id")
       .eq("id", user.id)
       .maybeSingle();
 
-    if (profile && profile.role !== "super_admin") {
-      let mosqueId: string | null = profile.mosque_id ?? null;
-      if (profile.role === "shaykh") {
-        const { data: shaykh } = await supabase
-          .from("shaykhs")
-          .select("mosque_id")
-          .eq("profile_id", user.id)
-          .maybeSingle();
-        mosqueId = shaykh?.mosque_id ?? mosqueId;
+    if (profileError) {
+      console.warn("[theme] failed to read profile role:", profileError.message);
+    }
+
+    if (profile?.role === "shaykh") {
+      // A shaykh's mosque lives in shaykhs.mosque_id (profiles.mosque_id is null by design).
+      const { data: shaykh, error: shaykhError } = await supabase
+        .from("shaykhs")
+        .select("mosque_id")
+        .eq("profile_id", user.id)
+        .maybeSingle();
+
+      if (shaykhError) {
+        console.warn("[theme] shaykh mosque lookup failed:", shaykhError.message);
       }
-      if (mosqueId) {
-        const settings = await fetchSettingsForMosque(mosqueId);
+
+      if (shaykh?.mosque_id) {
+        const settings = await fetchSettingsForMosque(shaykh.mosque_id);
         if (settings) return settings;
+        console.warn(
+          "[theme] no platform_settings row readable for shaykh mosque",
+          shaykh.mosque_id,
+          "- falling back to global theme",
+        );
       }
+      return fetchGlobalSettings();
+    }
+
+    if (profile && profile.role !== "super_admin" && profile.mosque_id) {
+      const settings = await fetchSettingsForMosque(profile.mosque_id);
+      if (settings) return settings;
     }
   }
 

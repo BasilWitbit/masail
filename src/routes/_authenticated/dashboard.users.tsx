@@ -148,7 +148,9 @@ function MosqueUsers() {
         </div>
       )}
 
-      {loading ? (
+      {tab === "qr" ? (
+        <SignupQrPanel />
+      ) : loading ? (
         <div className="flex items-center justify-center rounded-lg border border-border bg-card p-12 text-sm text-muted-foreground">
           <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading users…
         </div>

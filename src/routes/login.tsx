@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { usePlatformTheme } from "@/lib/use-platform-theme";
+import { usePlatformThemeGate } from "@/lib/use-platform-theme";
+import { ThemeLoadingScreen } from "@/components/theme-loading-screen";
 import { SiteHeader } from "@/components/site-header";
 
 export const Route = createFileRoute("/login")({
@@ -18,7 +19,7 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
-  usePlatformTheme();
+  const { ready: themeReady } = usePlatformThemeGate();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -68,6 +69,9 @@ function LoginPage() {
       setError("Something went wrong. Please try again.");
     }
   }
+
+  if (!themeReady) return <ThemeLoadingScreen />;
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">

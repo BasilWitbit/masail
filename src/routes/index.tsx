@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Search, FileText, BookOpen, CheckCircle2, Facebook, Instagram, Youtube } from "lucide-react";
-import { usePlatformTheme } from "@/lib/use-platform-theme";
+import { usePlatformThemeGate } from "@/lib/use-platform-theme";
+import { ThemeLoadingScreen } from "@/components/theme-loading-screen";
 import { SiteHeader } from "@/components/site-header";
 import { HeroIllustration } from "@/components/hero-illustration";
 
@@ -10,8 +11,11 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  usePlatformTheme();
+  const { ready: themeReady } = usePlatformThemeGate();
   const [query, setQuery] = useState("");
+
+  if (!themeReady) return <ThemeLoadingScreen />;
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">

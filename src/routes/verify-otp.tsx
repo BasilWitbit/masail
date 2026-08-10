@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { AlertCircle, Check, Loader2, MailCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { usePlatformTheme } from "@/lib/use-platform-theme";
+import { usePlatformThemeGate } from "@/lib/use-platform-theme";
+import { ThemeLoadingScreen } from "@/components/theme-loading-screen";
 import { SiteHeader } from "@/components/site-header";
 import { z } from "zod";
 
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/verify-otp")({
 });
 
 function VerifyOtpPage() {
-  usePlatformTheme();
+  const { ready: themeReady } = usePlatformThemeGate();
   const navigate = useNavigate();
   const { email } = Route.useSearch();
 
@@ -148,6 +149,8 @@ function VerifyOtpPage() {
     setResent(true);
     setResendCountdown(30);
   }
+
+  if (!themeReady) return <ThemeLoadingScreen />;
 
   if (!email) {
     return (

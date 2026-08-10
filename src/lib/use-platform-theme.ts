@@ -40,6 +40,18 @@ export function applyPlatformSettings(data: PlatformSettings) {
   }
 }
 
+/**
+ * Removes every inline theme override so the stylesheet defaults apply again.
+ * Called on logout so the previous mosque's colors never leak into the next page.
+ */
+export function clearPlatformTheme() {
+  if (typeof document === "undefined") return;
+  const root = document.documentElement;
+  for (const prop of ["--primary", "--ring", "--secondary", "--font-heading", "--font-sans"]) {
+    root.style.removeProperty(prop);
+  }
+}
+
 const SETTINGS_COLUMNS =
   "primary_color, secondary_color, logo_url, heading_font, body_font";
 

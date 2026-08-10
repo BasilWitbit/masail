@@ -363,41 +363,10 @@ function DashboardShell() {
           {/* Main content */}
           <main className="h-full flex-1 min-w-0 overflow-y-auto transition-[width] duration-200 ease-out">
             <div className="mx-auto max-w-6xl px-6 py-10 md:py-12">
-              {gated ? (
-                <div className="flex min-h-[60vh] items-center justify-center">
-                  <div className="w-full max-w-lg rounded-lg border border-border bg-card p-10 text-center shadow-sm">
-                    <h1 className="font-heading text-2xl font-bold text-foreground">
-                      {approvalStatus === "rejected" ? "Signup Not Approved" : "Awaiting Approval"}
-                    </h1>
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                      {approvalStatus === "rejected"
-                        ? "Your signup request was not approved. Please contact your mosque admin for more information."
-                        : "Your account is awaiting approval from your mosque admin. You'll be notified once approved."}
-                    </p>
-                    {approvalStatus === "rejected" && (
-                      <>
-                        <button
-                          onClick={handleRequestAgain}
-                          disabled={requesting}
-                          className="mt-6 inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 disabled:opacity-60"
-                        >
-                          {requesting ? "Requesting..." : "Request Again"}
-                        </button>
-                        {requestError && (
-                          <p className="mt-3 text-sm text-muted-foreground">{requestError}</p>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <>
-                  {profile.must_change_password && profile.user_id && profile.email && (
-                    <PasswordChangeBanner userId={profile.user_id} email={profile.email} />
-                  )}
-                  <Outlet />
-                </>
+              {profile.must_change_password && profile.user_id && profile.email && (
+                <PasswordChangeBanner userId={profile.user_id} email={profile.email} />
               )}
+              <Outlet />
             </div>
           </main>
 

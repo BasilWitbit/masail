@@ -26,6 +26,11 @@ function DashboardShell() {
 
   const [role, setRole] = useState<UserRole | null>(null);
   const [deactivated, setDeactivated] = useState(false);
+  const [approvalStatus, setApprovalStatus] = useState<
+    "pending_approval" | "approved" | "rejected" | null
+  >(null);
+  const [requesting, setRequesting] = useState(false);
+  const [requestError, setRequestError] = useState<string | null>(null);
   const [profile, setProfile] = useState<ProfileInfo>({ full_name: null, email: null, avatar_url: null, user_id: null, must_change_password: false });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -39,11 +44,17 @@ function DashboardShell() {
       if (!userData.user) return;
       const { data } = await supabase
         .from("profiles")
-        .select("role, full_name, must_change_password, avatar_url")
+        .select("role, full_name, must_change_password, avatar_url, approval_status")
         .eq("id", userData.user.id)
         .maybeSingle();
       if (!active) return;
       setRole(((data?.role as UserRole) ?? "user"));
+      if ((data?.role ?? "user") === "user") {
+        setApprovalStatus(
+          (data?.approval_status as "pending_approval" | "approved" | "rejected" | undefined) ??
+            null,
+        );
+      }
       if (data?.role === "shaykh") {
         const { data: shaykh } = await supabase
           .from("shaykhs")
@@ -118,12 +129,33 @@ function DashboardShell() {
     };
   }, []);
 
-  const nav = deactivated ? [] : getNavForRole(role);
+  const gated =
+    role === "user" && (approvalStatus === "pending_approval" || approvalStatus === "rejected");
+  const nav = deactivated || gated ? [] : getNavForRole(role);
 
   async function handleLogout() {
     await supabase.auth.signOut();
     navigate({ to: "/" });
   }
+
+  async function handleRequestAgain() {
+    if (!profile.user_id) return;
+    setRequesting(true);
+    setRequestError(null);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ approval_status: "pending_approval" })
+      .eq("id", profile.user_id);
+    setRequesting(false);
+    if (error) {
+      setRequestError(
+        "Something went wrong. Please try again or contact your mosque admin directly.",
+      );
+      return;
+    }
+    setApprovalStatus("pending_approval");
+  }
+
 
   const initials = (profile.full_name || profile.email || "U")
     .split(" ")
@@ -293,14 +325,44 @@ function DashboardShell() {
           {/* Main content */}
           <main className="h-full flex-1 min-w-0 overflow-y-auto transition-[width] duration-200 ease-out">
             <div className="mx-auto max-w-6xl px-6 py-10 md:py-12">
-              <>
-                {profile.must_change_password && profile.user_id && profile.email && (
-                  <PasswordChangeBanner userId={profile.user_id} email={profile.email} />
-                )}
-                <Outlet />
-              </>
+              {gated ? (
+                <div className="flex min-h-[60vh] items-center justify-center">
+                  <div className="w-full max-w-lg rounded-lg border border-border bg-card p-10 text-center shadow-sm">
+                    <h1 className="font-heading text-2xl font-bold text-foreground">
+                      {approvalStatus === "rejected" ? "Signup Not Approved" : "Awaiting Approval"}
+                    </h1>
+                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                      {approvalStatus === "rejected"
+                        ? "Your signup request was not approved. Please contact your mosque admin for more information."
+                        : "Your account is awaiting approval from your mosque admin. You'll be notified once approved."}
+                    </p>
+                    {approvalStatus === "rejected" && (
+                      <>
+                        <button
+                          onClick={handleRequestAgain}
+                          disabled={requesting}
+                          className="mt-6 inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 disabled:opacity-60"
+                        >
+                          {requesting ? "Requesting..." : "Request Again"}
+                        </button>
+                        {requestError && (
+                          <p className="mt-3 text-sm text-muted-foreground">{requestError}</p>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {profile.must_change_password && profile.user_id && profile.email && (
+                    <PasswordChangeBanner userId={profile.user_id} email={profile.email} />
+                  )}
+                  <Outlet />
+                </>
+              )}
             </div>
           </main>
+
         </div>
       )}
     </div>

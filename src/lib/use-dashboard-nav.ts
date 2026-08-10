@@ -7,6 +7,7 @@ import {
   Building2,
   Tags,
   UserPlus,
+  UserCheck,
   Flag,
   Globe,
   Users,

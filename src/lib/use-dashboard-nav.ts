@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   Building2,
   Tags,
-  UserPlus,
   UserCheck,
   Flag,
   Globe,

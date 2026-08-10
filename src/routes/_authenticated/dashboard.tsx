@@ -165,6 +165,8 @@ function DashboardShell() {
     .slice(0, 2)
     .toUpperCase();
 
+  if (!themeReady) return <ThemeLoadingScreen />;
+
   return (
     <div className="h-screen overflow-hidden bg-surface text-foreground flex flex-col">
       {/* Top bar */}

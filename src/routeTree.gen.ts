@@ -11,12 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
 import { Route as SignupRouteImport } from './routes/signup'
-import { Route as QaRouteImport } from './routes/qa'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as QaIndexRouteImport } from './routes/qa.index'
-import { Route as QaIdRouteImport } from './routes/qa.$id'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedDashboardUiSettingsRouteImport } from './routes/_authenticated/dashboard.ui-settings'
@@ -50,11 +47,6 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
-const QaRoute = QaRouteImport.update({
-  id: '/qa',
-  path: '/qa',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -68,16 +60,6 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const QaIndexRoute = QaIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => QaRoute,
-} as any)
-const QaIdRoute = QaIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => QaRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -214,12 +196,9 @@ const AuthenticatedDashboardQuestionsIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/qa': typeof QaRouteWithChildren
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
-  '/qa/$id': typeof QaIdRoute
-  '/qa/': typeof QaIndexRoute
   '/dashboard/account-settings': typeof AuthenticatedDashboardAccountSettingsRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/ask': typeof AuthenticatedDashboardAskRoute
@@ -247,8 +226,6 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
-  '/qa/$id': typeof QaIdRoute
-  '/qa': typeof QaIndexRoute
   '/dashboard/account-settings': typeof AuthenticatedDashboardAccountSettingsRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/ask': typeof AuthenticatedDashboardAskRoute
@@ -275,12 +252,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/login': typeof LoginRoute
-  '/qa': typeof QaRouteWithChildren
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
-  '/qa/$id': typeof QaIdRoute
-  '/qa/': typeof QaIndexRoute
   '/_authenticated/dashboard/account-settings': typeof AuthenticatedDashboardAccountSettingsRoute
   '/_authenticated/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/_authenticated/dashboard/ask': typeof AuthenticatedDashboardAskRoute
@@ -308,12 +282,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
-    | '/qa'
     | '/signup'
     | '/verify-otp'
     | '/dashboard'
-    | '/qa/$id'
-    | '/qa/'
     | '/dashboard/account-settings'
     | '/dashboard/admin'
     | '/dashboard/ask'
@@ -341,8 +312,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/verify-otp'
-    | '/qa/$id'
-    | '/qa'
     | '/dashboard/account-settings'
     | '/dashboard/admin'
     | '/dashboard/ask'
@@ -368,12 +337,9 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/login'
-    | '/qa'
     | '/signup'
     | '/verify-otp'
     | '/_authenticated/dashboard'
-    | '/qa/$id'
-    | '/qa/'
     | '/_authenticated/dashboard/account-settings'
     | '/_authenticated/dashboard/admin'
     | '/_authenticated/dashboard/ask'
@@ -401,7 +367,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
-  QaRoute: typeof QaRouteWithChildren
   SignupRoute: typeof SignupRoute
   VerifyOtpRoute: typeof VerifyOtpRoute
 }
@@ -420,13 +385,6 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/qa': {
-      id: '/qa'
-      path: '/qa'
-      fullPath: '/qa'
-      preLoaderRoute: typeof QaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -449,20 +407,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/qa/': {
-      id: '/qa/'
-      path: '/'
-      fullPath: '/qa/'
-      preLoaderRoute: typeof QaIndexRouteImport
-      parentRoute: typeof QaRoute
-    }
-    '/qa/$id': {
-      id: '/qa/$id'
-      path: '/$id'
-      fullPath: '/qa/$id'
-      preLoaderRoute: typeof QaIdRouteImport
-      parentRoute: typeof QaRoute
     }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
@@ -710,36 +654,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-interface QaRouteChildren {
-  QaIdRoute: typeof QaIdRoute
-  QaIndexRoute: typeof QaIndexRoute
-}
-
-const QaRouteChildren: QaRouteChildren = {
-  QaIdRoute: QaIdRoute,
-  QaIndexRoute: QaIndexRoute,
-}
-
-const QaRouteWithChildren = QaRoute._addFileChildren(QaRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   LoginRoute: LoginRoute,
-  QaRoute: QaRouteWithChildren,
   SignupRoute: SignupRoute,
   VerifyOtpRoute: VerifyOtpRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

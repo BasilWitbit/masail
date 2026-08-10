@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, Calendar, ArrowRight, ArrowLeft, Inbox, BookOpen, Info, Filter, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -329,12 +329,9 @@ function QACard({
     );
   }
 
-  return (
-    <Link to="/qa/$id" params={{ id: qa.id }} className={className}>
-      {inner}
-    </Link>
-  );
+  return <div className={className}>{inner}</div>;
 }
+
 
 function InlineQADetail({
   qa,

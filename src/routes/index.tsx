@@ -53,11 +53,12 @@ function Home() {
                   Ask a Question
                 </button>
               </Link>
-              <Link to="/qa">
+              <Link to="/login">
                 <button className="rounded-lg border-2 border-primary bg-transparent px-7 py-3.5 text-sm font-semibold text-primary transition hover:bg-primary/5">
                   Browse Q&A
                 </button>
               </Link>
+
             </div>
           </div>
 

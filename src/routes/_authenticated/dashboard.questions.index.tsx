@@ -53,6 +53,13 @@ function statusStyle(status: QuestionStatus): React.CSSProperties {
       border: "1px solid color-mix(in oklab, #b91c1c 25%, transparent)",
     };
   }
+  if (status === "pending_peer_review" || status === "needs_revision") {
+    return {
+      background: "color-mix(in oklab, var(--primary) 8%, transparent)",
+      color: "var(--primary)",
+      border: "1px solid color-mix(in oklab, var(--primary) 20%, transparent)",
+    };
+  }
   return {
     background: "color-mix(in oklab, var(--primary) 8%, transparent)",
     color: "var(--primary)",

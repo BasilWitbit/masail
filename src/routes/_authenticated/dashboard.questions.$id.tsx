@@ -9,6 +9,7 @@ type QuestionStatus =
   | "in_pool"
   | "claimed"
   | "pending_peer_review"
+  | "needs_revision"
   | "peer_approved"
   | "sent_to_user"
   | "reported"

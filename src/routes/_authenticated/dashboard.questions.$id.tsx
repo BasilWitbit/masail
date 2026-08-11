@@ -237,7 +237,7 @@ function QuestionDetail() {
       const qRow = q as unknown as QuestionRow | null;
       setQuestion(qRow);
 
-      if (qRow && qRow.status === "sent_to_user") {
+      if (qRow && (qRow.status === "sent_to_user" || qRow.status === "published")) {
         const [{ data: a }, { data: f }] = await Promise.all([
           supabase
             .from("answers")
@@ -387,7 +387,15 @@ function QuestionDetail() {
         <QuestionAttachments paths={question.attachment_urls} />
       )}
 
-      {question.status !== "sent_to_user" ? (
+      {question.status === "reported" ? (
+        <div className="mt-6 rounded-2xl border border-border bg-muted/40 p-8 text-center">
+          <h3 className="font-heading text-lg font-bold text-foreground">Under Review</h3>
+          <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+            Your question has been flagged for review by our team. We'll update you once
+            this has been resolved.
+          </p>
+        </div>
+      ) : question.status !== "sent_to_user" && question.status !== "published" ? (
         <div
           className="mt-6 rounded-2xl p-8 text-center"
           style={{

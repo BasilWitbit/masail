@@ -9,6 +9,7 @@ type QuestionStatus =
   | "in_pool"
   | "claimed"
   | "pending_peer_review"
+  | "needs_revision"
   | "peer_approved"
   | "sent_to_user"
   | "reported"
@@ -20,6 +21,7 @@ const STATUS_LABELS: Record<QuestionStatus, string> = {
   in_pool: "Waiting for a Scholar",
   claimed: "Scholar Assigned",
   pending_peer_review: "Being Reviewed",
+  needs_revision: "Being Reviewed",
   peer_approved: "Almost Ready",
   sent_to_user: "Answered",
   reported: "Under Review",
@@ -66,6 +68,13 @@ function statusStyle(status: QuestionStatus): React.CSSProperties {
       background: "color-mix(in oklab, #b91c1c 10%, transparent)",
       color: "#991b1b",
       border: "1px solid color-mix(in oklab, #b91c1c 25%, transparent)",
+    };
+  }
+  if (status === "pending_peer_review" || status === "needs_revision") {
+    return {
+      background: "color-mix(in oklab, var(--primary) 8%, transparent)",
+      color: "var(--primary)",
+      border: "1px solid color-mix(in oklab, var(--primary) 20%, transparent)",
     };
   }
   return {

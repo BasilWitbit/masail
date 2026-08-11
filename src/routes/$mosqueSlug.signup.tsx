@@ -27,8 +27,8 @@ export const Route = createFileRoute("/$mosqueSlug/signup")({
 type Mosque = { id: string; name: string };
 
 function MosqueSignupPage() {
-  const { ready: themeReady } = usePlatformThemeGate();
   const { mosqueSlug } = Route.useParams();
+  const { ready: themeReady } = usePlatformThemeGate(mosqueSlug);
   const navigate = useNavigate();
 
   const [mosque, setMosque] = useState<Mosque | null>(null);

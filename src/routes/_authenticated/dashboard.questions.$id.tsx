@@ -383,6 +383,10 @@ function QuestionDetail() {
         </p>
       </div>
 
+      {question.attachment_urls && question.attachment_urls.length > 0 && (
+        <QuestionAttachments paths={question.attachment_urls} />
+      )}
+
       {question.status !== "sent_to_user" ? (
         <div
           className="mt-6 rounded-2xl p-8 text-center"

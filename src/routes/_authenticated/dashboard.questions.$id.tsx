@@ -1,8 +1,119 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AlertCircle, ArrowLeft, ThumbsDown, ThumbsUp, CheckCircle2 } from "lucide-react";
+import { AlertCircle, ArrowLeft, ThumbsDown, ThumbsUp, CheckCircle2, Download, Loader2, Paperclip } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { RichText } from "@/components/rich-text";
+
+type Attachment = { path: string; name: string; url: string };
+
+async function downloadBlob(url: string, filename: string) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("download failed");
+  const blob = await res.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = objectUrl;
+  a.download = filename;
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+}
+
+function QuestionAttachments({ paths }: { paths: string[] }) {
+  const [items, setItems] = useState<Attachment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      setLoading(true);
+      const { data } = await supabase.storage
+        .from("question-attachments")
+        .createSignedUrls(paths, 60 * 60);
+      if (!active) return;
+      const list: Attachment[] = (data ?? [])
+        .map((d, i) => {
+          const path = (d as { path?: string | null }).path ?? paths[i];
+          if (!d.signedUrl || !path) return null;
+          return { path, name: path.split("/").pop() ?? path, url: d.signedUrl };
+        })
+        .filter((x): x is Attachment => x !== null);
+      setItems(list);
+      setLoading(false);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [paths.join("|")]);
+
+  async function handleDownload(item: Attachment) {
+    setBusy(item.path);
+    setError(null);
+    try {
+      await downloadBlob(item.url, item.name);
+    } catch {
+      setError("Could not download the file. Please try again.");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="mt-6 rounded-lg border border-border bg-card p-6">
+        <h2 className="font-heading text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          Attachments
+        </h2>
+        <p className="mt-3 inline-flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" /> Loading attachments…
+        </p>
+      </div>
+    );
+  }
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className="mt-6 rounded-lg border border-border bg-card p-6">
+      <h2 className="font-heading text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        Attachments
+      </h2>
+      <ul className="mt-3 divide-y divide-border">
+        {items.map((item) => (
+          <li key={item.path} className="flex items-center justify-between gap-3 py-2.5">
+            <span className="flex min-w-0 items-center gap-2 text-sm text-foreground">
+              <Paperclip className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <span className="truncate">{item.name}</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => handleDownload(item)}
+              disabled={busy === item.path}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition hover:opacity-80 disabled:opacity-50"
+              style={{
+                color: "var(--primary)",
+                borderColor: "color-mix(in oklab, var(--primary) 30%, transparent)",
+              }}
+            >
+              {busy === item.path ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Download className="h-3.5 w-3.5" />
+              )}
+              Download
+            </button>
+          </li>
+        ))}
+      </ul>
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+    </div>
+  );
+}
+
 
 type QuestionStatus =
   | "submitted"
@@ -37,6 +148,7 @@ type QuestionRow = {
   is_urgent: boolean;
   status: QuestionStatus;
   asker_id: string | null;
+  attachment_urls: string[] | null;
   categories: { name: string } | null;
 };
 
@@ -114,7 +226,7 @@ function QuestionDetail() {
       const { data: q, error: qError } = await supabase
         .from("questions")
         .select(
-          "id, title, body, created_at, is_urgent, status, asker_id, categories(name)",
+          "id, title, body, created_at, is_urgent, status, asker_id, attachment_urls, categories(name)",
         )
         .eq("id", id)
         .eq("asker_id", uid)
@@ -270,6 +382,10 @@ function QuestionDetail() {
           {question.body}
         </p>
       </div>
+
+      {question.attachment_urls && question.attachment_urls.length > 0 && (
+        <QuestionAttachments paths={question.attachment_urls} />
+      )}
 
       {question.status !== "sent_to_user" ? (
         <div

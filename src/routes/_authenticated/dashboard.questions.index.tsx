@@ -30,6 +30,7 @@ const STATUS_LABELS: Record<QuestionStatus, string> = {
   in_pool: "Waiting for a Scholar",
   claimed: "Scholar Assigned",
   pending_peer_review: "Being Reviewed",
+  needs_revision: "Being Reviewed",
   peer_approved: "Almost Ready",
   sent_to_user: "Answered",
   reported: "Under Review",

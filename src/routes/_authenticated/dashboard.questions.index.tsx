@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { AlertCircle, HelpCircle, MessageSquarePlus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { AlertCircle, HelpCircle, MessageSquarePlus, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 type QuestionStatus =
@@ -82,6 +82,18 @@ function formatDate(iso: string) {
 function MyQuestions() {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState<QuestionRow[]>([]);
+  const [searchText, setSearchText] = useState("");
+
+  const filteredRows = useMemo(() => {
+    const term = searchText.trim().toLowerCase();
+    if (!term) return rows;
+    return rows.filter((q) => {
+      const title = (q.title ?? "").toLowerCase();
+      const body = (q.body ?? "").toLowerCase();
+      const category = (q.categories?.name ?? "").toLowerCase();
+      return title.includes(term) || body.includes(term) || category.includes(term);
+    });
+  }, [rows, searchText]);
 
   useEffect(() => {
     let active = true;
@@ -125,7 +137,20 @@ function MyQuestions() {
         </Link>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-6">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            placeholder="Search your questions…"
+            className="w-full rounded-lg border border-border bg-card py-2.5 pl-10 pr-4 text-sm text-primary placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
+          />
+        </div>
+      </div>
+
+      <div className="mt-6">
         {loading ? (
           <div className="space-y-3">
             {[0, 1, 2].map((i) => (
@@ -157,9 +182,32 @@ function MyQuestions() {
               Ask Your First Question
             </Link>
           </div>
+        ) : filteredRows.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-border bg-muted/40 p-16 text-center">
+            <div
+              className="mx-auto flex h-14 w-14 items-center justify-center rounded-full"
+              style={{ background: "color-mix(in oklab, var(--primary) 8%, transparent)" }}
+            >
+              <Search className="h-6 w-6" style={{ color: "var(--primary)" }} />
+            </div>
+            <h2 className="mt-5 font-heading text-xl font-bold text-primary">
+              No questions match your search.
+            </h2>
+            <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+              Try a different keyword or clear the search to see all your questions.
+            </p>
+            {searchText.trim().length > 0 && (
+              <button
+                onClick={() => setSearchText("")}
+                className="mt-6 inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-primary shadow-sm transition hover:bg-muted/50"
+              >
+                Clear Search
+              </button>
+            )}
+          </div>
         ) : (
           <ul className="space-y-3">
-            {rows.map((q) => {
+            {filteredRows.map((q) => {
               const title =
                 q.title && q.title.trim().length > 0
                   ? q.title

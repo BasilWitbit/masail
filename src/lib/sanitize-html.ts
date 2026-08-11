@@ -10,10 +10,12 @@ const ALLOWED_TAGS = [
   "br",
   "p",
   "div",
+  "ul",
+  "li",
 ];
 
 /**
- * Sanitizes rich-text HTML (bold / italic / underline / text color) before
+ * Sanitizes rich-text HTML (bold / italic / underline / bullet list) before
  * rendering. Falls back to a conservative tag-stripping pass during SSR where
  * no DOM is available for DOMPurify.
  */

@@ -92,9 +92,10 @@ async function fetchGlobalSettings() {
 
 export async function resolvePlatformSettings(
   pathname: string,
+  slugOverride?: string | null,
 ): Promise<PlatformSettings | null> {
-  // 1. Mosque-slug scoped route
-  const slug = getMosqueSlugFromPath(pathname);
+  // 1. Mosque-slug scoped route (explicit route param wins over path parsing)
+  const slug = slugOverride?.trim() || getMosqueSlugFromPath(pathname);
   if (slug) {
     const { data: mosque } = await supabase
       .from("mosques")
@@ -156,14 +157,15 @@ export async function resolvePlatformSettings(
   return fetchGlobalSettings();
 }
 
-export function usePlatformThemeGate() {
+export function usePlatformThemeGate(mosqueSlug?: string | null) {
   const [settings, setSettings] = useState<PlatformSettings | null>(null);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let active = true;
+    setReady(false);
     const pathname = typeof window === "undefined" ? "/" : window.location.pathname;
-    resolvePlatformSettings(pathname)
+    resolvePlatformSettings(pathname, mosqueSlug)
       .then((data) => {
         if (!active) return;
         if (data) {
@@ -177,7 +179,7 @@ export function usePlatformThemeGate() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [mosqueSlug]);
 
   return { settings, ready };
 }

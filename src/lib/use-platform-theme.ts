@@ -92,9 +92,10 @@ async function fetchGlobalSettings() {
 
 export async function resolvePlatformSettings(
   pathname: string,
+  slugOverride?: string | null,
 ): Promise<PlatformSettings | null> {
-  // 1. Mosque-slug scoped route
-  const slug = getMosqueSlugFromPath(pathname);
+  // 1. Mosque-slug scoped route (explicit route param wins over path parsing)
+  const slug = slugOverride?.trim() || getMosqueSlugFromPath(pathname);
   if (slug) {
     const { data: mosque } = await supabase
       .from("mosques")

@@ -157,14 +157,15 @@ export async function resolvePlatformSettings(
   return fetchGlobalSettings();
 }
 
-export function usePlatformThemeGate() {
+export function usePlatformThemeGate(mosqueSlug?: string | null) {
   const [settings, setSettings] = useState<PlatformSettings | null>(null);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let active = true;
+    setReady(false);
     const pathname = typeof window === "undefined" ? "/" : window.location.pathname;
-    resolvePlatformSettings(pathname)
+    resolvePlatformSettings(pathname, mosqueSlug)
       .then((data) => {
         if (!active) return;
         if (data) {
@@ -178,7 +179,7 @@ export function usePlatformThemeGate() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [mosqueSlug]);
 
   return { settings, ready };
 }

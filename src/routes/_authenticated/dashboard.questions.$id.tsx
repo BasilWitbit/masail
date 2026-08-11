@@ -148,6 +148,7 @@ type QuestionRow = {
   is_urgent: boolean;
   status: QuestionStatus;
   asker_id: string | null;
+  attachment_urls: string[] | null;
   categories: { name: string } | null;
 };
 

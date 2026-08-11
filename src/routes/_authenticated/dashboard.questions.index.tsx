@@ -182,9 +182,32 @@ function MyQuestions() {
               Ask Your First Question
             </Link>
           </div>
+        ) : filteredRows.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-border bg-muted/40 p-16 text-center">
+            <div
+              className="mx-auto flex h-14 w-14 items-center justify-center rounded-full"
+              style={{ background: "color-mix(in oklab, var(--primary) 8%, transparent)" }}
+            >
+              <Search className="h-6 w-6" style={{ color: "var(--primary)" }} />
+            </div>
+            <h2 className="mt-5 font-heading text-xl font-bold text-primary">
+              No questions match your search.
+            </h2>
+            <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+              Try a different keyword or clear the search to see all your questions.
+            </p>
+            {searchText.trim().length > 0 && (
+              <button
+                onClick={() => setSearchText("")}
+                className="mt-6 inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-primary shadow-sm transition hover:bg-muted/50"
+              >
+                Clear Search
+              </button>
+            )}
+          </div>
         ) : (
           <ul className="space-y-3">
-            {rows.map((q) => {
+            {filteredRows.map((q) => {
               const title =
                 q.title && q.title.trim().length > 0
                   ? q.title

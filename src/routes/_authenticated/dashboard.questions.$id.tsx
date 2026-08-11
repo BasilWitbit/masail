@@ -226,7 +226,7 @@ function QuestionDetail() {
       const { data: q, error: qError } = await supabase
         .from("questions")
         .select(
-          "id, title, body, created_at, is_urgent, status, asker_id, categories(name)",
+          "id, title, body, created_at, is_urgent, status, asker_id, attachment_urls, categories(name)",
         )
         .eq("id", id)
         .eq("asker_id", uid)

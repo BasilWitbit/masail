@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { AlertCircle, HelpCircle, MessageSquarePlus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { AlertCircle, HelpCircle, MessageSquarePlus, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 type QuestionStatus =

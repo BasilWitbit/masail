@@ -1,19 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Bold, Italic, Underline, Palette } from "lucide-react";
+import { Bold, Italic, Underline, List } from "lucide-react";
 import { sanitizeRichText } from "@/lib/sanitize-html";
 
-const SWATCHES = [
-  { name: "Default", value: "inherit" },
-  { name: "Ink", value: "#111827" },
-  { name: "Slate", value: "#475569" },
-  { name: "Green", value: "#0F5C4D" },
-  { name: "Gold", value: "#8A6D1F" },
-  { name: "Red", value: "#B91C1C" },
-  { name: "Blue", value: "#1D4ED8" },
-];
-
 /**
- * Minimal rich text editor (bold / italic / underline / text color) that
+ * Minimal rich text editor (bold / italic / underline / bullet list) that
  * outputs HTML. Deliberately dependency-free (contentEditable + execCommand)
  * to stay lightweight and React 19 / SSR safe.
  */
@@ -31,7 +21,6 @@ export function RichTextEditor({
   ariaLabel?: string;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const [colorOpen, setColorOpen] = useState(false);
   const [empty, setEmpty] = useState(true);
 
   // Load the incoming HTML once (and whenever it diverges from an external reset).
@@ -43,13 +32,6 @@ export function RichTextEditor({
     setEmpty(!el.textContent?.trim());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (!colorOpen) return;
-    const close = () => setColorOpen(false);
-    window.addEventListener("click", close);
-    return () => window.removeEventListener("click", close);
-  }, [colorOpen]);
 
   function emit() {
     const el = ref.current;
@@ -76,39 +58,9 @@ export function RichTextEditor({
         <ToolbarButton label="Underline" onClick={() => exec("underline")}>
           <Underline className="h-4 w-4" />
         </ToolbarButton>
-        <div className="relative">
-          <ToolbarButton
-            label="Text color"
-            onClick={(e) => {
-              e.stopPropagation();
-              setColorOpen((o) => !o);
-            }}
-          >
-            <Palette className="h-4 w-4" />
-          </ToolbarButton>
-          {colorOpen && (
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="absolute left-0 top-full z-30 mt-1 flex w-44 flex-wrap gap-1.5 rounded-lg border border-border bg-card p-2 shadow-lg"
-            >
-              {SWATCHES.map((s) => (
-                <button
-                  key={s.value}
-                  type="button"
-                  title={s.name}
-                  aria-label={s.name}
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => {
-                    exec("foreColor", s.value === "inherit" ? "#111827" : s.value);
-                    setColorOpen(false);
-                  }}
-                  className="h-6 w-6 rounded-lg border border-border"
-                  style={{ background: s.value === "inherit" ? "#111827" : s.value }}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        <ToolbarButton label="Bullet list" onClick={() => exec("insertUnorderedList")}>
+          <List className="h-4 w-4" />
+        </ToolbarButton>
       </div>
       <div className="relative">
         {empty && (

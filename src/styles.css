@@ -108,7 +108,7 @@
   }
 }
 
-/* Rich text (shaykh answers): only bold / italic / underline / color are produced. */
+/* Rich text (shaykh answers): bold / italic / underline / bullet list. */
 .rich-text {
   font-family: var(--font-sans);
   white-space: pre-wrap;
@@ -121,6 +121,16 @@
 
 .rich-text p:last-child {
   margin-bottom: 0;
+}
+
+.rich-text ul {
+  list-style: disc;
+  margin: 0 0 8px;
+  padding-left: 1.5rem;
+}
+
+.rich-text li {
+  margin-bottom: 2px;
 }
 
 .rich-text u {

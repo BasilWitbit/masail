@@ -82,6 +82,18 @@ function formatDate(iso: string) {
 function MyQuestions() {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState<QuestionRow[]>([]);
+  const [searchText, setSearchText] = useState("");
+
+  const filteredRows = useMemo(() => {
+    const term = searchText.trim().toLowerCase();
+    if (!term) return rows;
+    return rows.filter((q) => {
+      const title = (q.title ?? "").toLowerCase();
+      const body = (q.body ?? "").toLowerCase();
+      const category = (q.categories?.name ?? "").toLowerCase();
+      return title.includes(term) || body.includes(term) || category.includes(term);
+    });
+  }, [rows, searchText]);
 
   useEffect(() => {
     let active = true;

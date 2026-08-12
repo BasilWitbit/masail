@@ -473,6 +473,18 @@ function MyAnswers() {
                       ) : (
                         a && <Tag tone="muted">{STATUS_LABEL[a.status]}</Tag>
                       )}
+                      {tab === "completed" && publishedIds.has(r.id) && (
+                        <span
+                          className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                          style={{
+                            background: "color-mix(in oklab, var(--secondary) 18%, transparent)",
+                            color: "color-mix(in oklab, var(--secondary) 70%, black)",
+                            border: "1px solid color-mix(in oklab, var(--secondary) 45%, transparent)",
+                          }}
+                        >
+                          <BookOpenCheck className="h-3 w-3" /> Published
+                        </span>
+                      )}
                       <span className="ml-auto text-xs text-muted-foreground">{formatDate(date)}</span>
                     </div>
                     <h2 className="mt-3 font-heading text-lg font-semibold text-foreground">

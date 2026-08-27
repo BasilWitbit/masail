@@ -18,53 +18,58 @@ function Home() {
       <LandingHeader />
       
       <main>
-        <style>{`
-          @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-20px, 30px); }
-          }
-          @keyframes float-reverse {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(20px, -30px); }
-          }
+        {/* <style>{`
           @keyframes fade-up {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
           }
-          .animate-float { animation: float 9s ease-in-out infinite; }
-          .animate-float-reverse { animation: float-reverse 11s ease-in-out infinite; }
           .animate-fade-up { animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        `}</style>
+        `}</style> */}
 
         {/* Hero Section */}
-        <section id="hero" className="relative overflow-hidden pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 bg-[#F8FAFC]">
-          {/* Layered Blurred Radial Gradients */}
-          <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[60%] rounded-full bg-[#DBEAFE]/40 blur-[100px] animate-float" />
-          <div className="absolute -top-[10%] -right-[10%] w-[45%] h-[55%] rounded-full bg-[#93C5FD]/30 blur-[100px] animate-float-reverse" />
-          
-          {/* Dot pattern in corner for geometric interest */}
-          <div className="absolute bottom-10 left-10 w-48 h-48 bg-[radial-gradient(#E2E8F0_2px,transparent_2px)] [background-size:16px_16px] opacity-40" />
+<section id="hero" className="relative overflow-hidden pt-32 pb-24 lg:pt-48 lg:pb-36 px-6 bg-[#F8FAFC]">
+  
+  {/* Soft gradient wash */}
+  <div className="absolute -top-[30%] -left-[15%] w-[60%] h-[70%] rounded-full bg-[#DBEAFE]/60 blur-[110px]" />
+  <div className="absolute -top-[20%] -right-[15%] w-[55%] h-[65%] rounded-full bg-[#93C5FD]/35 blur-[110px]" />
 
-          {/* Glow behind headline */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[40%] rounded-full bg-[#3B82F6]/10 blur-[120px]" />
+  {/* Subtle dot-grid texture */}
+<div 
+  className="absolute inset-0 pointer-events-none"
+  style={{
+    backgroundImage: "radial-gradient(circle, #93C5FD 1.4px, transparent 1.6px)",
+    backgroundSize: "28px 28px",
+    opacity: 0.4,
+    WebkitMaskImage: "radial-gradient(ellipse 60% 50% at 50% 35%, black, transparent 90%)",
+    maskImage: "radial-gradient(ellipse 60% 50% at 50% 35%, black, transparent 90%)"
+  }}
+/>
 
-          <div className="relative mx-auto max-w-5xl text-center">
-            <span className="animate-fade-up inline-block rounded-full bg-[#DBEAFE] px-4 py-1.5 text-sm font-semibold text-[#2563EB] mb-6" style={{ animationDelay: "0.1s" }}>
-              Private • Verified • Local
-            </span>
-            <h1 className="animate-fade-up text-5xl md:text-7xl font-extrabold tracking-tight text-[#0F172A] leading-tight mb-8" style={{ animationDelay: "0.2s" }}>
-              Reliable Islamic Guidance, <br className="hidden md:block"/> Rooted in Your Community
-            </h1>
-            <p className="animate-fade-up mx-auto max-w-2xl text-lg md:text-xl text-[#64748B] mb-10 leading-relaxed" style={{ animationDelay: "0.3s" }}>
-              Connect privately with verified local scholars to find answers to your questions. A serene, secure platform for faithful guidance.
-            </p>
-            <div className="animate-fade-up flex flex-col sm:flex-row items-center justify-center gap-4" style={{ animationDelay: "0.4s" }}>
-              <Link to="/login" className="w-full sm:w-auto px-8 py-4 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium shadow-lg shadow-[#2563EB]/25 transition-all text-center">
-                Ask a Question
-              </Link>
-            </div>
-          </div>
-        </section>
+  {/* Single faint arch, centered behind headline, cropped at bottom */}
+  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[520px] md:w-[720px] h-[420px] md:h-[580px] text-[#93C5FD] opacity-25 pointer-events-none">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.4" preserveAspectRatio="none" className="w-full h-full">
+      <path d="M 5 100 V 55 C 5 30 20 8 50 2 C 80 8 95 30 95 55 V 100" />
+    </svg>
+  </div>
+
+  {/* Content */}
+  <div className="relative z-10 mx-auto max-w-5xl text-center">
+    <span className="animate-fade-up inline-block rounded-full bg-[#DBEAFE] px-4 py-1.5 text-sm font-semibold text-[#2563EB] mb-6" style={{ animationDelay: "0.1s" }}>
+      Private • Verified • Local
+    </span>
+    <h1 className="animate-fade-up text-5xl md:text-7xl font-extrabold tracking-tight text-[#0F172A] leading-tight mb-8" style={{ animationDelay: "0.2s" }}>
+      Reliable Islamic Guidance, <br className="hidden md:block"/> Rooted in Your Community
+    </h1>
+    <p className="animate-fade-up mx-auto max-w-2xl text-lg md:text-xl text-[#64748B] mb-10 leading-relaxed" style={{ animationDelay: "0.3s" }}>
+      Connect privately with verified local scholars to find answers to your questions. A serene, secure platform for faithful guidance.
+    </p>
+    <div className="animate-fade-up flex flex-col sm:flex-row items-center justify-center gap-4" style={{ animationDelay: "0.4s" }}>
+      <Link to="/login" className="w-full sm:w-auto px-8 py-4 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium shadow-lg shadow-[#2563EB]/25 transition-all text-center">
+        Ask a Question
+      </Link>
+    </div>
+  </div>
+</section>
 
         {/* About Us */}
         <section id="about" className="py-24 px-6 bg-white border-y border-[#E2E8F0]">

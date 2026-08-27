@@ -9,43 +9,42 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
 import { Route as MosqueSlugSignupRouteImport } from './routes/$mosqueSlug.signup'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
-import { Route as AuthenticatedDashboardUsersRouteImport } from './routes/_authenticated/dashboard.users'
-import { Route as AuthenticatedDashboardUiSettingsRouteImport } from './routes/_authenticated/dashboard.ui-settings'
-import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
-import { Route as AuthenticatedDashboardReportsRouteImport } from './routes/_authenticated/dashboard.reports'
-import { Route as AuthenticatedDashboardQuestionsRouteImport } from './routes/_authenticated/dashboard.questions'
-import { Route as AuthenticatedDashboardPublicContentRouteImport } from './routes/_authenticated/dashboard.public-content'
-import { Route as AuthenticatedDashboardPoolRouteImport } from './routes/_authenticated/dashboard.pool'
-import { Route as AuthenticatedDashboardPeerReviewRouteImport } from './routes/_authenticated/dashboard.peer-review'
-import { Route as AuthenticatedDashboardMyAnswersRouteImport } from './routes/_authenticated/dashboard.my-answers'
-import { Route as AuthenticatedDashboardMosqueAdminRouteImport } from './routes/_authenticated/dashboard.mosque-admin'
-import { Route as AuthenticatedDashboardManageShaykhsRouteImport } from './routes/_authenticated/dashboard.manage-shaykhs'
-import { Route as AuthenticatedDashboardLibraryRouteImport } from './routes/_authenticated/dashboard.library'
-import { Route as AuthenticatedDashboardCategoriesRouteImport } from './routes/_authenticated/dashboard.categories'
-import { Route as AuthenticatedDashboardAskRouteImport } from './routes/_authenticated/dashboard.ask'
-import { Route as AuthenticatedDashboardAdminRouteImport } from './routes/_authenticated/dashboard.admin'
 import { Route as AuthenticatedDashboardAccountSettingsRouteImport } from './routes/_authenticated/dashboard.account-settings'
-import { Route as AuthenticatedDashboardQuestionsIndexRouteImport } from './routes/_authenticated/dashboard.questions.index'
+import { Route as AuthenticatedDashboardAdminRouteImport } from './routes/_authenticated/dashboard.admin'
+import { Route as AuthenticatedDashboardAskRouteImport } from './routes/_authenticated/dashboard.ask'
+import { Route as AuthenticatedDashboardCategoriesRouteImport } from './routes/_authenticated/dashboard.categories'
+import { Route as AuthenticatedDashboardLibraryRouteImport } from './routes/_authenticated/dashboard.library'
+import { Route as AuthenticatedDashboardManageShaykhsRouteImport } from './routes/_authenticated/dashboard.manage-shaykhs'
+import { Route as AuthenticatedDashboardMosqueAdminRouteImport } from './routes/_authenticated/dashboard.mosque-admin'
+import { Route as AuthenticatedDashboardMyAnswersRouteImport } from './routes/_authenticated/dashboard.my-answers'
+import { Route as AuthenticatedDashboardPeerReviewRouteImport } from './routes/_authenticated/dashboard.peer-review'
+import { Route as AuthenticatedDashboardPoolRouteImport } from './routes/_authenticated/dashboard.pool'
+import { Route as AuthenticatedDashboardPublicContentRouteImport } from './routes/_authenticated/dashboard.public-content'
+import { Route as AuthenticatedDashboardQuestionsRouteImport } from './routes/_authenticated/dashboard.questions'
+import { Route as AuthenticatedDashboardReportsRouteImport } from './routes/_authenticated/dashboard.reports'
+import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
+import { Route as AuthenticatedDashboardUiSettingsRouteImport } from './routes/_authenticated/dashboard.ui-settings'
+import { Route as AuthenticatedDashboardUsersRouteImport } from './routes/_authenticated/dashboard.users'
 import { Route as AuthenticatedDashboardMosquesIndexRouteImport } from './routes/_authenticated/dashboard.mosques.index'
+import { Route as AuthenticatedDashboardQuestionsIndexRouteImport } from './routes/_authenticated/dashboard.questions.index'
 import { Route as AuthenticatedDashboardQuestionsIdRouteImport } from './routes/_authenticated/dashboard.questions.$id'
 import { Route as AuthenticatedDashboardMosquesIdSettingsRouteImport } from './routes/_authenticated/dashboard.mosques.$id.settings'
 
-const VerifyOtpRoute = VerifyOtpRouteImport.update({
-  id: '/verify-otp',
-  path: '/verify-otp',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -53,13 +52,19 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const VerifyOtpRoute = VerifyOtpRouteImport.update({
+  id: '/verify-otp',
+  path: '/verify-otp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MosqueSlugSignupRoute = MosqueSlugSignupRouteImport.update({
+  id: '/$mosqueSlug/signup',
+  path: '/$mosqueSlug/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -67,105 +72,10 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const MosqueSlugSignupRoute = MosqueSlugSignupRouteImport.update({
-  id: '/$mosqueSlug/signup',
-  path: '/$mosqueSlug/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedDashboardIndexRoute =
   AuthenticatedDashboardIndexRouteImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardUsersRoute =
-  AuthenticatedDashboardUsersRouteImport.update({
-    id: '/users',
-    path: '/users',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardUiSettingsRoute =
-  AuthenticatedDashboardUiSettingsRouteImport.update({
-    id: '/ui-settings',
-    path: '/ui-settings',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardSettingsRoute =
-  AuthenticatedDashboardSettingsRouteImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardReportsRoute =
-  AuthenticatedDashboardReportsRouteImport.update({
-    id: '/reports',
-    path: '/reports',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardQuestionsRoute =
-  AuthenticatedDashboardQuestionsRouteImport.update({
-    id: '/questions',
-    path: '/questions',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardPublicContentRoute =
-  AuthenticatedDashboardPublicContentRouteImport.update({
-    id: '/public-content',
-    path: '/public-content',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardPoolRoute =
-  AuthenticatedDashboardPoolRouteImport.update({
-    id: '/pool',
-    path: '/pool',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardPeerReviewRoute =
-  AuthenticatedDashboardPeerReviewRouteImport.update({
-    id: '/peer-review',
-    path: '/peer-review',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardMyAnswersRoute =
-  AuthenticatedDashboardMyAnswersRouteImport.update({
-    id: '/my-answers',
-    path: '/my-answers',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardMosqueAdminRoute =
-  AuthenticatedDashboardMosqueAdminRouteImport.update({
-    id: '/mosque-admin',
-    path: '/mosque-admin',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardManageShaykhsRoute =
-  AuthenticatedDashboardManageShaykhsRouteImport.update({
-    id: '/manage-shaykhs',
-    path: '/manage-shaykhs',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardLibraryRoute =
-  AuthenticatedDashboardLibraryRouteImport.update({
-    id: '/library',
-    path: '/library',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardCategoriesRoute =
-  AuthenticatedDashboardCategoriesRouteImport.update({
-    id: '/categories',
-    path: '/categories',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardAskRoute =
-  AuthenticatedDashboardAskRouteImport.update({
-    id: '/ask',
-    path: '/ask',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardAdminRoute =
-  AuthenticatedDashboardAdminRouteImport.update({
-    id: '/admin',
-    path: '/admin',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardAccountSettingsRoute =
@@ -174,17 +84,107 @@ const AuthenticatedDashboardAccountSettingsRoute =
     path: '/account-settings',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedDashboardQuestionsIndexRoute =
-  AuthenticatedDashboardQuestionsIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthenticatedDashboardQuestionsRoute,
+const AuthenticatedDashboardAdminRoute =
+  AuthenticatedDashboardAdminRouteImport.update({
+    id: '/admin',
+    path: '/admin',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardAskRoute =
+  AuthenticatedDashboardAskRouteImport.update({
+    id: '/ask',
+    path: '/ask',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardCategoriesRoute =
+  AuthenticatedDashboardCategoriesRouteImport.update({
+    id: '/categories',
+    path: '/categories',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardLibraryRoute =
+  AuthenticatedDashboardLibraryRouteImport.update({
+    id: '/library',
+    path: '/library',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardManageShaykhsRoute =
+  AuthenticatedDashboardManageShaykhsRouteImport.update({
+    id: '/manage-shaykhs',
+    path: '/manage-shaykhs',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardMosqueAdminRoute =
+  AuthenticatedDashboardMosqueAdminRouteImport.update({
+    id: '/mosque-admin',
+    path: '/mosque-admin',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardMyAnswersRoute =
+  AuthenticatedDashboardMyAnswersRouteImport.update({
+    id: '/my-answers',
+    path: '/my-answers',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPeerReviewRoute =
+  AuthenticatedDashboardPeerReviewRouteImport.update({
+    id: '/peer-review',
+    path: '/peer-review',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPoolRoute =
+  AuthenticatedDashboardPoolRouteImport.update({
+    id: '/pool',
+    path: '/pool',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPublicContentRoute =
+  AuthenticatedDashboardPublicContentRouteImport.update({
+    id: '/public-content',
+    path: '/public-content',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardQuestionsRoute =
+  AuthenticatedDashboardQuestionsRouteImport.update({
+    id: '/questions',
+    path: '/questions',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardReportsRoute =
+  AuthenticatedDashboardReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardSettingsRoute =
+  AuthenticatedDashboardSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardUiSettingsRoute =
+  AuthenticatedDashboardUiSettingsRouteImport.update({
+    id: '/ui-settings',
+    path: '/ui-settings',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardUsersRoute =
+  AuthenticatedDashboardUsersRouteImport.update({
+    id: '/users',
+    path: '/users',
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardMosquesIndexRoute =
   AuthenticatedDashboardMosquesIndexRouteImport.update({
     id: '/mosques/',
     path: '/mosques/',
     getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardQuestionsIndexRoute =
+  AuthenticatedDashboardQuestionsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDashboardQuestionsRoute,
   } as any)
 const AuthenticatedDashboardQuestionsIdRoute =
   AuthenticatedDashboardQuestionsIdRouteImport.update({
@@ -386,25 +386,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/verify-otp': {
-      id: '/verify-otp'
-      path: '/verify-otp'
-      fullPath: '/verify-otp'
-      preLoaderRoute: typeof VerifyOtpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -414,11 +400,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-otp': {
+      id: '/verify-otp'
+      path: '/verify-otp'
+      fullPath: '/verify-otp'
+      preLoaderRoute: typeof VerifyOtpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$mosqueSlug/signup': {
+      id: '/$mosqueSlug/signup'
+      path: '/$mosqueSlug/signup'
+      fullPath: '/$mosqueSlug/signup'
+      preLoaderRoute: typeof MosqueSlugSignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -428,123 +435,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/$mosqueSlug/signup': {
-      id: '/$mosqueSlug/signup'
-      path: '/$mosqueSlug/signup'
-      fullPath: '/$mosqueSlug/signup'
-      preLoaderRoute: typeof MosqueSlugSignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated/dashboard/': {
       id: '/_authenticated/dashboard/'
       path: '/'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/users': {
-      id: '/_authenticated/dashboard/users'
-      path: '/users'
-      fullPath: '/dashboard/users'
-      preLoaderRoute: typeof AuthenticatedDashboardUsersRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/ui-settings': {
-      id: '/_authenticated/dashboard/ui-settings'
-      path: '/ui-settings'
-      fullPath: '/dashboard/ui-settings'
-      preLoaderRoute: typeof AuthenticatedDashboardUiSettingsRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/settings': {
-      id: '/_authenticated/dashboard/settings'
-      path: '/settings'
-      fullPath: '/dashboard/settings'
-      preLoaderRoute: typeof AuthenticatedDashboardSettingsRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/reports': {
-      id: '/_authenticated/dashboard/reports'
-      path: '/reports'
-      fullPath: '/dashboard/reports'
-      preLoaderRoute: typeof AuthenticatedDashboardReportsRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/questions': {
-      id: '/_authenticated/dashboard/questions'
-      path: '/questions'
-      fullPath: '/dashboard/questions'
-      preLoaderRoute: typeof AuthenticatedDashboardQuestionsRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/public-content': {
-      id: '/_authenticated/dashboard/public-content'
-      path: '/public-content'
-      fullPath: '/dashboard/public-content'
-      preLoaderRoute: typeof AuthenticatedDashboardPublicContentRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/pool': {
-      id: '/_authenticated/dashboard/pool'
-      path: '/pool'
-      fullPath: '/dashboard/pool'
-      preLoaderRoute: typeof AuthenticatedDashboardPoolRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/peer-review': {
-      id: '/_authenticated/dashboard/peer-review'
-      path: '/peer-review'
-      fullPath: '/dashboard/peer-review'
-      preLoaderRoute: typeof AuthenticatedDashboardPeerReviewRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/my-answers': {
-      id: '/_authenticated/dashboard/my-answers'
-      path: '/my-answers'
-      fullPath: '/dashboard/my-answers'
-      preLoaderRoute: typeof AuthenticatedDashboardMyAnswersRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/mosque-admin': {
-      id: '/_authenticated/dashboard/mosque-admin'
-      path: '/mosque-admin'
-      fullPath: '/dashboard/mosque-admin'
-      preLoaderRoute: typeof AuthenticatedDashboardMosqueAdminRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/manage-shaykhs': {
-      id: '/_authenticated/dashboard/manage-shaykhs'
-      path: '/manage-shaykhs'
-      fullPath: '/dashboard/manage-shaykhs'
-      preLoaderRoute: typeof AuthenticatedDashboardManageShaykhsRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/library': {
-      id: '/_authenticated/dashboard/library'
-      path: '/library'
-      fullPath: '/dashboard/library'
-      preLoaderRoute: typeof AuthenticatedDashboardLibraryRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/categories': {
-      id: '/_authenticated/dashboard/categories'
-      path: '/categories'
-      fullPath: '/dashboard/categories'
-      preLoaderRoute: typeof AuthenticatedDashboardCategoriesRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/ask': {
-      id: '/_authenticated/dashboard/ask'
-      path: '/ask'
-      fullPath: '/dashboard/ask'
-      preLoaderRoute: typeof AuthenticatedDashboardAskRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/admin': {
-      id: '/_authenticated/dashboard/admin'
-      path: '/admin'
-      fullPath: '/dashboard/admin'
-      preLoaderRoute: typeof AuthenticatedDashboardAdminRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/account-settings': {
@@ -554,12 +449,110 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardAccountSettingsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/dashboard/questions/': {
-      id: '/_authenticated/dashboard/questions/'
-      path: '/'
-      fullPath: '/dashboard/questions/'
-      preLoaderRoute: typeof AuthenticatedDashboardQuestionsIndexRouteImport
-      parentRoute: typeof AuthenticatedDashboardQuestionsRoute
+    '/_authenticated/dashboard/admin': {
+      id: '/_authenticated/dashboard/admin'
+      path: '/admin'
+      fullPath: '/dashboard/admin'
+      preLoaderRoute: typeof AuthenticatedDashboardAdminRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/ask': {
+      id: '/_authenticated/dashboard/ask'
+      path: '/ask'
+      fullPath: '/dashboard/ask'
+      preLoaderRoute: typeof AuthenticatedDashboardAskRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/categories': {
+      id: '/_authenticated/dashboard/categories'
+      path: '/categories'
+      fullPath: '/dashboard/categories'
+      preLoaderRoute: typeof AuthenticatedDashboardCategoriesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/library': {
+      id: '/_authenticated/dashboard/library'
+      path: '/library'
+      fullPath: '/dashboard/library'
+      preLoaderRoute: typeof AuthenticatedDashboardLibraryRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/manage-shaykhs': {
+      id: '/_authenticated/dashboard/manage-shaykhs'
+      path: '/manage-shaykhs'
+      fullPath: '/dashboard/manage-shaykhs'
+      preLoaderRoute: typeof AuthenticatedDashboardManageShaykhsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/mosque-admin': {
+      id: '/_authenticated/dashboard/mosque-admin'
+      path: '/mosque-admin'
+      fullPath: '/dashboard/mosque-admin'
+      preLoaderRoute: typeof AuthenticatedDashboardMosqueAdminRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/my-answers': {
+      id: '/_authenticated/dashboard/my-answers'
+      path: '/my-answers'
+      fullPath: '/dashboard/my-answers'
+      preLoaderRoute: typeof AuthenticatedDashboardMyAnswersRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/peer-review': {
+      id: '/_authenticated/dashboard/peer-review'
+      path: '/peer-review'
+      fullPath: '/dashboard/peer-review'
+      preLoaderRoute: typeof AuthenticatedDashboardPeerReviewRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/pool': {
+      id: '/_authenticated/dashboard/pool'
+      path: '/pool'
+      fullPath: '/dashboard/pool'
+      preLoaderRoute: typeof AuthenticatedDashboardPoolRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/public-content': {
+      id: '/_authenticated/dashboard/public-content'
+      path: '/public-content'
+      fullPath: '/dashboard/public-content'
+      preLoaderRoute: typeof AuthenticatedDashboardPublicContentRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/questions': {
+      id: '/_authenticated/dashboard/questions'
+      path: '/questions'
+      fullPath: '/dashboard/questions'
+      preLoaderRoute: typeof AuthenticatedDashboardQuestionsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/reports': {
+      id: '/_authenticated/dashboard/reports'
+      path: '/reports'
+      fullPath: '/dashboard/reports'
+      preLoaderRoute: typeof AuthenticatedDashboardReportsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/settings': {
+      id: '/_authenticated/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/ui-settings': {
+      id: '/_authenticated/dashboard/ui-settings'
+      path: '/ui-settings'
+      fullPath: '/dashboard/ui-settings'
+      preLoaderRoute: typeof AuthenticatedDashboardUiSettingsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/users': {
+      id: '/_authenticated/dashboard/users'
+      path: '/users'
+      fullPath: '/dashboard/users'
+      preLoaderRoute: typeof AuthenticatedDashboardUsersRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/mosques/': {
       id: '/_authenticated/dashboard/mosques/'
@@ -567,6 +560,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/mosques/'
       preLoaderRoute: typeof AuthenticatedDashboardMosquesIndexRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/questions/': {
+      id: '/_authenticated/dashboard/questions/'
+      path: '/'
+      fullPath: '/dashboard/questions/'
+      preLoaderRoute: typeof AuthenticatedDashboardQuestionsIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardQuestionsRoute
     }
     '/_authenticated/dashboard/questions/$id': {
       id: '/_authenticated/dashboard/questions/$id'

@@ -1,10 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Search, FileText, BookOpen, CheckCircle2, Facebook, Instagram, Youtube } from "lucide-react";
+import { useState, useEffect } from "react";
+import { FileText, CheckCircle2, UserCheck, ArrowRight, ChevronDown } from "lucide-react";
 import { usePlatformThemeGate } from "@/lib/use-platform-theme";
 import { ThemeLoadingScreen } from "@/components/theme-loading-screen";
-import { SiteHeader } from "@/components/site-header";
-import { HeroIllustration } from "@/components/hero-illustration";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -12,137 +10,211 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { ready: themeReady } = usePlatformThemeGate();
-  const [query, setQuery] = useState("");
 
   if (!themeReady) return <ThemeLoadingScreen />;
 
-
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <SiteHeader active="home" />
+    <div className="min-h-screen font-sans selection:bg-[#DBEAFE] selection:text-[#0F172A]" style={{ backgroundColor: "#F8FAFC", color: "#0F172A" }}>
+      <LandingHeader />
+      
+      <main>
+        <style>{`
+          @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-20px, 30px); }
+          }
+          @keyframes float-reverse {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(20px, -30px); }
+          }
+          @keyframes fade-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .animate-float { animation: float 9s ease-in-out infinite; }
+          .animate-float-reverse { animation: float-reverse 11s ease-in-out infinite; }
+          .animate-fade-up { animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        `}</style>
 
-      {/* Hero */}
-      <section className="relative isolate overflow-hidden bg-surface">
-        {/* Right-hand mihrab arch with embossed geometric texture */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 w-[72%] opacity-35 sm:w-[62%] sm:opacity-50 md:w-[52%] md:opacity-80 lg:w-[46%]"
-        >
-          <HeroIllustration />
-        </div>
+        {/* Hero Section */}
+        <section id="hero" className="relative overflow-hidden pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 bg-[#F8FAFC]">
+          {/* Layered Blurred Radial Gradients */}
+          <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[60%] rounded-full bg-[#DBEAFE]/40 blur-[100px] animate-float" />
+          <div className="absolute -top-[10%] -right-[10%] w-[45%] h-[55%] rounded-full bg-[#93C5FD]/30 blur-[100px] animate-float-reverse" />
+          
+          {/* Dot pattern in corner for geometric interest */}
+          <div className="absolute bottom-10 left-10 w-48 h-48 bg-[radial-gradient(#E2E8F0_2px,transparent_2px)] [background-size:16px_16px] opacity-40" />
 
-        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-6 py-24 md:py-32 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,0.5fr)] lg:py-40">
-          <div className="max-w-3xl animate-fade-up" style={{ animationDelay: "0.1s" }}>
-            <span
-              className="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em]"
-              style={{
-                background: "color-mix(in oklab, var(--secondary) 22%, transparent)",
-                color: "var(--primary)",
-              }}
-            >
-              Sakinah · Ihtiram
+          {/* Glow behind headline */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[40%] rounded-full bg-[#3B82F6]/10 blur-[120px]" />
+
+          <div className="relative mx-auto max-w-5xl text-center">
+            <span className="animate-fade-up inline-block rounded-full bg-[#DBEAFE] px-4 py-1.5 text-sm font-semibold text-[#2563EB] mb-6" style={{ animationDelay: "0.1s" }}>
+              Private • Verified • Local
             </span>
-            <h1 className="mt-8 font-heading text-4xl font-bold leading-[1.08] text-primary sm:text-5xl md:text-6xl">
-              Seek Guidance from
-              <br /> Your Local Scholars
+            <h1 className="animate-fade-up text-5xl md:text-7xl font-extrabold tracking-tight text-[#0F172A] leading-tight mb-8" style={{ animationDelay: "0.2s" }}>
+              Reliable Islamic Guidance, <br className="hidden md:block"/> Rooted in Your Community
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-              Connect directly with verified Imams and scholars from your community. Get reliable, faithful answers to
-              your questions in a serene and confidential environment.
+            <p className="animate-fade-up mx-auto max-w-2xl text-lg md:text-xl text-[#64748B] mb-10 leading-relaxed" style={{ animationDelay: "0.3s" }}>
+              Connect privately with verified local scholars to find answers to your questions. A serene, secure platform for faithful guidance.
             </p>
-
-            <div className="mt-10 flex flex-wrap gap-4 animate-fade-up" style={{ animationDelay: "0.25s" }}>
-              <Link to="/login">
-                <button className="rounded-lg bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-sm transition hover:brightness-110">
-                  Ask a Question
-                </button>
+            <div className="animate-fade-up flex flex-col sm:flex-row items-center justify-center gap-4" style={{ animationDelay: "0.4s" }}>
+              <Link to="/login" className="w-full sm:w-auto px-8 py-4 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium shadow-lg shadow-[#2563EB]/25 transition-all text-center">
+                Ask a Question
               </Link>
-              <Link to="/login">
-                <button className="rounded-lg border-2 border-primary bg-transparent px-7 py-3.5 text-sm font-semibold text-primary transition hover:bg-primary/5">
-                  Browse Q&A
-                </button>
-              </Link>
-
             </div>
           </div>
+        </section>
 
-          <div aria-hidden className="hidden lg:block" />
-        </div>
-      </section>
+        {/* About Us */}
+        <section id="about" className="py-24 px-6 bg-white border-y border-[#E2E8F0]">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold text-[#0F172A] mb-6">A Trustworthy Connection to Knowledge</h2>
+            <p className="text-lg text-[#64748B] leading-relaxed">
+              In an age of overwhelming information, finding reliable Islamic guidance can be challenging. We bridge the gap between everyday questions and verified local scholars. Our platform ensures your queries are handled with the utmost privacy, respect, and academic integrity by Imams who understand your community.
+            </p>
+          </div>
+        </section>
 
+        {/* What We Do */}
+        <section id="how-it-works" className="py-24 px-6 relative">
+          <div className="mx-auto max-w-6xl">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold text-[#0F172A] mb-4">How It Works</h2>
+              <p className="text-[#64748B] text-lg">A simple, secure path to clarity.</p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                { 
+                  icon: <FileText className="w-8 h-8 text-[#2563EB]" />, 
+                  title: "1. Submit Privately", 
+                  desc: "Ask your question anonymously or share details securely. Your privacy is our priority." 
+                },
+                { 
+                  icon: <UserCheck className="w-8 h-8 text-[#2563EB]" />, 
+                  title: "2. Expert Review", 
+                  desc: "A verified local scholar receives your query, ensuring a contextual and grounded response." 
+                },
+                { 
+                  icon: <CheckCircle2 className="w-8 h-8 text-[#2563EB]" />, 
+                  title: "3. Receive Guidance", 
+                  desc: "Get notified when a comprehensive, reliable answer is ready for you." 
+                }
+              ].map((step, i) => (
+                <div key={i} className="bg-white p-8 rounded-2xl border border-[#E2E8F0] shadow-sm hover:shadow-md transition-shadow">
+                  <div className="w-16 h-16 bg-[#DBEAFE] rounded-2xl flex items-center justify-center mb-6">
+                    {step.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold text-[#0F172A] mb-3">{step.title}</h3>
+                  <p className="text-[#64748B] leading-relaxed">{step.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-      {/* Divider ornament */}
-      <div className="flex items-center justify-center py-16">
-        <div className="h-px w-24 bg-border" />
-        <div className="mx-4 h-4 w-4 rotate-45" style={{ background: "var(--secondary)" }} />
-        <div className="h-px w-24 bg-border" />
-      </div>
+        {/* FAQs */}
+        <section id="faqs" className="py-24 px-6 bg-white border-y border-[#E2E8F0]">
+          <div className="mx-auto max-w-3xl">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold text-[#0F172A] mb-4">Frequently Asked Questions</h2>
+              <p className="text-[#64748B] text-lg">Clear answers to help you feel comfortable.</p>
+            </div>
+            
+            <div className="space-y-4">
+              {[
+                {
+                  q: "Are my questions kept private and anonymous?",
+                  a: "Yes. You have full control over your privacy. You can submit questions entirely anonymously, and even if you log in, only the verified scholars assigned to answer can view the necessary details to provide guidance."
+                },
+                {
+                  q: "How are the scholars verified?",
+                  a: "Every scholar on our platform undergoes a strict vetting process. We verify their academic credentials, community standing, and references to ensure you receive sound, reliable guidance."
+                },
+                {
+                  q: "How long does it take to get an answer?",
+                  a: "Response times vary depending on the complexity of the question and scholar availability. Most routine questions receive a response within 48-72 hours."
+                },
+                {
+                  q: "Can this replace a formal fatwa or in-person consultation?",
+                  a: "Our platform provides educational guidance and general answers. For highly sensitive, complex, or legally binding matters (like divorce or detailed inheritance), an in-person consultation with a scholar is always required."
+                },
+                {
+                  q: "Can I choose which scholar answers my question?",
+                  a: "You can direct your question to the general pool of verified local scholars, or if your local mosque is registered, route it directly to your specific Imam."
+                }
+              ].map((faq, i) => (
+                <details key={i} className="group bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] overflow-hidden [&_summary::-webkit-details-marker]:hidden">
+                  <summary className="flex items-center justify-between p-6 cursor-pointer font-medium text-[#0F172A]">
+                    {faq.q}
+                    <span className="transition group-open:rotate-180">
+                      <ChevronDown className="w-5 h-5 text-[#64748B]" />
+                    </span>
+                  </summary>
+                  <div className="px-6 pb-6 text-[#64748B] leading-relaxed border-t border-[#E2E8F0] pt-4 mt-2">
+                    {faq.a}
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
 
-      {/* How it works */}
-      <section className="mx-auto max-w-6xl px-6 pb-24">
-        <div className="text-center">
-          <h2 className="font-heading text-4xl font-bold text-primary">How Masail Works</h2>
-          <p className="mt-3 text-muted-foreground">A simple, respectful process for spiritual guidance.</p>
-        </div>
-
-        <div className="mt-16 grid gap-12 md:grid-cols-3">
-          <Step
-            n={1}
-            icon={<FileText className="h-8 w-8" style={{ color: "var(--primary)" }} />}
-            title="Submit Question"
-            body="Write your question clearly. You can choose to remain anonymous or direct it to a specific local scholar."
-          />
-          <Step
-            n={2}
-            icon={<BookOpen className="h-8 w-8" style={{ color: "var(--primary)" }} />}
-            title="Scholar Reviews"
-            body="A verified local scholar receives your question, researches it if necessary, and prepares a grounded response."
-          />
-          <Step
-            n={3}
-            icon={<CheckCircle2 className="h-8 w-8" style={{ color: "var(--primary)" }} />}
-            title="Receive Answer"
-            body="Get notified when your detailed, verified answer is ready. Learn and grow in your faith with confidence."
-          />
-        </div>
-      </section>
-
-      {/* CTA card */}
-      <section className="mx-auto max-w-6xl px-6 pb-24">
-        <div className="rounded-3xl bg-muted px-8 py-14 text-center">
-          <h3 className="font-heading text-3xl font-bold text-primary">Have a question?</h3>
-          <p className="mt-2 text-muted-foreground">Our scholars are here to help.</p>
-          <button className="mt-6 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:brightness-110">
-            Ask a Question
-          </button>
-        </div>
-      </section>
+        {/* CTA */}
+        <section className="py-24 px-6">
+          <div className="mx-auto max-w-4xl bg-[#0F172A] rounded-3xl p-12 text-center text-white relative overflow-hidden shadow-xl">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#2563EB] rounded-full blur-3xl opacity-30 translate-x-1/2 -translate-y-1/2" />
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to seek clarity?</h2>
+              <p className="text-[#93C5FD] mb-10 text-lg max-w-xl mx-auto">
+                Join our community to ask questions, learn from others, and deepen your understanding with confidence.
+              </p>
+              <Link to="/login" className="inline-flex items-center gap-2 bg-[#2563EB] hover:bg-[#3B82F6] text-white px-8 py-4 rounded-xl font-medium transition-colors">
+                Get Started
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-background">
-        <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-4">
-          <div>
-            <div className="font-heading text-2xl font-bold text-primary">Masail</div>
-            <p className="mt-3 max-w-xs text-sm text-muted-foreground">
-              Connecting communities with trusted Islamic knowledge.
+      <footer className="bg-white border-t border-[#E2E8F0] py-12 px-6">
+        <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="md:col-span-2">
+            <Link to="/" className="inline-flex items-center gap-2 mb-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2563EB] text-white shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2 18h20" />
+                  <path d="M9 18v-4a3 3 0 0 1 6 0v4" />
+                  <path d="M12 11V7" />
+                  <path d="M5 18V9l2-2 2 2v9" />
+                  <path d="M15 18V9l2-2 2 2v9" />
+                </svg>
+              </div>
+              <span className="font-bold text-2xl tracking-tight text-[#0F172A]">MASAIL</span>
+            </Link>
+            <p className="text-[#64748B] max-w-sm">
+              Connecting communities with trusted Islamic knowledge in a modern, secure, and respectful environment.
             </p>
-            <div className="mt-5 flex gap-3">
-              <SocialIcon>
-                <Facebook className="h-4 w-4" />
-              </SocialIcon>
-              <SocialIcon>
-                <Instagram className="h-4 w-4" />
-              </SocialIcon>
-              <SocialIcon>
-                <Youtube className="h-4 w-4" />
-              </SocialIcon>
-            </div>
           </div>
-          <FooterCol title="Platform" items={["Public Q&A", "Ask a Question", "Scholars"]} />
-          <FooterCol title="Resources" items={["Guidelines", "Help Center"]} />
-          <FooterCol title="Legal" items={["Privacy Policy", "Terms of Use"]} />
+          <div>
+            <h4 className="font-semibold text-[#0F172A] mb-4">Platform</h4>
+            <ul className="space-y-3 text-[#64748B]">
+              <li><Link to="/login" className="hover:text-[#2563EB] transition-colors">Ask a Question</Link></li>
+              <li><Link to="/login" className="hover:text-[#2563EB] transition-colors">Browse Q&A</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-semibold text-[#0F172A] mb-4">Legal</h4>
+            <ul className="space-y-3 text-[#64748B]">
+              <li><a href="#" className="hover:text-[#2563EB] transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-[#2563EB] transition-colors">Terms of Service</a></li>
+            </ul>
+          </div>
         </div>
-        <div className="border-t border-border py-5 text-center text-xs text-muted-foreground">
+        <div className="mx-auto max-w-6xl mt-12 pt-8 border-t border-[#E2E8F0] text-center text-[#64748B] text-sm">
           © {new Date().getFullYear()} Masail. All rights reserved.
         </div>
       </footer>
@@ -150,42 +222,56 @@ function Home() {
   );
 }
 
-function Step({ n, icon, title, body }: { n: number; icon: React.ReactNode; title: string; body: string }) {
-  return (
-    <div className="text-center">
-      <div className="relative mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-muted">{icon}</div>
-      <h3 className="mt-6 font-heading text-lg font-bold text-foreground">
-        <span style={{ color: "var(--secondary)" }}>{n}.</span> {title}
-      </h3>
-      <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">{body}</p>
-    </div>
-  );
-}
+function LandingHeader() {
+  const [scrolled, setScrolled] = useState(false);
 
-function SocialIcon({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <a
-      href="#"
-      className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground text-background transition hover:opacity-80"
+    <header 
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
+        scrolled 
+          ? "bg-white/80 backdrop-blur-md shadow-sm border-b border-[#E2E8F0] py-3" 
+          : "bg-transparent py-5"
+      }`}
     >
-      {children}
-    </a>
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6">
+        <Link to="/" className="flex items-center gap-2">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2563EB] text-white shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 18h20" />
+              <path d="M9 18v-4a3 3 0 0 1 6 0v4" />
+              <path d="M12 11V7" />
+              <path d="M5 18V9l2-2 2 2v9" />
+              <path d="M15 18V9l2-2 2 2v9" />
+            </svg>
+          </div>
+          <span className="font-bold text-2xl tracking-tight text-[#0F172A]">MASAIL</span>
+        </Link>
+
+        <div className="hidden md:flex items-center gap-8">
+          <a href="#hero" className="text-sm font-medium text-[#64748B] hover:text-[#0F172A] transition-colors">Home</a>
+          <a href="#about" className="text-sm font-medium text-[#64748B] hover:text-[#0F172A] transition-colors">About Us</a>
+          <a href="#how-it-works" className="text-sm font-medium text-[#64748B] hover:text-[#0F172A] transition-colors">How It Works</a>
+          <a href="#faqs" className="text-sm font-medium text-[#64748B] hover:text-[#0F172A] transition-colors">FAQs</a>
+        </div>
+
+        <nav className="flex items-center gap-4">
+          <Link 
+            to="/login" 
+            className="px-5 py-2.5 rounded-lg font-medium text-[#0F172A] hover:bg-[#F8FAFC] transition-colors"
+          >
+            Sign In
+          </Link>
+        </nav>
+      </div>
+    </header>
   );
 }
 
-function FooterCol({ title, items }: { title: string; items: string[] }) {
-  return (
-    <div>
-      <h4 className="font-heading text-sm font-bold text-foreground">{title}</h4>
-      <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-        {items.map((i) => (
-          <li key={i}>
-            <a href="#" className="hover:text-primary">
-              {i}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}

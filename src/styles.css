@@ -61,31 +61,31 @@
   --radius: 8px;
 
   /* Dynamic brand colors — overridden at runtime from platform_settings */
-  --primary: #0F5C4D;
-  --primary-foreground: #ffffff;
-  --primary-soft: color-mix(in oklab, var(--primary) 8%, #ffffff);
-  --secondary: #D4AF37;
-  --secondary-foreground: #1a1a1a;
+  --primary: #2563EB;
+  --primary-foreground: #FFFFFF;
+  --primary-soft: #1D4ED8;
+  --secondary: #DBEAFE;
+  --secondary-foreground: #1D4ED8;
 
-  --background: #ffffff;
-  --foreground: #1a1a1a;
-  --surface: #F7F5F0;
+  --background: #FFFFFF;
+  --foreground: #0F172A;
+  --surface: #DBEAFE;
 
-  --card: #ffffff;
-  --card-foreground: #1a1a1a;
-  --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
+  --card: #FFFFFF;
+  --card-foreground: #0F172A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F172A;
 
-  --muted: #F3F1EC;
-  --muted-foreground: #6b6b6b;
-  --accent: color-mix(in oklab, var(--secondary) 15%, #ffffff);
-  --accent-foreground: #1a1a1a;
+  --muted: #E2E8F0;
+  --muted-foreground: #64748B;
+  --accent: #3B82F6;
+  --accent-foreground: #FFFFFF;
 
   --destructive: oklch(0.6 0.22 27);
   --destructive-foreground: #ffffff;
 
-  --border: #E6E2DA;
-  --input: #E6E2DA;
+  --border: #E2E8F0;
+  --input: #E2E8F0;
   --ring: var(--primary);
 }
 

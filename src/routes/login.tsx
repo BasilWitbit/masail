@@ -170,12 +170,12 @@ function LoginPage() {
           </button>
 
           <div className="mt-8 flex flex-col items-center gap-4">
-            <p className="text-center text-sm text-[#64748B]">
+            {/* <p className="text-center text-sm text-[#64748B]">
               Don&apos;t have an account?{" "}
               <Link to="/signup" className="font-semibold text-[#2563EB] hover:text-[#1D4ED8] hover:underline">
                 Sign up
               </Link>
-            </p>
+            </p> */}
             <Link 
               to="/" 
               className="w-full rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] px-5 py-3 text-center text-sm font-medium text-[#0F172A] transition-colors hover:bg-[#E2E8F0]"

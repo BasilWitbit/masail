@@ -316,7 +316,7 @@ function AdminDashboard() {
                 value={stats?.pendingReports ?? 0}
                 icon={Flag}
                 tone="primary"
-                to="/dashboard/reports"
+                // to="/dashboard/reports"
               >
                 <p className="mt-3 text-xs text-muted-foreground">Click to review reports</p>
               </StatCard>

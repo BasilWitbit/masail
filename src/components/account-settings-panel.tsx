@@ -7,6 +7,7 @@ export function AccountSettingsPanel() {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [role, setRole] = useState("");
   const [loading, setLoading] = useState(true);
 
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -37,12 +38,13 @@ export function AccountSettingsPanel() {
         setEmail(userData.user.email ?? "");
         const { data: profile } = await supabase
           .from("profiles")
-          .select("full_name, phone, avatar_url")
+          .select("full_name, phone, avatar_url, role")
           .eq("id", userData.user.id)
           .maybeSingle();
         if (!active) return;
         setFullName((profile?.full_name as string | null) ?? "");
         setPhone((profile?.phone as string | null) ?? "");
+        setRole((profile?.role as string | null) ?? "");
         setAvatarUrl((profile?.avatar_url as string | null) ?? null);
       }
       setLoading(false);
@@ -225,11 +227,13 @@ export function AccountSettingsPanel() {
 
         <div className="flex flex-wrap items-center gap-6">
           {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt={fullName || "Profile photo"}
-              className="h-24 w-24 shrink-0 rounded-full object-cover"
-            />
+            <a href={avatarUrl} target="_blank" rel="noopener noreferrer" className="shrink-0 group relative">
+              <img
+                src={avatarUrl}
+                alt={fullName || "Profile photo"}
+                className="h-24 w-24 rounded-full object-cover transition group-hover:opacity-80"
+              />
+            </a>
           ) : (
             <div className="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-primary/10 font-heading text-2xl font-bold text-primary">
               {initials}
@@ -321,6 +325,19 @@ export function AccountSettingsPanel() {
           <p className="mt-1.5 text-xs text-muted-foreground">
             Email cannot be changed at this time.
           </p>
+        </div>
+
+        <div>
+          <label htmlFor="role" className="block text-sm font-semibold text-foreground">
+            Role
+          </label>
+          <input
+            id="role"
+            type="text"
+            value={role ? role.replace("_", " ") : "User"}
+            disabled
+            className="mt-2 w-full cursor-not-allowed rounded-lg border border-border bg-muted px-3.5 py-2.5 text-sm capitalize text-muted-foreground"
+          />
         </div>
 
         <div>

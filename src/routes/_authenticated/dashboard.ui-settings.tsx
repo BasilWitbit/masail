@@ -202,13 +202,13 @@ function UiSettings() {
         </p>
       </section>
 
-      <section className="rounded-lg border border-border bg-card p-6 space-y-6">
+      {/* <section className="rounded-lg border border-border bg-card p-6 space-y-6">
         <h2 className="font-heading text-lg font-semibold text-foreground">Typography</h2>
         <div className="grid gap-6 sm:grid-cols-2">
           <FontField label="Heading Font" value={headingFont} onChange={setHeadingFont} />
           <FontField label="Body Font" value={bodyFont} onChange={setBodyFont} />
         </div>
-      </section>
+      </section> */}
 
       <button
         type="button"

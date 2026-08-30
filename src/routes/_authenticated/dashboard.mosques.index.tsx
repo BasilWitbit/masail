@@ -174,15 +174,6 @@ function MosquesTab() {
     load();
   }
 
-  async function handleDelete(m: Mosque) {
-    if (!confirm(`Delete mosque "${m.name}"? This cannot be undone.`)) return;
-    const { error: err } = await supabase.from("mosques").delete().eq("id", m.id);
-    if (err) {
-      alert(err.message);
-      return;
-    }
-    load();
-  }
 
   return (
     <div className="space-y-6">
@@ -263,13 +254,6 @@ function MosquesTab() {
                         >
                           <Pencil className="h-4 w-4" />
                         </button>
-                        <button
-                          onClick={() => handleDelete(m)}
-                          className="grid h-8 w-8 place-items-center rounded-md text-red-600 transition hover:bg-red-50"
-                          aria-label="Delete"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
                       </div>
                     </td>
                   </tr>
@@ -295,8 +279,8 @@ function MosquesTab() {
               </button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4 p-6">
-              <Field label="Name *" value={form.name} onChange={(v) => setForm({ ...form, name: v })} />
-              <Field label="Address *" value={form.address} onChange={(v) => setForm({ ...form, address: v })} />
+              <Field label="Name *" value={form.name} onChange={(v) => setForm({ ...form, name: v })} required />
+              <Field label="Address *" value={form.address} onChange={(v) => setForm({ ...form, address: v })} required />
               <div className="grid gap-4 md:grid-cols-2">
                 <Field label="City" value={form.city} onChange={(v) => setForm({ ...form, city: v })} />
                 <Field label="Country" value={form.country} onChange={(v) => setForm({ ...form, country: v })} />
@@ -361,6 +345,7 @@ function MosqueAdminsTab() {
   const [admins, setAdmins] = useState<AdminRow[]>([]);
   const [query, setQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [mosqueId, setMosqueId] = useState("");
@@ -409,10 +394,30 @@ function MosqueAdminsTab() {
     );
   }, [admins, query]);
 
+  const freeMosques = useMemo(() => {
+    const assignedIds = new Set(admins.map((a) => a.mosque_id).filter(Boolean));
+    if (editingId) {
+      const current = admins.find(a => a.id === editingId);
+      if (current?.mosque_id) assignedIds.delete(current.mosque_id);
+    }
+    return mosques.filter((m) => !assignedIds.has(m.id));
+  }, [mosques, admins, editingId]);
+
   function openCreate() {
+    setEditingId(null);
     setFullName("");
     setEmail("");
     setMosqueId("");
+    setPassword("");
+    setError(null);
+    setModalOpen(true);
+  }
+
+  function openEdit(a: AdminRow) {
+    setEditingId(a.id);
+    setFullName(a.full_name ?? "");
+    setEmail(a.email ?? "");
+    setMosqueId(a.mosque_id ?? "");
     setPassword("");
     setError(null);
     setModalOpen(true);
@@ -427,37 +432,55 @@ function MosqueAdminsTab() {
       setError("Please fill in all required fields.");
       return;
     }
-    if (!pwChecks.length || !pwChecks.lower || !pwChecks.upper || !pwChecks.digit) {
-      setError("Password doesn't meet the requirements.");
-      return;
-    }
 
     setSubmitting(true);
-    const { data, error: err } = await supabase.functions.invoke("create-mosque-admin", {
-      body: {
+
+    if (editingId) {
+      const { error: err } = await supabase.from("profiles").update({
         full_name: fullName.trim(),
         email: email.trim(),
         mosque_id: mosqueId,
-        password,
-      },
-    });
-    setSubmitting(false);
+      }).eq("id", editingId);
+      
+      setSubmitting(false);
+      if (err) {
+        setError(err.message);
+        return;
+      }
+      setSuccess("Mosque admin updated successfully.");
+    } else {
+      if (!pwChecks.length || !pwChecks.lower || !pwChecks.upper || !pwChecks.digit) {
+        setError("Password doesn't meet the requirements.");
+        setSubmitting(false);
+        return;
+      }
 
-    if (err) {
-      setError(
-        err.message?.includes("Function not found") || err.message?.includes("404")
-          ? "The create-mosque-admin function isn't deployed yet."
-          : err.message || "Failed to create mosque admin.",
-      );
-      return;
-    }
-    if (data?.error) {
-      setError(data.error);
-      return;
+      const { data, error: err } = await supabase.functions.invoke("create-mosque-admin", {
+        body: {
+          full_name: fullName.trim(),
+          email: email.trim(),
+          mosque_id: mosqueId,
+          password,
+        },
+      });
+      setSubmitting(false);
+
+      if (err) {
+        setError(
+          err.message?.includes("Function not found") || err.message?.includes("404")
+            ? "The create-mosque-admin function isn't deployed yet."
+            : err.message || "Failed to create mosque admin.",
+        );
+        return;
+      }
+      if (data?.error) {
+        setError(data.error);
+        return;
+      }
+      setSuccess("Mosque admin created successfully.");
     }
 
     setModalOpen(false);
-    setSuccess("Mosque admin created successfully.");
     setFullName("");
     setEmail("");
     setMosqueId("");
@@ -514,9 +537,18 @@ function MosqueAdminsTab() {
                   </div>
                   <div className="text-xs text-muted-foreground">{a.email ?? "—"}</div>
                 </div>
-                <span className="rounded-md bg-muted px-2.5 py-1 text-xs font-semibold text-foreground">
-                  {a.mosques?.name ?? "No mosque"}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className="rounded-md bg-muted px-2.5 py-1 text-xs font-semibold text-foreground">
+                    {a.mosques?.name ?? "No mosque"}
+                  </span>
+                  <button
+                    onClick={() => openEdit(a)}
+                    className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                    aria-label="Edit"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
@@ -528,7 +560,7 @@ function MosqueAdminsTab() {
           <div className="w-full max-w-lg rounded-lg border border-border bg-card shadow-lg">
             <div className="flex items-center justify-between border-b border-border px-6 py-4">
               <h2 className="font-heading text-lg font-semibold text-foreground">
-                Create Mosque Admin
+                {editingId ? "Edit Mosque Admin" : "Create Mosque Admin"}
               </h2>
               <button
                 onClick={() => setModalOpen(false)}
@@ -567,10 +599,13 @@ function MosqueAdminsTab() {
                 <select
                   value={mosqueId}
                   onChange={(e) => setMosqueId(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  disabled={freeMosques.length === 0}
+                  className="mt-2 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
                 >
-                  <option value="">Select a mosque…</option>
-                  {mosques.map((m) => (
+                  <option value="">
+                    {freeMosques.length === 0 ? "No free mosques available" : "Select a mosque…"}
+                  </option>
+                  {freeMosques.map((m) => (
                     <option key={m.id} value={m.id}>
                       {m.name}
                       {m.city ? ` — ${m.city}` : ""}
@@ -578,23 +613,26 @@ function MosqueAdminsTab() {
                   ))}
                 </select>
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-foreground">
-                  Temporary Password <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
-                <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
-                  <PwRule ok={pwChecks.length} label="At least 8 characters" active={password.length > 0} />
-                  <PwRule ok={pwChecks.lower} label="One lowercase letter" active={password.length > 0} />
-                  <PwRule ok={pwChecks.upper} label="One uppercase letter" active={password.length > 0} />
-                  <PwRule ok={pwChecks.digit} label="One digit" active={password.length > 0} />
-                </ul>
-              </div>
+              
+              {!editingId && (
+                <div>
+                  <label className="block text-sm font-semibold text-foreground">
+                    Temporary Password <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="mt-2 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+                  <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
+                    <PwRule ok={pwChecks.length} label="At least 8 characters" active={password.length > 0} />
+                    <PwRule ok={pwChecks.lower} label="One lowercase letter" active={password.length > 0} />
+                    <PwRule ok={pwChecks.upper} label="One uppercase letter" active={password.length > 0} />
+                    <PwRule ok={pwChecks.digit} label="One digit" active={password.length > 0} />
+                  </ul>
+                </div>
+              )}
 
               {error && (
                 <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
@@ -618,7 +656,7 @@ function MosqueAdminsTab() {
                   disabled={submitting}
                   className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 disabled:opacity-60"
                 >
-                  {submitting ? "Creating…" : "Create Mosque Admin"}
+                  {submitting ? "Saving…" : editingId ? "Save Changes" : "Create Mosque Admin"}
                 </button>
               </div>
             </form>
@@ -644,11 +682,13 @@ function Field({
   value,
   onChange,
   type = "text",
+  required,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   type?: string;
+  required?: boolean;
 }) {
   return (
     <div>
@@ -656,6 +696,7 @@ function Field({
       <input
         type={type}
         value={value}
+        required={required}
         onChange={(e) => onChange(e.target.value)}
         className="mt-2 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
       />

@@ -212,7 +212,9 @@ function CreateShaykhModal({
 
     if (err) {
       setError(
-        err.message?.includes("Function not found") || err.message?.includes("404")
+        err.message?.includes("non-2xx")
+          ? "Email already exists or creation failed."
+          : err.message?.includes("Function not found") || err.message?.includes("404")
           ? "The create-shaykh function isn't deployed yet."
           : err.message || "Failed to create shaykh.",
       );

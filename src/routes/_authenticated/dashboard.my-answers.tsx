@@ -47,6 +47,7 @@ type Row = {
   attachment_urls: string[] | null;
   categories: { name: string } | null;
   answers: AnswerRow | null;
+  feedback: { is_helpful: boolean; comment: string | null }[] | null;
 };
 
 
@@ -299,7 +300,7 @@ function MyAnswers() {
         const { data, error: qErr } = await supabase
           .from("questions")
           .select(
-            "id, title, body, created_at, updated_at, is_urgent, is_anonymous, is_private, status, asker_id, category_id, mosque_id, attachment_urls, categories(name), answers(id, body, status, updated_at, shaykh_id)",
+            "id, title, body, created_at, updated_at, is_urgent, is_anonymous, is_private, status, asker_id, category_id, mosque_id, attachment_urls, categories(name), answers(id, body, status, updated_at, shaykh_id), feedback(is_helpful, comment)",
           )
           .eq("claimed_by", shaykh.id as string)
           .order("updated_at", { ascending: false });
@@ -741,6 +742,16 @@ function Detail({
               Status: {answer ? STATUS_LABEL[answer.status] : "—"} · Updated{" "}
               {answer ? formatDate(answer.updated_at) : "—"}
             </p>
+            {isCompleted && row.feedback && row.feedback.length > 0 && (
+              <div className="mt-4 rounded-md bg-muted p-4 text-sm">
+                <p className="font-semibold text-foreground">
+                  User Feedback: {row.feedback[0].is_helpful ? "Helpful" : "Not Helpful"}
+                </p>
+                {row.feedback[0].comment && (
+                  <p className="mt-1 text-muted-foreground">"{row.feedback[0].comment}"</p>
+                )}
+              </div>
+            )}
             {isCompleted && (
               <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-border pt-5">
                 {row.is_private ? (

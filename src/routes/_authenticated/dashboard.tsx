@@ -260,11 +260,19 @@ function DashboardShell() {
         </main>
       ) : (
         <div className="flex flex-1 min-h-0 overflow-hidden">
+          {/* Mobile backdrop */}
+          {mobileOpen && (
+            <div
+              className="fixed inset-0 top-16 z-[5] bg-black/20 md:hidden"
+              onClick={() => setMobileOpen(false)}
+            />
+          )}
+
           {/* Sidebar */}
           <aside
             className={`${
               mobileOpen ? "block" : "hidden"
-            } fixed inset-x-0 top-16 z-10 h-[calc(100vh-4rem)] overflow-y-auto border-b border-border bg-card md:static md:z-0 md:block md:h-full md:shrink-0 md:overflow-hidden md:border-b-0 md:border-r md:border-border md:bg-surface md:transition-[width] md:duration-200 md:ease-out ${
+            } fixed left-0 top-16 z-10 w-1/2 h-[calc(100vh-4rem)] overflow-y-auto border-r border-border bg-card md:static md:z-0 md:block md:h-full md:shrink-0 md:overflow-hidden md:border-b-0 md:border-r md:border-border md:bg-surface md:transition-[width] md:duration-200 md:ease-out ${
               collapsed ? "md:w-20" : "md:w-72"
             }`}
           >

@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { uniqueMosqueSlug } from "@/lib/mosque-slug";
 import { requireRole } from "@/lib/require-role";
 
 export const Route = createFileRoute("/_authenticated/dashboard/mosques/")({
@@ -26,6 +27,7 @@ type Mosque = {
   country: string | null;
   contact_email: string | null;
   contact_phone: string | null;
+  slug: string | null;
 };
 
 type FormState = {
@@ -105,9 +107,20 @@ function MosquesTab() {
     setLoading(true);
     const { data } = await supabase
       .from("mosques")
-      .select("id, name, address, city, country, contact_email, contact_phone")
+      .select("id, name, address, city, country, contact_email, contact_phone, slug")
       .order("name");
-    setMosques((data as Mosque[]) ?? []);
+    const rows = (data as Mosque[]) ?? [];
+    for (const row of rows) {
+      if (row.slug) continue;
+      try {
+        const slug = await uniqueMosqueSlug(row.name, row.id);
+        const { error: fillErr } = await supabase.from("mosques").update({ slug }).eq("id", row.id);
+        if (!fillErr) row.slug = slug;
+      } catch {
+        // Leave slug empty; mosque-admin QR tab will surface a clear error if needed.
+      }
+    }
+    setMosques(rows);
     setLoading(false);
   }
 
@@ -152,7 +165,15 @@ function MosquesTab() {
       return;
     }
     setSaving(true);
-    const payload = {
+    const payload: {
+      name: string;
+      address: string;
+      city: string | null;
+      country: string | null;
+      contact_email: string | null;
+      contact_phone: string | null;
+      slug?: string;
+    } = {
       name: form.name.trim(),
       address: form.address.trim(),
       city: form.city.trim() || null,
@@ -160,6 +181,15 @@ function MosquesTab() {
       contact_email: form.contact_email.trim() || null,
       contact_phone: form.contact_phone.trim() || null,
     };
+    try {
+      if (!editingId) {
+        payload.slug = await uniqueMosqueSlug(payload.name);
+      }
+    } catch (slugErr) {
+      setSaving(false);
+      setError(slugErr instanceof Error ? slugErr.message : "Could not create a signup link.");
+      return;
+    }
     const { error: err } = editingId
       ? await supabase.from("mosques").update(payload).eq("id", editingId)
       : await supabase.from("mosques").insert(payload);

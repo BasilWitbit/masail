@@ -4,6 +4,7 @@ import { AlertCircle, Check, Download, Loader2, Mail, UserRound, X } from "lucid
 import { toast } from "sonner";
 import { QRCodeCanvas } from "qrcode.react";
 import { supabase } from "@/integrations/supabase/client";
+import { uniqueMosqueSlug } from "@/lib/mosque-slug";
 import { requireRole } from "@/lib/require-role";
 
 export const Route = createFileRoute("/_authenticated/dashboard/users")({
@@ -215,7 +216,7 @@ function MosqueUsers() {
   );
 }
 
-type MosqueInfo = { name: string; slug: string | null };
+type MosqueInfo = { id: string; name: string; slug: string | null };
 
 function SignupQrPanel() {
   const [mosque, setMosque] = useState<MosqueInfo | null>(null);
@@ -242,11 +243,25 @@ function SignupQrPanel() {
         }
         const { data, error } = await supabase
           .from("mosques")
-          .select("name, slug")
+          .select("id, name, slug")
           .eq("id", profile.mosque_id)
           .maybeSingle();
         if (error) throw error;
-        if (active) setMosque((data as MosqueInfo | null) ?? null);
+        let mosqueRow = (data as MosqueInfo | null) ?? null;
+        if (mosqueRow && !mosqueRow.slug) {
+          const slug = await uniqueMosqueSlug(mosqueRow.name, mosqueRow.id);
+          const { error: updErr } = await supabase
+            .from("mosques")
+            .update({ slug })
+            .eq("id", mosqueRow.id);
+          if (updErr) {
+            throw new Error(
+              "Your mosque doesn't have a signup link yet, and it couldn't be created from this account. Ask a platform admin to reopen and save the mosque, or try again.",
+            );
+          }
+          mosqueRow = { ...mosqueRow, slug };
+        }
+        if (active) setMosque(mosqueRow);
       } catch (e) {
         if (active) setErr(e instanceof Error ? e.message : "Failed to load mosque.");
       } finally {

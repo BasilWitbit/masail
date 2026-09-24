@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { PasswordInput } from "@/components/password-input";
 
 export function AccountSettingsPanel() {
   const [userId, setUserId] = useState<string | null>(null);
@@ -398,9 +399,8 @@ export function AccountSettingsPanel() {
           <label htmlFor="currentPassword" className="block text-sm font-semibold text-foreground">
             Current Password <span className="text-red-600">*</span>
           </label>
-          <input
+          <PasswordInput
             id="currentPassword"
-            type="password"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             className="mt-2 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -411,9 +411,8 @@ export function AccountSettingsPanel() {
           <label htmlFor="newPassword" className="block text-sm font-semibold text-foreground">
             New Password <span className="text-red-600">*</span>
           </label>
-          <input
+          <PasswordInput
             id="newPassword"
-            type="password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             className="mt-2 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -430,9 +429,8 @@ export function AccountSettingsPanel() {
           <label htmlFor="confirmPassword" className="block text-sm font-semibold text-foreground">
             Confirm New Password <span className="text-red-600">*</span>
           </label>
-          <input
+          <PasswordInput
             id="confirmPassword"
-            type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="mt-2 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"

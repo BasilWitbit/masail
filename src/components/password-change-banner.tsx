@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { PasswordInput } from "@/components/password-input";
 
 const reqs = [
   { label: "At least 8 characters", test: (v: string) => v.length >= 8 },
@@ -121,8 +122,7 @@ export function PasswordChangeBanner({ userId, email }: { userId: string; email:
             <div className="mt-4 space-y-4">
               <div>
                 <label className="text-sm font-semibold">Current Password</label>
-                <input
-                  type="password"
+                <PasswordInput
                   required
                   value={current}
                   onChange={(e) => setCurrent(e.target.value)}
@@ -131,8 +131,7 @@ export function PasswordChangeBanner({ userId, email }: { userId: string; email:
               </div>
               <div>
                 <label className="text-sm font-semibold">New Password</label>
-                <input
-                  type="password"
+                <PasswordInput
                   required
                   value={next}
                   onChange={(e) => setNext(e.target.value)}
@@ -154,8 +153,7 @@ export function PasswordChangeBanner({ userId, email }: { userId: string; email:
               </div>
               <div>
                 <label className="text-sm font-semibold">Confirm New Password</label>
-                <input
-                  type="password"
+                <PasswordInput
                   required
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}

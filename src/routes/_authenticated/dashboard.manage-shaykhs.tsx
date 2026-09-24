@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AlertCircle, CheckCircle2, UserPlus, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { requireRole } from "@/lib/require-role";
+import { PasswordInput } from "@/components/password-input";
 
 export const Route = createFileRoute("/_authenticated/dashboard/manage-shaykhs")({
   beforeLoad: requireRole(["mosque_admin"]),
@@ -283,8 +284,7 @@ function CreateShaykhModal({
             <label className="block text-sm font-semibold text-foreground">
               Temporary Password <span className="text-red-600">*</span>
             </label>
-            <input
-              type="password"
+            <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-2 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"

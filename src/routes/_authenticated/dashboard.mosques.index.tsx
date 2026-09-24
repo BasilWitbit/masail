@@ -13,6 +13,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { assignMosqueSlug, insertMosqueWithSlug } from "@/lib/mosque-slug";
 import { requireRole } from "@/lib/require-role";
+import { PasswordInput } from "@/components/password-input";
 
 export const Route = createFileRoute("/_authenticated/dashboard/mosques/")({
   beforeLoad: requireRole(["super_admin"]),
@@ -637,8 +638,7 @@ function MosqueAdminsTab() {
                   <label className="block text-sm font-semibold text-foreground">
                     Temporary Password <span className="text-red-600">*</span>
                   </label>
-                  <input
-                    type="password"
+                  <PasswordInput
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="mt-2 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"

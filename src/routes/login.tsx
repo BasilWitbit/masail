@@ -4,6 +4,7 @@ import { AlertCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlatformThemeGate } from "@/lib/use-platform-theme";
 import { ThemeLoadingScreen } from "@/components/theme-loading-screen";
+import { PasswordInput } from "@/components/password-input";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -132,8 +133,7 @@ function LoginPage() {
             </Field>
 
             <Field label="Password">
-              <input
-                type="password"
+              <PasswordInput
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required

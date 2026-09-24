@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePlatformThemeGate } from "@/lib/use-platform-theme";
 import { ThemeLoadingScreen } from "@/components/theme-loading-screen";
 import { SiteHeader } from "@/components/site-header";
+import { PasswordInput } from "@/components/password-input";
 
 export const Route = createFileRoute("/$mosqueSlug/signup")({
   head: () => ({
@@ -208,8 +209,7 @@ function MosqueSignupPage() {
                 </Field>
 
                 <Field label="Password" error={fieldErrors.password}>
-                  <input
-                    type="password"
+                  <PasswordInput
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -225,8 +225,7 @@ function MosqueSignupPage() {
                 </Field>
 
                 <Field label="Confirm Password" error={fieldErrors.confirmPassword}>
-                  <input
-                    type="password"
+                  <PasswordInput
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required

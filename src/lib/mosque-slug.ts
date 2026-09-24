@@ -11,6 +11,13 @@ export function slugifyMosqueName(name: string): string {
   return slug || "mosque";
 }
 
+function candidateSlug(base: string, n: number): string {
+  if (n <= 1) return base;
+  const suffix = `-${n}`;
+  return `${base.slice(0, Math.max(1, 60 - suffix.length))}${suffix}`;
+}
+
+/** Best-effort unique slug from rows the current user can see. Prefer assignMosqueSlug for writes. */
 export async function uniqueMosqueSlug(name: string, excludeId?: string): Promise<string> {
   const base = slugifyMosqueName(name);
   const { data, error } = await supabase.from("mosques").select("id, slug");
@@ -22,8 +29,72 @@ export async function uniqueMosqueSlug(name: string, excludeId?: string): Promis
       .map((row) => row.slug as string),
   );
 
-  if (!taken.has(base)) return base;
-  let n = 2;
-  while (taken.has(`${base}-${n}`)) n += 1;
-  return `${base}-${n}`;
+  let n = 1;
+  while (taken.has(candidateSlug(base, n))) n += 1;
+  return candidateSlug(base, n);
+}
+
+function isUniqueViolation(err: { code?: string; message?: string } | null | undefined): boolean {
+  if (!err) return false;
+  if (err.code === "23505") return true;
+  return /duplicate key|unique constraint/i.test(err.message ?? "");
+}
+
+/**
+ * Persist a unique slug on a mosque row, retrying on unique conflicts
+ * (needed when RLS hides other mosques during client-side uniqueness checks).
+ */
+export async function assignMosqueSlug(mosqueId: string, name: string): Promise<string> {
+  const base = slugifyMosqueName(name);
+  let firstTry = base;
+  try {
+    firstTry = await uniqueMosqueSlug(name, mosqueId);
+  } catch {
+    firstTry = base;
+  }
+
+  for (let attempt = 0; attempt < 40; attempt++) {
+    const slug = attempt === 0 ? firstTry : candidateSlug(base, attempt + 1);
+    const { error } = await supabase.from("mosques").update({ slug }).eq("id", mosqueId);
+    if (!error) {
+      const { data } = await supabase
+        .from("mosques")
+        .select("slug")
+        .eq("id", mosqueId)
+        .maybeSingle();
+      if ((data as { slug?: string | null } | null)?.slug === slug) return slug;
+      continue;
+    }
+    if (isUniqueViolation(error)) continue;
+    throw new Error(error.message);
+  }
+
+  throw new Error("Could not assign a unique signup link for this mosque.");
+}
+
+/** Insert a mosque with a unique slug, retrying on unique conflicts. */
+export async function insertMosqueWithSlug(payload: {
+  name: string;
+  address: string;
+  city: string | null;
+  country: string | null;
+  contact_email: string | null;
+  contact_phone: string | null;
+}): Promise<{ error: string | null }> {
+  const base = slugifyMosqueName(payload.name);
+  let firstTry = base;
+  try {
+    firstTry = await uniqueMosqueSlug(payload.name);
+  } catch {
+    firstTry = base;
+  }
+
+  for (let attempt = 0; attempt < 40; attempt++) {
+    const slug = attempt === 0 ? firstTry : candidateSlug(base, attempt + 1);
+    const { error } = await supabase.from("mosques").insert({ ...payload, slug });
+    if (!error) return { error: null };
+    if (isUniqueViolation(error)) continue;
+    return { error: error.message };
+  }
+  return { error: "Could not create a unique signup link for this mosque." };
 }

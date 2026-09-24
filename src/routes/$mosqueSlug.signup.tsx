@@ -33,6 +33,7 @@ function MosqueSignupPage() {
 
   const [mosque, setMosque] = useState<Mosque | null>(null);
   const [lookupDone, setLookupDone] = useState(false);
+  const [lookupError, setLookupError] = useState<string | null>(null);
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -45,14 +46,24 @@ function MosqueSignupPage() {
   useEffect(() => {
     let active = true;
     setLookupDone(false);
+    setLookupError(null);
+    setMosque(null);
     (async () => {
-      const { data } = await supabase
+      // limit(1) avoids maybeSingle failing hard when duplicate slugs exist
+      const { data, error } = await supabase
         .from("mosques")
         .select("id, name")
         .eq("slug", mosqueSlug)
-        .maybeSingle();
+        .limit(1);
       if (!active) return;
-      setMosque((data as Mosque | null) ?? null);
+      if (error) {
+        setLookupError(error.message);
+        setMosque(null);
+      } else {
+        const row = (data as Mosque[] | null)?.[0] ?? null;
+        setMosque(row);
+        if (!row) setLookupError(null);
+      }
       setLookupDone(true);
     })();
     return () => {
@@ -138,8 +149,9 @@ function MosqueSignupPage() {
               Invalid Signup Link
             </h1>
             <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-              This signup link is invalid or has expired. Please contact your mosque for a valid
-              link.
+              {lookupError
+                ? `Could not load this mosque signup page (${lookupError}). Please try again or contact your mosque.`
+                : "This signup link is invalid or has expired. Please contact your mosque for a valid link."}
             </p>
           </div>
         ) : (

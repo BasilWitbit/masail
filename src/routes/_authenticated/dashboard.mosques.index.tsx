@@ -11,7 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { uniqueMosqueSlug } from "@/lib/mosque-slug";
+import { assignMosqueSlug, insertMosqueWithSlug } from "@/lib/mosque-slug";
 import { requireRole } from "@/lib/require-role";
 
 export const Route = createFileRoute("/_authenticated/dashboard/mosques/")({
@@ -113,9 +113,7 @@ function MosquesTab() {
     for (const row of rows) {
       if (row.slug) continue;
       try {
-        const slug = await uniqueMosqueSlug(row.name, row.id);
-        const { error: fillErr } = await supabase.from("mosques").update({ slug }).eq("id", row.id);
-        if (!fillErr) row.slug = slug;
+        row.slug = await assignMosqueSlug(row.id, row.name);
       } catch {
         // Leave slug empty; mosque-admin QR tab will surface a clear error if needed.
       }
@@ -165,15 +163,7 @@ function MosquesTab() {
       return;
     }
     setSaving(true);
-    const payload: {
-      name: string;
-      address: string;
-      city: string | null;
-      country: string | null;
-      contact_email: string | null;
-      contact_phone: string | null;
-      slug?: string;
-    } = {
+    const payload = {
       name: form.name.trim(),
       address: form.address.trim(),
       city: form.city.trim() || null,
@@ -181,22 +171,20 @@ function MosquesTab() {
       contact_email: form.contact_email.trim() || null,
       contact_phone: form.contact_phone.trim() || null,
     };
-    try {
-      if (!editingId) {
-        payload.slug = await uniqueMosqueSlug(payload.name);
-      }
-    } catch (slugErr) {
+    if (editingId) {
+      const { error: err } = await supabase.from("mosques").update(payload).eq("id", editingId);
       setSaving(false);
-      setError(slugErr instanceof Error ? slugErr.message : "Could not create a signup link.");
-      return;
-    }
-    const { error: err } = editingId
-      ? await supabase.from("mosques").update(payload).eq("id", editingId)
-      : await supabase.from("mosques").insert(payload);
-    setSaving(false);
-    if (err) {
-      setError(err.message);
-      return;
+      if (err) {
+        setError(err.message);
+        return;
+      }
+    } else {
+      const { error: err } = await insertMosqueWithSlug(payload);
+      setSaving(false);
+      if (err) {
+        setError(err);
+        return;
+      }
     }
     setModalOpen(false);
     setSuccess(editingId ? "Mosque updated." : "Mosque added.");

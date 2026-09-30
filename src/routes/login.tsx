@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { AlertCircle, Check, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlatformThemeGate } from "@/lib/use-platform-theme";
 import { ThemeLoadingScreen } from "@/components/theme-loading-screen";
@@ -25,11 +25,49 @@ function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [needsVerification, setNeedsVerification] = useState(false);
+  const [emailVerifiedNotice, setEmailVerifiedNotice] = useState(false);
+
+  // After "Confirm email" in the inbox, Supabase redirects here with tokens in the hash.
+  // Clear that auto-session so the user signs in with email + password.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hash = window.location.hash;
+    if (!hash.includes("access_token") && !hash.includes("type=signup")) return;
+
+    let active = true;
+    (async () => {
+      let sessionEmail: string | undefined;
+      for (let i = 0; i < 20; i++) {
+        const { data } = await supabase.auth.getSession();
+        if (data.session?.user?.email) {
+          sessionEmail = data.session.user.email;
+          break;
+        }
+        await new Promise((r) => setTimeout(r, 50));
+      }
+
+      if (sessionEmail && active) setEmail(sessionEmail);
+      await supabase.auth.signOut();
+
+      if (!active) return;
+      setEmailVerifiedNotice(true);
+      window.history.replaceState(
+        {},
+        document.title,
+        window.location.pathname + window.location.search,
+      );
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setNeedsVerification(false);
+    setEmailVerifiedNotice(false);
 
     const trimmedEmail = email.trim();
     if (!trimmedEmail || !password) {
@@ -96,6 +134,13 @@ function LoginPage() {
           onSubmit={handleSubmit}
           className="rounded-3xl border border-[#E2E8F0] bg-white p-8 md:p-10 shadow-lg shadow-[#0F172A]/5"
         >
+          {emailVerifiedNotice ? (
+            <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+              <Check className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>Email verified. Please log in with your email and password.</span>
+            </div>
+          ) : null}
+
           {error ? (
             <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />

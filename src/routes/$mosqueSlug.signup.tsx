@@ -15,11 +15,6 @@ export const Route = createFileRoute("/$mosqueSlug/signup")({
         name: "description",
         content: "Create your Masail account through your mosque's signup link.",
       },
-      { property: "og:title", content: "Mosque Signup — Masail" },
-      {
-        property: "og:description",
-        content: "Join your mosque on Masail to ask questions to your local scholars.",
-      },
     ],
   }),
   component: MosqueSignupPage,
@@ -50,20 +45,16 @@ function MosqueSignupPage() {
     setLookupError(null);
     setMosque(null);
     (async () => {
-      // limit(1) avoids maybeSingle failing hard when duplicate slugs exist
-      const { data, error } = await supabase
-        .from("mosques")
-        .select("id, name")
-        .eq("slug", mosqueSlug)
-        .limit(1);
+      const { data, error } = await supabase.rpc("resolve_mosque_by_slug", {
+        p_mosque_slug: mosqueSlug,
+      });
       if (!active) return;
       if (error) {
         setLookupError(error.message);
         setMosque(null);
       } else {
-        const row = (data as Mosque[] | null)?.[0] ?? null;
-        setMosque(row);
-        if (!row) setLookupError(null);
+        const row = data?.[0];
+        setMosque(row ? { id: row.mosque_id, name: row.mosque_name } : null);
       }
       setLookupDone(true);
     })();
@@ -106,7 +97,7 @@ function MosqueSignupPage() {
       options: {
         emailRedirectTo: `${window.location.origin}/login`,
         data: {
-          full_name: fullName,
+          full_name: fullName.trim(),
           mosque_id: mosque.id,
         },
       },

@@ -17,7 +17,12 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type UserRole = "user" | "shaykh" | "mosque_admin" | "super_admin";
+export type UserRole =
+  | "user"
+  | "shaykh"
+  | "mosque_admin"
+  | "super_admin"
+  | "super_super_admin";
 
 export type DashboardNavItem = {
   to: string;
@@ -60,6 +65,9 @@ const shaykhNav: DashboardNavItem[] = [
 
 export function getNavForRole(role: UserRole | null | undefined): DashboardNavItem[] {
   switch (role) {
+    case "super_super_admin":
+      // SSA uses its own shell under /ssa; no dashboard nav.
+      return [];
     case "super_admin":
       return superAdminNav;
     case "mosque_admin":

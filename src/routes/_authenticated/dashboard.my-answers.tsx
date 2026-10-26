@@ -565,7 +565,9 @@ function Detail({
     setPublishing(true);
     setPublishError(null);
     try {
+      const { data: tenantId } = await supabase.rpc("my_tenant_id");
       const { error: insErr } = await supabase.from("published_qa").insert({
+        tenant_id: tenantId ?? null,
         question_id: row.id,
         published_by_shaykh_id: shaykhId!,
         generic_question: genericQuestion.trim(),

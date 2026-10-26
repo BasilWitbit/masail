@@ -39,7 +39,10 @@ function ManageCategories() {
       return;
     }
     setAdding(true);
-    const { error: err } = await supabase.from("categories").insert({ name });
+    const { data: tenantId } = await supabase.rpc("my_tenant_id");
+    const { error: err } = await supabase
+      .from("categories")
+      .insert({ name, tenant_id: tenantId ?? null });
     setAdding(false);
     if (err) {
       setError(

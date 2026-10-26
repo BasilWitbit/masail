@@ -4,7 +4,7 @@ import { AlertCircle, Check, Download, Loader2, Mail, UserRound, X } from "lucid
 import { toast } from "sonner";
 import { QRCodeCanvas } from "qrcode.react";
 import { supabase } from "@/integrations/supabase/client";
-import { assignMosqueSlug } from "@/lib/mosque-slug";
+import { assignMosqueSlug, signupPath } from "@/lib/mosque-slug";
 import { requireRole } from "@/lib/require-role";
 
 export const Route = createFileRoute("/_authenticated/dashboard/users")({
@@ -270,7 +270,7 @@ function SignupQrPanel() {
     };
   }, []);
 
-  const signupUrl = mosque?.slug && origin ? `${origin}/${mosque.slug}/signup` : "";
+  const signupUrl = mosque?.slug && origin ? `${origin}${signupPath(mosque.slug)}` : "";
 
   function handleDownload() {
     const source = qrRef.current?.querySelector("canvas") as HTMLCanvasElement | null;

@@ -10,6 +10,9 @@ export const Route = createFileRoute("/_authenticated/dashboard/")({
         .select("role")
         .eq("id", userData.user.id)
         .maybeSingle();
+      if (data?.role === "super_super_admin") {
+        throw redirect({ to: "/ssa" });
+      }
       if (data?.role === "super_admin") {
         throw redirect({ to: "/dashboard/admin" });
       }

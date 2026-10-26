@@ -16,6 +16,9 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
 import { Route as MosqueSlugSignupRouteImport } from './routes/$mosqueSlug.signup'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedSsaRouteRouteImport } from './routes/_authenticated/ssa/route'
+import { Route as AuthenticatedTenantUnavailableRouteImport } from './routes/_authenticated/tenant-unavailable'
+import { Route as TenantSlugMosqueSlugSignupRouteImport } from './routes/$tenantSlug.$mosqueSlug.signup'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedDashboardAccountSettingsRouteImport } from './routes/_authenticated/dashboard.account-settings'
 import { Route as AuthenticatedDashboardAdminRouteImport } from './routes/_authenticated/dashboard.admin'
@@ -33,9 +36,16 @@ import { Route as AuthenticatedDashboardReportsRouteImport } from './routes/_aut
 import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
 import { Route as AuthenticatedDashboardUiSettingsRouteImport } from './routes/_authenticated/dashboard.ui-settings'
 import { Route as AuthenticatedDashboardUsersRouteImport } from './routes/_authenticated/dashboard.users'
+import { Route as AuthenticatedSsaIndexRouteImport } from './routes/_authenticated/ssa/index'
+import { Route as AuthenticatedSsaAuditRouteImport } from './routes/_authenticated/ssa/audit'
+import { Route as AuthenticatedSsaSettingsRouteImport } from './routes/_authenticated/ssa/settings'
+import { Route as AuthenticatedSsaSuperAdminsRouteImport } from './routes/_authenticated/ssa/super-admins'
 import { Route as AuthenticatedDashboardMosquesIndexRouteImport } from './routes/_authenticated/dashboard.mosques.index'
 import { Route as AuthenticatedDashboardQuestionsIndexRouteImport } from './routes/_authenticated/dashboard.questions.index'
 import { Route as AuthenticatedDashboardQuestionsIdRouteImport } from './routes/_authenticated/dashboard.questions.$id'
+import { Route as AuthenticatedSsaSuperAdminsIndexRouteImport } from './routes/_authenticated/ssa/super-admins.index'
+import { Route as AuthenticatedSsaSuperAdminsSaIdRouteImport } from './routes/_authenticated/ssa/super-admins.$saId'
+import { Route as AuthenticatedSsaSuperAdminsNewRouteImport } from './routes/_authenticated/ssa/super-admins.new'
 import { Route as AuthenticatedDashboardMosquesIdSettingsRouteImport } from './routes/_authenticated/dashboard.mosques.$id.settings'
 
 const IndexRoute = IndexRouteImport.update({
@@ -72,6 +82,23 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSsaRouteRoute = AuthenticatedSsaRouteRouteImport.update({
+  id: '/ssa',
+  path: '/ssa',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedTenantUnavailableRoute =
+  AuthenticatedTenantUnavailableRouteImport.update({
+    id: '/tenant-unavailable',
+    path: '/tenant-unavailable',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const TenantSlugMosqueSlugSignupRoute =
+  TenantSlugMosqueSlugSignupRouteImport.update({
+    id: '/$tenantSlug/$mosqueSlug/signup',
+    path: '/$tenantSlug/$mosqueSlug/signup',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedDashboardIndexRoute =
   AuthenticatedDashboardIndexRouteImport.update({
     id: '/',
@@ -174,6 +201,28 @@ const AuthenticatedDashboardUsersRoute =
     path: '/users',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedSsaIndexRoute = AuthenticatedSsaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedSsaRouteRoute,
+} as any)
+const AuthenticatedSsaAuditRoute = AuthenticatedSsaAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedSsaRouteRoute,
+} as any)
+const AuthenticatedSsaSettingsRoute =
+  AuthenticatedSsaSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedSsaRouteRoute,
+  } as any)
+const AuthenticatedSsaSuperAdminsRoute =
+  AuthenticatedSsaSuperAdminsRouteImport.update({
+    id: '/super-admins',
+    path: '/super-admins',
+    getParentRoute: () => AuthenticatedSsaRouteRoute,
+  } as any)
 const AuthenticatedDashboardMosquesIndexRoute =
   AuthenticatedDashboardMosquesIndexRouteImport.update({
     id: '/mosques/',
@@ -192,6 +241,24 @@ const AuthenticatedDashboardQuestionsIdRoute =
     path: '/$id',
     getParentRoute: () => AuthenticatedDashboardQuestionsRoute,
   } as any)
+const AuthenticatedSsaSuperAdminsIndexRoute =
+  AuthenticatedSsaSuperAdminsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedSsaSuperAdminsRoute,
+  } as any)
+const AuthenticatedSsaSuperAdminsSaIdRoute =
+  AuthenticatedSsaSuperAdminsSaIdRouteImport.update({
+    id: '/$saId',
+    path: '/$saId',
+    getParentRoute: () => AuthenticatedSsaSuperAdminsRoute,
+  } as any)
+const AuthenticatedSsaSuperAdminsNewRoute =
+  AuthenticatedSsaSuperAdminsNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedSsaSuperAdminsRoute,
+  } as any)
 const AuthenticatedDashboardMosquesIdSettingsRoute =
   AuthenticatedDashboardMosquesIdSettingsRouteImport.update({
     id: '/mosques/$id/settings',
@@ -204,8 +271,11 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
+  '/ssa': typeof AuthenticatedSsaRouteRouteWithChildren
   '/$mosqueSlug/signup': typeof MosqueSlugSignupRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/tenant-unavailable': typeof AuthenticatedTenantUnavailableRoute
+  '/$tenantSlug/$mosqueSlug/signup': typeof TenantSlugMosqueSlugSignupRoute
   '/dashboard/account-settings': typeof AuthenticatedDashboardAccountSettingsRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/ask': typeof AuthenticatedDashboardAskRoute
@@ -222,10 +292,17 @@ export interface FileRoutesByFullPath {
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/ui-settings': typeof AuthenticatedDashboardUiSettingsRoute
   '/dashboard/users': typeof AuthenticatedDashboardUsersRoute
+  '/ssa/audit': typeof AuthenticatedSsaAuditRoute
+  '/ssa/settings': typeof AuthenticatedSsaSettingsRoute
+  '/ssa/super-admins': typeof AuthenticatedSsaSuperAdminsRouteWithChildren
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/ssa/': typeof AuthenticatedSsaIndexRoute
   '/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
+  '/ssa/super-admins/$saId': typeof AuthenticatedSsaSuperAdminsSaIdRoute
+  '/ssa/super-admins/new': typeof AuthenticatedSsaSuperAdminsNewRoute
   '/dashboard/mosques/': typeof AuthenticatedDashboardMosquesIndexRoute
   '/dashboard/questions/': typeof AuthenticatedDashboardQuestionsIndexRoute
+  '/ssa/super-admins/': typeof AuthenticatedSsaSuperAdminsIndexRoute
   '/dashboard/mosques/$id/settings': typeof AuthenticatedDashboardMosquesIdSettingsRoute
 }
 export interface FileRoutesByTo {
@@ -234,6 +311,8 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/$mosqueSlug/signup': typeof MosqueSlugSignupRoute
+  '/tenant-unavailable': typeof AuthenticatedTenantUnavailableRoute
+  '/$tenantSlug/$mosqueSlug/signup': typeof TenantSlugMosqueSlugSignupRoute
   '/dashboard/account-settings': typeof AuthenticatedDashboardAccountSettingsRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/ask': typeof AuthenticatedDashboardAskRoute
@@ -249,10 +328,16 @@ export interface FileRoutesByTo {
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/ui-settings': typeof AuthenticatedDashboardUiSettingsRoute
   '/dashboard/users': typeof AuthenticatedDashboardUsersRoute
+  '/ssa/audit': typeof AuthenticatedSsaAuditRoute
+  '/ssa/settings': typeof AuthenticatedSsaSettingsRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/ssa': typeof AuthenticatedSsaIndexRoute
   '/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
+  '/ssa/super-admins/$saId': typeof AuthenticatedSsaSuperAdminsSaIdRoute
+  '/ssa/super-admins/new': typeof AuthenticatedSsaSuperAdminsNewRoute
   '/dashboard/mosques': typeof AuthenticatedDashboardMosquesIndexRoute
   '/dashboard/questions': typeof AuthenticatedDashboardQuestionsIndexRoute
+  '/ssa/super-admins': typeof AuthenticatedSsaSuperAdminsIndexRoute
   '/dashboard/mosques/$id/settings': typeof AuthenticatedDashboardMosquesIdSettingsRoute
 }
 export interface FileRoutesById {
@@ -262,8 +347,11 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
+  '/_authenticated/ssa': typeof AuthenticatedSsaRouteRouteWithChildren
   '/$mosqueSlug/signup': typeof MosqueSlugSignupRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/_authenticated/tenant-unavailable': typeof AuthenticatedTenantUnavailableRoute
+  '/$tenantSlug/$mosqueSlug/signup': typeof TenantSlugMosqueSlugSignupRoute
   '/_authenticated/dashboard/account-settings': typeof AuthenticatedDashboardAccountSettingsRoute
   '/_authenticated/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/_authenticated/dashboard/ask': typeof AuthenticatedDashboardAskRoute
@@ -280,10 +368,17 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/_authenticated/dashboard/ui-settings': typeof AuthenticatedDashboardUiSettingsRoute
   '/_authenticated/dashboard/users': typeof AuthenticatedDashboardUsersRoute
+  '/_authenticated/ssa/audit': typeof AuthenticatedSsaAuditRoute
+  '/_authenticated/ssa/settings': typeof AuthenticatedSsaSettingsRoute
+  '/_authenticated/ssa/super-admins': typeof AuthenticatedSsaSuperAdminsRouteWithChildren
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/_authenticated/ssa/': typeof AuthenticatedSsaIndexRoute
   '/_authenticated/dashboard/questions/$id': typeof AuthenticatedDashboardQuestionsIdRoute
+  '/_authenticated/ssa/super-admins/$saId': typeof AuthenticatedSsaSuperAdminsSaIdRoute
+  '/_authenticated/ssa/super-admins/new': typeof AuthenticatedSsaSuperAdminsNewRoute
   '/_authenticated/dashboard/mosques/': typeof AuthenticatedDashboardMosquesIndexRoute
   '/_authenticated/dashboard/questions/': typeof AuthenticatedDashboardQuestionsIndexRoute
+  '/_authenticated/ssa/super-admins/': typeof AuthenticatedSsaSuperAdminsIndexRoute
   '/_authenticated/dashboard/mosques/$id/settings': typeof AuthenticatedDashboardMosquesIdSettingsRoute
 }
 export interface FileRouteTypes {
@@ -293,8 +388,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/verify-otp'
+    | '/ssa'
     | '/$mosqueSlug/signup'
     | '/dashboard'
+    | '/tenant-unavailable'
+    | '/$tenantSlug/$mosqueSlug/signup'
     | '/dashboard/account-settings'
     | '/dashboard/admin'
     | '/dashboard/ask'
@@ -311,10 +409,17 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/dashboard/ui-settings'
     | '/dashboard/users'
+    | '/ssa/audit'
+    | '/ssa/settings'
+    | '/ssa/super-admins'
     | '/dashboard/'
+    | '/ssa/'
     | '/dashboard/questions/$id'
+    | '/ssa/super-admins/$saId'
+    | '/ssa/super-admins/new'
     | '/dashboard/mosques/'
     | '/dashboard/questions/'
+    | '/ssa/super-admins/'
     | '/dashboard/mosques/$id/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -323,6 +428,8 @@ export interface FileRouteTypes {
     | '/signup'
     | '/verify-otp'
     | '/$mosqueSlug/signup'
+    | '/tenant-unavailable'
+    | '/$tenantSlug/$mosqueSlug/signup'
     | '/dashboard/account-settings'
     | '/dashboard/admin'
     | '/dashboard/ask'
@@ -338,10 +445,16 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/dashboard/ui-settings'
     | '/dashboard/users'
+    | '/ssa/audit'
+    | '/ssa/settings'
     | '/dashboard'
+    | '/ssa'
     | '/dashboard/questions/$id'
+    | '/ssa/super-admins/$saId'
+    | '/ssa/super-admins/new'
     | '/dashboard/mosques'
     | '/dashboard/questions'
+    | '/ssa/super-admins'
     | '/dashboard/mosques/$id/settings'
   id:
     | '__root__'
@@ -350,8 +463,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/verify-otp'
+    | '/_authenticated/ssa'
     | '/$mosqueSlug/signup'
     | '/_authenticated/dashboard'
+    | '/_authenticated/tenant-unavailable'
+    | '/$tenantSlug/$mosqueSlug/signup'
     | '/_authenticated/dashboard/account-settings'
     | '/_authenticated/dashboard/admin'
     | '/_authenticated/dashboard/ask'
@@ -368,10 +484,17 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/settings'
     | '/_authenticated/dashboard/ui-settings'
     | '/_authenticated/dashboard/users'
+    | '/_authenticated/ssa/audit'
+    | '/_authenticated/ssa/settings'
+    | '/_authenticated/ssa/super-admins'
     | '/_authenticated/dashboard/'
+    | '/_authenticated/ssa/'
     | '/_authenticated/dashboard/questions/$id'
+    | '/_authenticated/ssa/super-admins/$saId'
+    | '/_authenticated/ssa/super-admins/new'
     | '/_authenticated/dashboard/mosques/'
     | '/_authenticated/dashboard/questions/'
+    | '/_authenticated/ssa/super-admins/'
     | '/_authenticated/dashboard/mosques/$id/settings'
   fileRoutesById: FileRoutesById
 }
@@ -382,6 +505,7 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   VerifyOtpRoute: typeof VerifyOtpRoute
   MosqueSlugSignupRoute: typeof MosqueSlugSignupRoute
+  TenantSlugMosqueSlugSignupRoute: typeof TenantSlugMosqueSlugSignupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -434,6 +558,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ssa': {
+      id: '/_authenticated/ssa'
+      path: '/ssa'
+      fullPath: '/ssa'
+      preLoaderRoute: typeof AuthenticatedSsaRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/tenant-unavailable': {
+      id: '/_authenticated/tenant-unavailable'
+      path: '/tenant-unavailable'
+      fullPath: '/tenant-unavailable'
+      preLoaderRoute: typeof AuthenticatedTenantUnavailableRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/$tenantSlug/$mosqueSlug/signup': {
+      id: '/$tenantSlug/$mosqueSlug/signup'
+      path: '/$tenantSlug/$mosqueSlug/signup'
+      fullPath: '/$tenantSlug/$mosqueSlug/signup'
+      preLoaderRoute: typeof TenantSlugMosqueSlugSignupRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard/': {
       id: '/_authenticated/dashboard/'
@@ -554,6 +699,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardUsersRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/ssa/': {
+      id: '/_authenticated/ssa/'
+      path: '/'
+      fullPath: '/ssa/'
+      preLoaderRoute: typeof AuthenticatedSsaIndexRouteImport
+      parentRoute: typeof AuthenticatedSsaRouteRoute
+    }
+    '/_authenticated/ssa/audit': {
+      id: '/_authenticated/ssa/audit'
+      path: '/audit'
+      fullPath: '/ssa/audit'
+      preLoaderRoute: typeof AuthenticatedSsaAuditRouteImport
+      parentRoute: typeof AuthenticatedSsaRouteRoute
+    }
+    '/_authenticated/ssa/settings': {
+      id: '/_authenticated/ssa/settings'
+      path: '/settings'
+      fullPath: '/ssa/settings'
+      preLoaderRoute: typeof AuthenticatedSsaSettingsRouteImport
+      parentRoute: typeof AuthenticatedSsaRouteRoute
+    }
+    '/_authenticated/ssa/super-admins': {
+      id: '/_authenticated/ssa/super-admins'
+      path: '/super-admins'
+      fullPath: '/ssa/super-admins'
+      preLoaderRoute: typeof AuthenticatedSsaSuperAdminsRouteImport
+      parentRoute: typeof AuthenticatedSsaRouteRoute
+    }
     '/_authenticated/dashboard/mosques/': {
       id: '/_authenticated/dashboard/mosques/'
       path: '/mosques'
@@ -575,6 +748,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardQuestionsIdRouteImport
       parentRoute: typeof AuthenticatedDashboardQuestionsRoute
     }
+    '/_authenticated/ssa/super-admins/': {
+      id: '/_authenticated/ssa/super-admins/'
+      path: '/'
+      fullPath: '/ssa/super-admins/'
+      preLoaderRoute: typeof AuthenticatedSsaSuperAdminsIndexRouteImport
+      parentRoute: typeof AuthenticatedSsaSuperAdminsRoute
+    }
+    '/_authenticated/ssa/super-admins/$saId': {
+      id: '/_authenticated/ssa/super-admins/$saId'
+      path: '/$saId'
+      fullPath: '/ssa/super-admins/$saId'
+      preLoaderRoute: typeof AuthenticatedSsaSuperAdminsSaIdRouteImport
+      parentRoute: typeof AuthenticatedSsaSuperAdminsRoute
+    }
+    '/_authenticated/ssa/super-admins/new': {
+      id: '/_authenticated/ssa/super-admins/new'
+      path: '/new'
+      fullPath: '/ssa/super-admins/new'
+      preLoaderRoute: typeof AuthenticatedSsaSuperAdminsNewRouteImport
+      parentRoute: typeof AuthenticatedSsaSuperAdminsRoute
+    }
     '/_authenticated/dashboard/mosques/$id/settings': {
       id: '/_authenticated/dashboard/mosques/$id/settings'
       path: '/mosques/$id/settings'
@@ -584,6 +778,45 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthenticatedSsaSuperAdminsRouteChildren {
+  AuthenticatedSsaSuperAdminsSaIdRoute: typeof AuthenticatedSsaSuperAdminsSaIdRoute
+  AuthenticatedSsaSuperAdminsNewRoute: typeof AuthenticatedSsaSuperAdminsNewRoute
+  AuthenticatedSsaSuperAdminsIndexRoute: typeof AuthenticatedSsaSuperAdminsIndexRoute
+}
+
+const AuthenticatedSsaSuperAdminsRouteChildren: AuthenticatedSsaSuperAdminsRouteChildren =
+  {
+    AuthenticatedSsaSuperAdminsSaIdRoute: AuthenticatedSsaSuperAdminsSaIdRoute,
+    AuthenticatedSsaSuperAdminsNewRoute: AuthenticatedSsaSuperAdminsNewRoute,
+    AuthenticatedSsaSuperAdminsIndexRoute:
+      AuthenticatedSsaSuperAdminsIndexRoute,
+  }
+
+const AuthenticatedSsaSuperAdminsRouteWithChildren =
+  AuthenticatedSsaSuperAdminsRoute._addFileChildren(
+    AuthenticatedSsaSuperAdminsRouteChildren,
+  )
+
+interface AuthenticatedSsaRouteRouteChildren {
+  AuthenticatedSsaAuditRoute: typeof AuthenticatedSsaAuditRoute
+  AuthenticatedSsaSettingsRoute: typeof AuthenticatedSsaSettingsRoute
+  AuthenticatedSsaSuperAdminsRoute: typeof AuthenticatedSsaSuperAdminsRouteWithChildren
+  AuthenticatedSsaIndexRoute: typeof AuthenticatedSsaIndexRoute
+}
+
+const AuthenticatedSsaRouteRouteChildren: AuthenticatedSsaRouteRouteChildren = {
+  AuthenticatedSsaAuditRoute: AuthenticatedSsaAuditRoute,
+  AuthenticatedSsaSettingsRoute: AuthenticatedSsaSettingsRoute,
+  AuthenticatedSsaSuperAdminsRoute:
+    AuthenticatedSsaSuperAdminsRouteWithChildren,
+  AuthenticatedSsaIndexRoute: AuthenticatedSsaIndexRoute,
+}
+
+const AuthenticatedSsaRouteRouteWithChildren =
+  AuthenticatedSsaRouteRoute._addFileChildren(
+    AuthenticatedSsaRouteRouteChildren,
+  )
 
 interface AuthenticatedDashboardQuestionsRouteChildren {
   AuthenticatedDashboardQuestionsIdRoute: typeof AuthenticatedDashboardQuestionsIdRoute
@@ -664,11 +897,15 @@ const AuthenticatedDashboardRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedSsaRouteRoute: typeof AuthenticatedSsaRouteRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
+  AuthenticatedTenantUnavailableRoute: typeof AuthenticatedTenantUnavailableRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedSsaRouteRoute: AuthenticatedSsaRouteRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
+  AuthenticatedTenantUnavailableRoute: AuthenticatedTenantUnavailableRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -681,6 +918,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   VerifyOtpRoute: VerifyOtpRoute,
   MosqueSlugSignupRoute: MosqueSlugSignupRoute,
+  TenantSlugMosqueSlugSignupRoute: TenantSlugMosqueSlugSignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

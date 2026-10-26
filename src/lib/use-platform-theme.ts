@@ -40,10 +40,6 @@ export function applyPlatformSettings(data: PlatformSettings) {
   }
 }
 
-/**
- * Removes every inline theme override so the stylesheet defaults apply again.
- * Called on logout so the previous mosque's colors never leak into the next page.
- */
 export function clearPlatformTheme() {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
@@ -52,109 +48,92 @@ export function clearPlatformTheme() {
   }
 }
 
-const SETTINGS_COLUMNS =
-  "primary_color, secondary_color, logo_url, heading_font, body_font";
-
 const RESERVED_SEGMENTS = new Set([
   "qa",
   "login",
   "signup",
   "verify-otp",
   "dashboard",
+  "ssa",
+  "tenant-unavailable",
   "api",
 ]);
 
+/** Parses `/{mosqueSlug}/...` public paths (e.g. the signup link). */
 function getMosqueSlugFromPath(pathname: string): string | null {
-  const first = pathname.split("/").filter(Boolean)[0];
-  if (!first) return null;
-  if (RESERVED_SEGMENTS.has(first)) return null;
-  if (first.includes(".")) return null;
+  const parts = pathname.split("/").filter(Boolean);
+  if (parts.length < 1) return null;
+  // Legacy dual-slug: /tenant/mosque/signup — use mosque segment
+  if (parts.length >= 2 && parts[parts.length - 1] === "signup") {
+    const mosqueSlug = parts[parts.length - 2];
+    if (!RESERVED_SEGMENTS.has(mosqueSlug) && !mosqueSlug.includes(".")) return mosqueSlug;
+  }
+  const first = parts[0];
+  if (RESERVED_SEGMENTS.has(first) || first.includes(".")) return null;
   return first;
 }
 
-async function fetchSettingsForMosque(mosqueId: string) {
-  const { data } = await supabase
-    .from("platform_settings")
-    .select(SETTINGS_COLUMNS)
-    .eq("mosque_id", mosqueId)
-    .maybeSingle();
-  return (data as PlatformSettings | null) ?? null;
+async function fetchPublicThemeByMosqueSlug(mosqueSlug: string): Promise<PlatformSettings | null> {
+  const { data, error } = await supabase.rpc("resolve_mosque_by_slug", {
+    p_mosque_slug: mosqueSlug,
+  });
+  if (error) return null;
+  const row = data?.[0];
+  if (!row) return null;
+  return {
+    primary_color: row.primary_color,
+    secondary_color: row.secondary_color,
+    logo_url: row.logo_url,
+    heading_font: row.heading_font,
+    body_font: row.body_font,
+  };
 }
 
-async function fetchGlobalSettings() {
-  const { data } = await supabase
-    .from("platform_settings")
-    .select(SETTINGS_COLUMNS)
-    .is("mosque_id", null)
-    .maybeSingle();
-  return (data as PlatformSettings | null) ?? null;
+async function fetchMyBranding(): Promise<PlatformSettings | null> {
+  const { data, error } = await supabase.rpc("get_my_branding");
+  if (error) {
+    console.warn("[theme] get_my_branding failed:", error.message);
+    return null;
+  }
+  const row = data?.[0];
+  if (!row) return null;
+  return {
+    primary_color: row.primary_color,
+    secondary_color: row.secondary_color,
+    logo_url: row.logo_url,
+    heading_font: row.heading_font,
+    body_font: row.body_font,
+  };
 }
 
 export async function resolvePlatformSettings(
   pathname: string,
-  slugOverride?: string | null,
+  mosqueSlugOverride?: string | null,
 ): Promise<PlatformSettings | null> {
-  // 1. Mosque-slug scoped route (explicit route param wins over path parsing)
-  const slug = slugOverride?.trim() || getMosqueSlugFromPath(pathname);
-  if (slug) {
-    const { data: mosque } = await supabase
-      .from("mosques")
-      .select("id")
-      .eq("slug", slug)
-      .maybeSingle();
-    if (mosque?.id) {
-      const settings = await fetchSettingsForMosque(mosque.id);
-      if (settings) return settings;
-    }
-    return fetchGlobalSettings();
+  const mosqueSlug = mosqueSlugOverride?.trim() || getMosqueSlugFromPath(pathname);
+  if (mosqueSlug) {
+    return fetchPublicThemeByMosqueSlug(mosqueSlug);
   }
 
-  // 2. Logged-in user
   const { data: userData } = await supabase.auth.getUser();
-  const user = userData?.user;
-  if (user) {
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("role, mosque_id")
-      .eq("id", user.id)
-      .maybeSingle();
-
-    if (profileError) {
-      console.warn("[theme] failed to read profile role:", profileError.message);
-    }
-
-    if (profile?.role === "shaykh") {
-      // A shaykh's mosque lives in shaykhs.mosque_id (profiles.mosque_id is null by design).
-      const { data: shaykh, error: shaykhError } = await supabase
-        .from("shaykhs")
-        .select("mosque_id")
-        .eq("profile_id", user.id)
-        .maybeSingle();
-
-      if (shaykhError) {
-        console.warn("[theme] shaykh mosque lookup failed:", shaykhError.message);
-      }
-
-      if (shaykh?.mosque_id) {
-        const settings = await fetchSettingsForMosque(shaykh.mosque_id);
-        if (settings) return settings;
-        console.warn(
-          "[theme] no platform_settings row readable for shaykh mosque",
-          shaykh.mosque_id,
-          "- falling back to global theme",
-        );
-      }
-      return fetchGlobalSettings();
-    }
-
-    if (profile && profile.role !== "super_admin" && profile.mosque_id) {
-      const settings = await fetchSettingsForMosque(profile.mosque_id);
-      if (settings) return settings;
-    }
+  if (userData?.user) {
+    return fetchMyBranding();
   }
 
-  // 3. Guest / super admin / fallback
-  return fetchGlobalSettings();
+  const { data, error } = await supabase.rpc("get_platform_branding");
+  if (error) {
+    console.warn("[theme] get_platform_branding failed:", error.message);
+    return null;
+  }
+  const row = data?.[0];
+  if (!row) return null;
+  return {
+    primary_color: row.primary_color,
+    secondary_color: row.secondary_color,
+    logo_url: row.logo_url,
+    heading_font: row.heading_font,
+    body_font: row.body_font,
+  };
 }
 
 export function usePlatformThemeGate(mosqueSlug?: string | null) {
@@ -173,6 +152,7 @@ export function usePlatformThemeGate(mosqueSlug?: string | null) {
           applyPlatformSettings(data);
         }
       })
+      .catch(() => {})
       .finally(() => {
         if (active) setReady(true);
       });
@@ -187,5 +167,3 @@ export function usePlatformThemeGate(mosqueSlug?: string | null) {
 export function usePlatformTheme() {
   return usePlatformThemeGate().settings;
 }
-
-

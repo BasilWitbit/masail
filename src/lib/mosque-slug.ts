@@ -1,5 +1,10 @@
 import { supabase } from "@/integrations/supabase/client";
 
+/** Public signup path: /{mosqueSlug}/signup */
+export function signupPath(mosqueSlug: string): string {
+  return `/${mosqueSlug}/signup`;
+}
+
 export function slugifyMosqueName(name: string): string {
   const slug = name
     .normalize("NFKD")
@@ -40,10 +45,6 @@ function isUniqueViolation(err: { code?: string; message?: string } | null | und
   return /duplicate key|unique constraint/i.test(err.message ?? "");
 }
 
-/**
- * Persist a unique slug on a mosque row, retrying on unique conflicts
- * (needed when RLS hides other mosques during client-side uniqueness checks).
- */
 export async function assignMosqueSlug(mosqueId: string, name: string): Promise<string> {
   const base = slugifyMosqueName(name);
   let firstTry = base;
@@ -80,7 +81,8 @@ export async function insertMosqueWithSlug(payload: {
   country: string | null;
   contact_email: string | null;
   contact_phone: string | null;
-}): Promise<{ error: string | null }> {
+  tenant_id?: string;
+}): Promise<{ error: string | null; id?: string }> {
   const base = slugifyMosqueName(payload.name);
   let firstTry = base;
   try {
@@ -91,8 +93,12 @@ export async function insertMosqueWithSlug(payload: {
 
   for (let attempt = 0; attempt < 40; attempt++) {
     const slug = attempt === 0 ? firstTry : candidateSlug(base, attempt + 1);
-    const { error } = await supabase.from("mosques").insert({ ...payload, slug });
-    if (!error) return { error: null };
+    const { data, error } = await supabase
+      .from("mosques")
+      .insert({ ...payload, slug })
+      .select("id")
+      .maybeSingle();
+    if (!error) return { error: null, id: data?.id };
     if (isUniqueViolation(error)) continue;
     return { error: error.message };
   }

@@ -2,7 +2,8 @@ import { redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import type { UserRole } from "@/lib/use-dashboard-nav";
 
-const homeForRole: Record<UserRole, string> = {
+export const homeForRole: Record<UserRole, string> = {
+  super_super_admin: "/ssa",
   super_admin: "/dashboard/admin",
   mosque_admin: "/dashboard/mosque-admin",
   shaykh: "/dashboard/pool",
